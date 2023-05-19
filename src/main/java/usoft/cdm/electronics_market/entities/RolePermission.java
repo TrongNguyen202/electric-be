@@ -15,11 +15,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "cdm_role_pemission")
 
-public class RolePemission {
+public class RolePermission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private Integer roleId;
-    private Integer pemissionId;
+    private Integer permissionId;
 }

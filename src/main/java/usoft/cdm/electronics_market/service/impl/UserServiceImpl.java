@@ -2,6 +2,7 @@ package usoft.cdm.electronics_market.service.impl;
 
 
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,10 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import usoft.cdm.electronics_market.config.expection.BadRequestException;
 import usoft.cdm.electronics_market.config.security.CustomUserDetails;
 import usoft.cdm.electronics_market.config.security.JwtTokenProvider;
+import usoft.cdm.electronics_market.entities.Permission;
 import usoft.cdm.electronics_market.entities.Roles;
 import usoft.cdm.electronics_market.entities.Users;
 import usoft.cdm.electronics_market.model.LoginDTO;
 import usoft.cdm.electronics_market.model.UserDTO;
+import usoft.cdm.electronics_market.repository.PermissionRepository;
 import usoft.cdm.electronics_market.repository.RolesRepository;
 import usoft.cdm.electronics_market.repository.UserRepository;
 import usoft.cdm.electronics_market.service.UserService;
@@ -36,6 +39,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     private final RolesRepository rolesRepository;
+
+    private final PermissionRepository permissionRepository;
 
 
     @Override
@@ -122,6 +127,13 @@ public class UserServiceImpl implements UserService {
                 .username(user.get().getUsername())
                 .token(token)
                 .build();
+    }
+
+    public void authorizationUser(String name) throws AuthenticationException {
+        Users users = getCurrentUser();
+        Optional<Permission> permission = permissionRepository.getPer(users.getRoleId(), name);
+        if (permission.isEmpty())
+            throw new AuthenticationException("Bạn không có quyền thực hiện chức năng này");
     }
 }
 

@@ -16,6 +16,6 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Table(name = "cdm_pemission")
 
-public class Pemission extends BaseEntity {
+public class Permission extends BaseEntity {
     private String name;
 }

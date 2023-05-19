@@ -4,7 +4,9 @@ package usoft.cdm.electronics_market.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import usoft.cdm.electronics_market.model.UserDTO;
+import usoft.cdm.electronics_market.service.ImageService;
 import usoft.cdm.electronics_market.service.UserService;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
@@ -14,7 +16,6 @@ import usoft.cdm.electronics_market.util.ResponseUtil;
 @RequestMapping("/api/v1/user")
 public class UserAPI {
     private final UserService userService;
-
     @PostMapping()
     public ResponseEntity<?> create(@RequestBody UserDTO userDTO) {
         return this.userService.save(userDTO);

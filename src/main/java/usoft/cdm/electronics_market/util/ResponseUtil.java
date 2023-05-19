@@ -24,6 +24,11 @@ public class ResponseUtil {
         return ResponseEntity.status(HttpStatus.OK).body(serviceResult);
     }
 
+    public static <T> ResponseEntity<?> message(String message) {
+        ServiceResult<T> serviceResult = new ServiceResult<>(HttpStatus.OK, message, null);
+        return ResponseEntity.status(HttpStatus.OK).body(serviceResult);
+    }
+
     public static <T> ResponseEntity<?> notFound(T data) {
         ServiceResult<T> serviceResult = new ServiceResult<>(HttpStatus.NOT_FOUND, data);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(serviceResult);
