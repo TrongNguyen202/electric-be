@@ -18,6 +18,6 @@ import javax.persistence.Table;
 public class Category extends BaseEntity {
     private String name;
     private Integer parentId;
-    private String img;
+
 
 }

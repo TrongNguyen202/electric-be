@@ -13,14 +13,17 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "cdm_product_detail")
+@Table(name = "cdm_imgage")
 
-public class ProductDetail {
+public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer productId;
+    private Integer detailId;
+
     private String img;
+
+    private Integer type;
 }
