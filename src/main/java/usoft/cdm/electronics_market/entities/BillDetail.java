@@ -19,7 +19,7 @@ public class BillDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer billId;
-    private Integer productId;
+    private Integer productDetailId;
     private Double priceSell;
     private Integer quantity;
 }

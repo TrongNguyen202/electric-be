@@ -16,8 +16,11 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Table(name = "cdm_category")
 public class Category extends BaseEntity {
+
     private String name;
     private Integer parentId;
-
+    private String iconImg;
+    private String avatarImg;
+    private Boolean status;
 
 }

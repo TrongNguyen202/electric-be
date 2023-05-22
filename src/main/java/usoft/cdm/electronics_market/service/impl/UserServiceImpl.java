@@ -101,7 +101,6 @@ public class UserServiceImpl implements UserService {
         if (userDTO.getFullname().length() < 6)
             return ResponseUtil.badRequest("Tên người dùng không được ít hơn 6 ký tự");
         Users users = MapperUtil.map(userDTO, Users.class);
-        users.setStatus(true);
         users.setPassword(userDTO.getPassword());
         users.setCreatedBy(usersLogin.getUsername());
         this.userRepository.save(users);

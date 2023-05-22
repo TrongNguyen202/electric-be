@@ -20,4 +20,5 @@ public class Capicity extends BaseEntity {
 
     private String name;
     private String area;
+    private Boolean status;
 }

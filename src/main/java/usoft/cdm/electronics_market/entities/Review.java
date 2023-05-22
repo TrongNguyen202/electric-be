@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Table(name = "cdm_review")
 public class Review extends BaseEntity {
-    private Integer customerId;
+
     private Float vote;
     private String content;
     private Integer parentId;

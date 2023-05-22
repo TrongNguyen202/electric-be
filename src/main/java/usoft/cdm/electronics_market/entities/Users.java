@@ -16,9 +16,17 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Table(name = "cdm_users")
 public class Users extends BaseEntity {
+
     private String fullname;
     private String username;
     private String password;
     private Integer roleId;
+    private Integer addressId;
+    private String addressDetail;
+    private String phone;
+    private String email;
+    private String type;
+    private Boolean status;
+    private String description;
 
 }

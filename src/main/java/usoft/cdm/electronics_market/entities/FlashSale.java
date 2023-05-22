@@ -16,7 +16,8 @@ import javax.persistence.Table;
 @Table(name = "cdm_flash_sale")
 public class FlashSale extends BaseEntity{
 
-    private Integer productId;
+    private Integer productDetailId;
     private Integer quantitySale;
+    private Boolean status;
 
 }

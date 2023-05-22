@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "cdm_imgage")
+@Table(name = "cdm_image")
 
 public class Image {
 
@@ -25,5 +25,5 @@ public class Image {
 
     private String img;
 
-    private Integer type;
+    private Integer type; //1 category
 }

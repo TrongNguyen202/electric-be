@@ -18,5 +18,6 @@ public class BillVoucher extends BaseEntity{
 
     private Integer voucherId;
     private Integer billId;
+    private Boolean status;
 
 }

@@ -18,4 +18,5 @@ import javax.persistence.Table;
 public class Address extends BaseEntity {
     private String name;
     private Integer parentId;
+    private Boolean status;
 }
