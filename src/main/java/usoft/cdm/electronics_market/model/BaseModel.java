@@ -15,10 +15,11 @@ import java.util.Date;
 @AllArgsConstructor
 public abstract class BaseModel {
 
-    protected Long id;
+    protected Integer id;
     protected String createdBy;
     protected Date createdDate;
     protected String updatedBy;
     protected Date updatedDate;
+    private Boolean status;
 }
 

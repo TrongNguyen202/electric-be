@@ -21,11 +21,9 @@ public class Products extends BaseEntity {
     private Integer categoryId;
     private Integer brandId;
     private Integer capicityId;
-    private Integer reviewId;
     private Integer addressId;
     private Double priceSell;
     private Double priceImport;
-    private Integer quantity;
     private Date dateSale;
     private Integer discount;
 

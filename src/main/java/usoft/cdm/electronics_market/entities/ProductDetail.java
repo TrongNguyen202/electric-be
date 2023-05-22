@@ -14,11 +14,12 @@ import javax.persistence.Table;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "cdm_cart")
-public class Cart extends BaseEntity {
+@Table(name = "cdm_product_detail")
+public class ProductDetail extends BaseEntity {
 
+    private Integer attributeId;
     private Integer productId;
-    private Integer customerId;
+    private String value;
+    private Integer reviewId;
     private Integer quantity;
-
 }

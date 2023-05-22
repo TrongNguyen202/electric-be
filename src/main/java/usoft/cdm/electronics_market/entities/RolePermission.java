@@ -19,7 +19,6 @@ public class RolePermission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private Integer roleId;
     private Integer permissionId;
 }

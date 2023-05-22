@@ -20,4 +20,5 @@ public class Attributes extends BaseEntity {
 
     private String name;
     private Integer titleId;
+    private Boolean status;
 }

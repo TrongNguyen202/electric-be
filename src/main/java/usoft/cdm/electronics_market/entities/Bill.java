@@ -22,7 +22,10 @@ public class Bill extends BaseEntity {
     private String paymentMethod;
     private Double totalPrice;
     private String note;
-    private Integer customerId;
-    private Integer informationReceiverId;
+    private Integer userId;
+    private String phone;
+    private String email;
+    private String fullname;
+    private Integer status;  //cart 1 waiting 2
 
 }
