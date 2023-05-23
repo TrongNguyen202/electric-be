@@ -17,9 +17,9 @@ import javax.persistence.Table;
 @Table(name = "cdm_product_detail")
 public class ProductDetail extends BaseEntity {
 
-    private Integer attributeId;
+    private Integer titleAttributeId;
     private Integer productId;
     private String value;
-    private Integer reviewId;
-    private Integer quantity;
+
+
 }
