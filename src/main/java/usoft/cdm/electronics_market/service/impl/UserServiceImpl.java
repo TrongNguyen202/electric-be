@@ -14,17 +14,20 @@ import usoft.cdm.electronics_market.config.expection.BadRequestException;
 import usoft.cdm.electronics_market.config.security.CustomUserDetails;
 import usoft.cdm.electronics_market.config.security.JwtTokenProvider;
 import usoft.cdm.electronics_market.entities.Permission;
-import usoft.cdm.electronics_market.entities.Roles;
+import usoft.cdm.electronics_market.entities.RolePermission;
 import usoft.cdm.electronics_market.entities.Users;
 import usoft.cdm.electronics_market.model.LoginDTO;
 import usoft.cdm.electronics_market.model.UserDTO;
 import usoft.cdm.electronics_market.repository.PermissionRepository;
+import usoft.cdm.electronics_market.repository.RolePermissionRepository;
 import usoft.cdm.electronics_market.repository.RolesRepository;
 import usoft.cdm.electronics_market.repository.UserRepository;
 import usoft.cdm.electronics_market.service.UserService;
 import usoft.cdm.electronics_market.util.MapperUtil;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,6 +44,7 @@ public class UserServiceImpl implements UserService {
     private final RolesRepository rolesRepository;
 
     private final PermissionRepository permissionRepository;
+    private final RolePermissionRepository rolePermissionRepository;
 
 
     @Override
@@ -107,10 +111,42 @@ public class UserServiceImpl implements UserService {
         return ResponseUtil.ok(userDTO);
     }
 
+    @Override
+    public ResponseEntity<?> update(UserDTO userDTO) {
+        Users usersLogin = getCurrentUser();
+        Optional<Users> optional = userRepository.findById(userDTO.getId());
+        if (optional.isEmpty())
+            throw new BadRequestException("Id User không chính xác!");
+        Users users = optional.get();
+        if (userDTO.getPassword() != null) {
+            if (userDTO.getPassword().length() < 6)
+                return ResponseUtil.badRequest("Mật khẩu không được ít hơn 6 ký tự");
+            userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        } else {
+            return ResponseUtil.badRequest("Mật khẩu không được để rống");
+        }
+        if (userDTO.getFullname() == null)
+            return ResponseUtil.badRequest("Tên người dùng không được để trống");
+        users.setFullname(userDTO.getFullname());
+        if (userDTO.getFullname().matches("(.*)[^\\p{L}\\s_](.*)"))
+            return ResponseUtil.badRequest("Tên người dùng không được nhập số và ký tự đặc biệt");
+        if (userDTO.getFullname().length() < 6)
+            return ResponseUtil.badRequest("Tên người dùng không được ít hơn 6 ký tự");
+        users.setEmail(userDTO.getEmail());
+        users.setRoleId(userDTO.getIdRole());
+        users.setPhone(userDTO.getPhone());
+        users.setDescription(userDTO.getDescription());
+        users.setAddressId(userDTO.getAddressId());
+        users.setAddressDetail(userDTO.getAddressDetail());
+        users.setPassword(userDTO.getPassword());
+        users.setUpdatedBy(usersLogin.getUsername());
+        this.userRepository.save(users);
+        return ResponseUtil.ok(userDTO);
+    }
+
 
     @Override
     public ResponseEntity<?> findById(Integer idUser) {
-
         Optional<Users> user = this.userRepository.findById(idUser);
         if (user.isEmpty()) {
             throw new BadRequestException("Không tìm thấy id của người dùng");
@@ -128,9 +164,42 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    public ResponseEntity<?> register(String username){
+        String email = "";
+        String phone = "";
+        if (username.matches(email) || username.matches(phone))
+            System.out.println("");
+        else throw new BadRequestException("email hoặc số điện thoại không đúng định dạng");
+        return null;
+    }
+
+    //TODO
+    @Override
+    public ResponseEntity<?> setPermission(Integer userId, List<Integer> ids) {
+        Optional<Users> optional = userRepository.findById(userId);
+        if (optional.isEmpty())
+            throw new BadRequestException("Id User không chính xác!");
+        Users users = optional.get();
+        List<RolePermission> list = new ArrayList<>();
+        List<Integer> check = rolePermissionRepository.getPerIdByRoleId(users.getRoleId());
+        List<Integer> remove = new ArrayList<>();
+        for (Integer x : ids){
+            if (check.contains(x)){
+                remove.add(x);
+                continue;
+            }
+            RolePermission rolePermission = new RolePermission();
+            rolePermission.setPermissionId(x);
+            list.add(rolePermission);
+        }
+        check.removeAll(remove);
+        rolePermissionRepository.deleteAllById(check);
+        rolePermissionRepository.saveAll(list);
+        return ResponseUtil.message("Phân quyền thành công");
+    }
+
     public void authorizationUser(String name) throws AuthenticationException {
-        Users users = getCurrentUser();
-        Optional<Permission> permission = permissionRepository.getPer(users.getRoleId(), name);
+        Optional<Permission> permission = permissionRepository.getPer(getCurrentUser().getRoleId(), name);
         if (permission.isEmpty())
             throw new AuthenticationException("Bạn không có quyền thực hiện chức năng này");
     }
