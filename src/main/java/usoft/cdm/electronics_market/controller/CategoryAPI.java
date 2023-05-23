@@ -2,6 +2,7 @@ package usoft.cdm.electronics_market.controller;
 
 
 import lombok.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,6 +22,17 @@ public class CategoryAPI {
 
     private final CategoryService categoryService;
 
+    @GetMapping("/all")
+    public ResponseEntity<?> getAll(Pageable pageable) {
+
+        return ResponseUtil.ok(this.categoryService.findByAll(pageable));
+    }
+
+    @GetMapping()
+    public ResponseEntity<?> getById(@RequestParam Integer idCategory) {
+        return this.categoryService.displayById(idCategory);
+    }
+
     @PostMapping()
     public ResponseEntity<?> create(@Valid @RequestBody CategoryRequestBody request) {
 
@@ -28,9 +40,9 @@ public class CategoryAPI {
     }
 
     @PutMapping()
-    public ResponseEntity<?> update(@Valid @RequestBody CategoryDTO dto) {
+    public ResponseEntity<?> update(@Valid @RequestBody CategoryRequestBody request) {
 
-        return this.categoryService.update(dto);
+        return this.categoryService.update(request.getCategoryDTO(), request.getImageList());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -43,6 +55,19 @@ public class CategoryAPI {
         });
         return ResponseUtil.badRequest(errors.toString());
     }
+
+    @PostMapping("/child")
+    public ResponseEntity<?> createChild(@Valid @RequestBody CategoryDTO dto) {
+
+        return this.categoryService.saveChildCategory(dto);
+    }
+
+    @PutMapping("/child")
+    public ResponseEntity<?> updateChild(@Valid @RequestBody CategoryDTO dto) {
+
+        return this.categoryService.updateChildCategory(dto);
+    }
+
 
 }
 
