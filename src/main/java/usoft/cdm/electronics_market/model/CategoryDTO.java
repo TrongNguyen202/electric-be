@@ -5,10 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import usoft.cdm.electronics_market.config.expection.CheckImg;
+import usoft.cdm.electronics_market.entities.Category;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -27,4 +28,8 @@ public class CategoryDTO extends BaseModel {
 
     @NotEmpty(message = "Avatar không được rỗng")
     private String avatarImg;
+
+    private List<Category> categoryList;
+
+    private List<String> imageList;
 }
