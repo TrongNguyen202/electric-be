@@ -16,8 +16,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Table(name = "cdm_brand")
 public class Brand extends BaseEntity {
-
     private String name;
     private String img;
-
+    private Boolean status;
 }
