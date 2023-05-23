@@ -48,10 +48,10 @@ public class ImageServiceImpl implements ImageService {
     public List<String> uploadFile(List<MultipartFile> files) {
         try {
             List<String> img = new ArrayList<>();
+            if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
+                Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
+            }
             for (MultipartFile file : files) {
-                if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
-                    Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
-                }
                 String filename = DateUtil.dateUpFile() + file.getOriginalFilename();
                 Path path = CURRENT_FOLDER.resolve(staticPath)
                         .resolve(imagePath).resolve(filename);

@@ -16,7 +16,6 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Table(name = "cdm_bill")
 public class Bill extends BaseEntity {
-
     private String code;
     private Double transportFee;
     private String paymentMethod;
@@ -27,5 +26,4 @@ public class Bill extends BaseEntity {
     private String email;
     private String fullname;
     private Integer status;  //cart 1 waiting 2
-
 }
