@@ -29,5 +29,8 @@ public class Products extends BaseEntity {
     private Date dateSaleEnd;
     private String information;
     private Double priceAfterSale;
+    private String slug;
+    private Integer quantity;
+    private Integer reviewId;
 
 }

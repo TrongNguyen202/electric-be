@@ -17,10 +17,13 @@ import usoft.cdm.electronics_market.service.CategoryService;
 import usoft.cdm.electronics_market.service.UserService;
 import usoft.cdm.electronics_market.util.MapperUtil;
 import usoft.cdm.electronics_market.util.ResponseUtil;
+import usoft.cdm.electronics_market.util.TextUtil;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
@@ -38,10 +41,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseEntity<?> save(CategoryDTO dto, List<String> imgList) {
         Users userLogin = this.userService.getCurrentUser();
+        String slug = TextUtil.slug(dto.getName());
         Category category = Category
                 .builder()
                 .avatarImg(dto.getAvatarImg())
                 .iconImg(dto.getIconImg())
+                .slug(slug)
                 .name(dto.getName())
                 .build();
         category.setStatus(dto.getStatus());
@@ -94,8 +99,10 @@ public class CategoryServiceImpl implements CategoryService {
         if (optionalCategory.isEmpty()) {
             throw new BadRequestException("Phải có id của thể loại");
         } else {
+            String slug = TextUtil.slug(dto.getName());
             Category category = MapperUtil.map(dto, Category.class);
             category.setUpdatedBy(userLogin.getUsername());
+            category.setSlug(slug);
             this.categoryRepository.save(category);
             List<Image> imageList = this.imageRepository.findByDetailIdAndType(dto.getId(), 1);
             this.imageRepository.deleteAll(imageList);
@@ -122,12 +129,14 @@ public class CategoryServiceImpl implements CategoryService {
         if (optionalCategory.isEmpty()) {
             throw new BadRequestException("Phải có id của thể loại");
         } else {
+            String slug = TextUtil.slug(dto.getName());
             Category category = Category
                     .builder()
                     .name(dto.getName())
                     .iconImg(dto.getIconImg())
                     .avatarImg(dto.getAvatarImg())
                     .parentId(dto.getId())
+                    .slug(slug)
                     .status(dto.getStatus())
                     .build();
             category.setCreatedBy(userLogin.getUsername());
@@ -144,11 +153,14 @@ public class CategoryServiceImpl implements CategoryService {
         if (optionalCategory.isEmpty()) {
             throw new BadRequestException("Phải có id của thể loại");
         } else {
+            String slug = TextUtil.slug(dto.getName());
             Category category = MapperUtil.map(dto, Category.class);
             category.setParentId(optionalCategory.get().getParentId());
             category.setUpdatedBy(userLogin.getUsername());
+            category.setSlug(slug);
             this.categoryRepository.save(category);
             return ResponseUtil.ok(category);
         }
     }
+
 }

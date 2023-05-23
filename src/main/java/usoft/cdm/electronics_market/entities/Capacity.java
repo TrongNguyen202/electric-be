@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "cdm_capicity")
+@Table(name = "cdm_capacity")
 
 public class Capacity extends BaseEntity {
 

@@ -26,5 +26,6 @@ public class ProductsDTO extends BaseModel {
     private Double priceAfterSale;
     private String information;
     private Integer warehouseId;
+    private String slug;
 
 }
