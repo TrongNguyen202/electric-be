@@ -21,4 +21,6 @@ public interface CategoryService {
 
     ResponseEntity<?> updateChildCategory(CategoryDTO dto);
 
+    ResponseEntity<?> deleteCategoryIds(List<Integer> categoryIds);
+
 }

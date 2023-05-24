@@ -17,5 +17,5 @@ public interface ProductService {
 
     ResponseEntity<?> update(ProductsDTO dto, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs);
 
-
+    ResponseEntity<?> deleteProductByIds(List<Integer> idProducts);
 }

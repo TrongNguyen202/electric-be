@@ -68,6 +68,11 @@ public class CategoryAPI {
         return this.categoryService.updateChildCategory(dto);
     }
 
+    @DeleteMapping()
+    public ResponseEntity<?> delete(@RequestParam List<Integer> categoryIds) {
+
+        return this.categoryService.deleteCategoryIds(categoryIds);
+    }
 
 }
 
