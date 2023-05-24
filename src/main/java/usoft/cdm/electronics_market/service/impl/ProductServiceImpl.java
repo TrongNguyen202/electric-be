@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import usoft.cdm.electronics_market.config.expection.BadRequestException;
+import usoft.cdm.electronics_market.constant.Message;
 import usoft.cdm.electronics_market.entities.*;
 import usoft.cdm.electronics_market.model.AttributeDTO;
 import usoft.cdm.electronics_market.model.ProductDetailDTO;
@@ -74,9 +75,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseEntity<?> save(ProductsDTO
-                                          dto, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs) {
+    public ResponseEntity<?> save(ProductsDTO dto, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs) {
         Users userLogin = this.userService.getCurrentUser();
+        Optional<Products> productCheck = this.productRepository.findByCodeAndStatus(dto.getCode(), true);
+        if (productCheck.isPresent()) {
+            throw new BadRequestException("Mã sản phẩm đã tồn tại");
+        }
         Products products = Products
                 .builder()
                 .code(dto.getCode())
@@ -129,10 +133,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseEntity<?> update(ProductsDTO
-                                            dto, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs) {
+    public ResponseEntity<?> update(ProductsDTO dto, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs) {
         Users userLogin = this.userService.getCurrentUser();
         Optional<Products> optionalProducts = this.productRepository.findById(dto.getId());
+        if (!optionalProducts.get().getCode().equals(dto.getCode())) {
+            Optional<Products> productCheck = this.productRepository.findByCodeAndStatus(dto.getCode(), true);
+            if (productCheck.isPresent()) {
+                throw new BadRequestException("Mã sản phẩm đã tồn tại");
+            }
+        }
         if (optionalProducts.isEmpty()) {
             throw new BadRequestException("Không có id sản phẩm");
         } else {
@@ -178,6 +187,21 @@ public class ProductServiceImpl implements ProductService {
 
         }
         return ResponseUtil.ok(optionalProducts.get());
+    }
+
+    @Override
+    public ResponseEntity<?> deleteProductByIds(List<Integer> idProducts) {
+        List<Products> productsList = new ArrayList<>();
+        idProducts.forEach(idProduct -> {
+            Optional<Products> optionalProducts = this.productRepository.findById(idProduct);
+            if (optionalProducts.isEmpty())
+                throw new BadRequestException("Không tìm thấy id sản phẩm: " + idProduct);
+            Products products = optionalProducts.get();
+            products.setStatus(false);
+            productsList.add(products);
+        });
+        this.productRepository.saveAll(productsList);
+        return ResponseUtil.message(Message.REMOVE);
     }
 
 

@@ -34,4 +34,6 @@ public class CategoryDTO extends BaseModel {
     private List<Category> categoryList;
 
     private List<String> imageList;
+
+    private Boolean status;
 }

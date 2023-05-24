@@ -11,7 +11,9 @@ import java.util.List;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
-    Page<Category> findAllByParentIdIsNull(Pageable pageable);
+    Page<Category> findAllByParentIdIsNullAndStatus(Pageable pageable, Boolean status);
 
-    List<Category> findAllByParentIdIn(List<Integer> parentIds);
+    List<Category> findByParentIdAndStatus(Integer parentId, Boolean status);
+
+    List<Category> findAllByStatusAndParentIdIn(Boolean status, List<Integer> parentIds);
 }
