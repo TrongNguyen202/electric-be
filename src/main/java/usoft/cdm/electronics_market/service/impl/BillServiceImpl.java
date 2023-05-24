@@ -3,7 +3,6 @@ package usoft.cdm.electronics_market.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import usoft.cdm.electronics_market.config.expection.BadRequestException;
 import usoft.cdm.electronics_market.entities.Bill;
 import usoft.cdm.electronics_market.entities.BillDetail;
 import usoft.cdm.electronics_market.entities.Users;
