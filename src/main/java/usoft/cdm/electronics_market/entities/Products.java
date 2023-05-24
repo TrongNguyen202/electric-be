@@ -32,5 +32,5 @@ public class Products extends BaseEntity {
     private String slug;
     private Integer quantity;
     private Integer reviewId;
-
+    private Boolean status;
 }
