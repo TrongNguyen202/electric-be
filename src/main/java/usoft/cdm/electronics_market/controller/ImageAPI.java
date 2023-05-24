@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import usoft.cdm.electronics_market.service.ImageService;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -20,13 +21,12 @@ public class ImageAPI {
     private final ImageService imageService;
 
     @PostMapping()
-    public ResponseEntity<?> uploadFile(@RequestParam MultipartFile file) {
-
+    public ResponseEntity<?> uploadFile(@RequestParam @NotNull MultipartFile file) {
         return ResponseUtil.ok(imageService.uploadFile(file));
     }
 
     @PostMapping("/img-list")
-    public ResponseEntity<?> uploadFiles(@RequestParam List<MultipartFile> files) {
+    public ResponseEntity<?> uploadFiles(@RequestParam @NotNull List<MultipartFile> files) {
 
         return ResponseUtil.ok(imageService.uploadFile(files));
     }

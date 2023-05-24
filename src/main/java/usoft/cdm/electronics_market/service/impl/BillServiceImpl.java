@@ -11,6 +11,7 @@ import usoft.cdm.electronics_market.model.bill.Cart;
 import usoft.cdm.electronics_market.model.bill.Shop;
 import usoft.cdm.electronics_market.repository.BillDetailRepository;
 import usoft.cdm.electronics_market.repository.BillRepository;
+import usoft.cdm.electronics_market.repository.ProductRepository;
 import usoft.cdm.electronics_market.service.BillService;
 import usoft.cdm.electronics_market.service.UserService;
 import usoft.cdm.electronics_market.util.ResponseUtil;
@@ -23,6 +24,7 @@ import java.util.List;
 public class BillServiceImpl implements BillService {
     private final BillRepository billRepository;
     private final BillDetailRepository billDetailRepository;
+    private final ProductRepository productRepository;
     private final UserService userService;
 
     public ResponseEntity<?> addCartToBill(List<Cart> cart) {
@@ -53,13 +55,14 @@ public class BillServiceImpl implements BillService {
 
     public ResponseEntity<?> shop(Shop shop) {
         Users users = userService.getCurrentUser();
-        if (users == null)
-            return ResponseUtil.badRequest("Chưa đăng nhập mà!");
-        Bill bill = billRepository.findByUserId(users.getId()).orElse(new Bill());
+        Bill bill = new Bill();
+        if (users != null) {
+            bill = billRepository.findByUserId(users.getId()).orElse(new Bill());
+            bill.setUserId(users.getId());
+        }
         bill.setFullname(shop.getFullname());
         bill.setEmail(shop.getEmail());
         bill.setStatus(2);
-        bill.setUserId(users.getId());
         bill.setPhone(shop.getPhone());
         List<BillDetail> list = new ArrayList<>();
         if (bill.getId() != null)
@@ -67,13 +70,26 @@ public class BillServiceImpl implements BillService {
         for (Cart c : shop.getCart()) {
             BillDetail billDetail = new BillDetail();
             if (c.getId() != null)
-                billDetail = list.stream().filter(x -> x.getId().equals(c.getId())).findAny().orElse(null);
+                billDetail = list.stream().filter(x -> x.getProductDetailId().equals(c.getProductDetailId())).findAny().orElse(null);
             if (billDetail == null)
                 return ResponseUtil.badRequest("Id sản phẩm trong giỏ không đúng!");
+            if (productRepository.findByIdAndStatusIsActive(billDetail.getProductDetailId()).isEmpty())
+                return ResponseUtil.badRequest("Sản phẩm không còn bán!");
             billDetail.setQuantity(c.getQuantity());
             billDetail.setProductDetailId(c.getProductDetailId());
             billDetail.setQuantity(c.getQuantity());
         }
         return ResponseUtil.message("Thêm vô giỏ thành công!");
+    }
+
+    public ResponseEntity<?> getCart(){
+        Users users = userService.getCurrentUser();
+        if (users == null)
+            return null;
+        Bill bill = billRepository.findByUserId(users.getId()).orElse(null);
+        if (bill == null)
+            return null;
+        List<Integer> list = billDetailRepository.findAllProductIdByBillId(bill.getId());
+        return ResponseUtil.ok(productRepository.findAllByIdIn(list));
     }
 }

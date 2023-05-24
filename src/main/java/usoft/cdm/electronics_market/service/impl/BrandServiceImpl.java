@@ -9,6 +9,7 @@ import usoft.cdm.electronics_market.constant.Message;
 import usoft.cdm.electronics_market.entities.Brand;
 import usoft.cdm.electronics_market.model.BrandDTO;
 import usoft.cdm.electronics_market.repository.BrandRepository;
+import usoft.cdm.electronics_market.repository.ProductRepository;
 import usoft.cdm.electronics_market.service.BrandService;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
@@ -20,6 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public ResponseEntity<?> getAll() {
@@ -37,7 +39,7 @@ public class BrandServiceImpl implements BrandService {
         if (dto.getId() != null)
             brand = brandRepository.findById(dto.getId()).orElse(null);
         if (brand == null)
-            throw new BadRequestException("Không tìm thấy id thương hiệu");
+            return ResponseUtil.badRequest("Không tìm thấy id thương hiệu!");
         brand.setImg(dto.getImg());
         brand.setName(dto.getName());
         brand.setStatus(true);
@@ -48,15 +50,16 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public ResponseEntity<?> remove(List<Integer> ids) {
         List<Brand> list = new ArrayList<>();
-        ids.forEach(x ->{
+        for (Integer x : ids) {
             Optional<Brand> optional = brandRepository.findById(x);
             if (optional.isEmpty())
-                throw new BadRequestException("Không tìm thấy id thương hiệu: x");
+                return ResponseUtil.badRequest("Không tìm thấy id thương hiệu: x");
             Brand brand = optional.get();
-            brand.setStatus(false);
+            if (productRepository.findByBrandId(brand.getId()).isPresent())
+                return ResponseUtil.badRequest("Thương hiệu " + brand.getName() + "đã có sản phẩm");
             list.add(brand);
-        });
-        brandRepository.saveAll(list);
+        }
+        brandRepository.deleteAll(list);
         return ResponseUtil.message(Message.REMOVE);
     }
 }

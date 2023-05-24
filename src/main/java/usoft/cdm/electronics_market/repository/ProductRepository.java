@@ -13,8 +13,12 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Products, Integer> {
 
     Page<Products> findAllByStatus(Boolean status, Pageable pageable);
+    Optional<Products> findByIdAndStatusIsActive(Integer id);
 
     Optional<Products> findByCodeAndStatus(String code, Boolean status);
 
     List<Products> findByStatusAndCategoryId(Boolean status, Integer categoryId);
+
+    Optional<Products> findByBrandId(Integer id);
+    List<Products> findAllByIdIn(List<Integer> ids);
 }
