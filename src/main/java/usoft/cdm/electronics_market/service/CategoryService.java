@@ -20,4 +20,7 @@ public interface CategoryService {
     ResponseEntity<?> saveChildCategory(CategoryDTO dto);
 
     ResponseEntity<?> updateChildCategory(CategoryDTO dto);
+
+    ResponseEntity<?> deleteCategoryIds(List<Integer> categoryIds);
+
 }

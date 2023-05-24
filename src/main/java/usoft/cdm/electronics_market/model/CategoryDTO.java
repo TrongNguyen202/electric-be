@@ -29,7 +29,11 @@ public class CategoryDTO extends BaseModel {
     @NotEmpty(message = "Avatar không được rỗng")
     private String avatarImg;
 
+    private String slug;
+
     private List<Category> categoryList;
 
     private List<String> imageList;
+
+    private Boolean status;
 }

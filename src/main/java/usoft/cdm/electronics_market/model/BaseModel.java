@@ -20,6 +20,6 @@ public abstract class BaseModel {
     protected Date createdDate;
     protected String updatedBy;
     protected Date updatedDate;
-    private Boolean status;
+
 }
 
