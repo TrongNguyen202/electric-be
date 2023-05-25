@@ -15,6 +15,8 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     List<Category> findAllByParentIdIsNullAndStatus(Boolean status);
 
+    List<Category> findAllByParentIdAndStatus(Integer parentId, Boolean status);
+
     List<Category> findByParentIdAndStatus(Integer parentId, Boolean status);
 
     List<Category> findAllByStatus(Boolean status);
