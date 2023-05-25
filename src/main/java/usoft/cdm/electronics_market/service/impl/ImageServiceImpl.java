@@ -38,7 +38,7 @@ public class ImageServiceImpl implements ImageService {
             try (OutputStream os = Files.newOutputStream(path)) {
                 os.write(file.getBytes());
             }
-            return path.toString();
+            return "/" + staticPath + "/" + imagePath + "/" + filename;
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -48,17 +48,17 @@ public class ImageServiceImpl implements ImageService {
     public List<String> uploadFile(List<MultipartFile> files) {
         try {
             List<String> img = new ArrayList<>();
+            if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
+                Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
+            }
             for (MultipartFile file : files) {
-                if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
-                    Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
-                }
                 String filename = DateUtil.dateUpFile() + file.getOriginalFilename();
                 Path path = CURRENT_FOLDER.resolve(staticPath)
                         .resolve(imagePath).resolve(filename);
                 try (OutputStream os = Files.newOutputStream(path)) {
                     os.write(file.getBytes());
                 }
-                img.add(path.toString());
+                img.add("/" + staticPath + "/" + imagePath + "/" + filename);
             }
             return img;
         } catch (Exception e) {
