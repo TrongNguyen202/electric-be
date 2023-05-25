@@ -8,7 +8,7 @@ import usoft.cdm.electronics_market.model.BrandDTO;
 import java.util.List;
 
 public interface BrandService {
-    ResponseEntity<?> getAll();
+    ResponseEntity<?> getAll(String type);
 
     ResponseEntity<?> getPage(Pageable pageable);
 

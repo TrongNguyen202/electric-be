@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import usoft.cdm.electronics_market.config.expection.BadRequestException;
 import usoft.cdm.electronics_market.constant.Message;
 import usoft.cdm.electronics_market.entities.Brand;
 import usoft.cdm.electronics_market.model.BrandDTO;
@@ -24,8 +23,8 @@ public class BrandServiceImpl implements BrandService {
     private final ProductRepository productRepository;
 
     @Override
-    public ResponseEntity<?> getAll() {
-        return ResponseUtil.ok(brandRepository.findAll());
+    public ResponseEntity<?> getAll(String type) {
+        return ResponseUtil.ok(brandRepository.findAllByType(type));
     }
 
     @Override
@@ -42,6 +41,7 @@ public class BrandServiceImpl implements BrandService {
             return ResponseUtil.badRequest("Không tìm thấy id thương hiệu!");
         brand.setImg(dto.getImg());
         brand.setName(dto.getName());
+        brand.setType(dto.getType());
         brand.setStatus(true);
         brandRepository.save(brand);
         return ResponseUtil.message(Message.SUCCESS);

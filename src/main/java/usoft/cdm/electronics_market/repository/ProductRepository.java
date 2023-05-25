@@ -22,4 +22,6 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
     List<Products> findByStatusAndCategoryId(Boolean status, Integer categoryId);
 
     List<Products> findByStatusAndWarehouseId(Boolean status, Integer warehouseId);
+    List<Products> findAllByIdIn(List<Integer> ids);
+    Optional<Products> findByBrandId(Integer brandId);
 }

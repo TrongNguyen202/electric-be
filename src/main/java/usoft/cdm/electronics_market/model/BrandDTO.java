@@ -6,5 +6,6 @@ import lombok.Data;
 public class BrandDTO {
     private Integer id;
     private String name;
+    private String type;
     private String img;
 }
