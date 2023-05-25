@@ -22,7 +22,7 @@ public class JwtTokenProvider {
     // Tạo ra jwt từ thông tin user
     public String generateToken(CustomUserDetails userDetails) {
         Date now = new Date();
-        long expriTimeMillis = now.getTime() + (60 * 60 * 1000);
+        long expriTimeMillis = now.getTime() + (600 * 60 * 1000);
         Date expiryDate = new Date(expriTimeMillis);
         Map<String, Object> claim = new HashMap<>();
         // Tạo chuỗi json web token từ id của user.

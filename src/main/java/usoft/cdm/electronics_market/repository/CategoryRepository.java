@@ -13,7 +13,11 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     Page<Category> findAllByParentIdIsNullAndStatus(Pageable pageable, Boolean status);
 
+    List<Category> findAllByParentIdIsNullAndStatus(Boolean status);
+
     List<Category> findByParentIdAndStatus(Integer parentId, Boolean status);
+
+    List<Category> findAllByStatus(Boolean status);
 
     List<Category> findAllByStatusAndParentIdIn(Boolean status, List<Integer> parentIds);
 }

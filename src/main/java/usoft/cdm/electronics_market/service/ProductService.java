@@ -18,4 +18,8 @@ public interface ProductService {
     ResponseEntity<?> update(ProductsDTO dto, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs);
 
     ResponseEntity<?> deleteProductByIds(List<Integer> idProducts);
+
+    ResponseEntity<?> getAllProductAndCategoryForHome();
+
+    ResponseEntity<?> getAllProductFromCategoryId(Integer categoryId);
 }

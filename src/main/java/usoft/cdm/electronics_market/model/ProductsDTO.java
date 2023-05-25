@@ -57,6 +57,7 @@ public class ProductsDTO extends BaseModel {
     @DecimalMin(value = "1", message = "Số lượng lớn hơn 0")
     private Integer quantity;
     private Integer reviewId;
+    private Double discount;
     private List<String> img;
     private List<TitleAttributeDTO> dto;
 

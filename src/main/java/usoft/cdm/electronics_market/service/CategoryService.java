@@ -15,6 +15,9 @@ public interface CategoryService {
 
     Page<CategoryDTO> findByAll(Pageable pageable);
 
+    ResponseEntity<?> findByAllForParentIdNull();
+
+
     ResponseEntity<?> update(CategoryDTO dto, List<String> imgList);
 
     ResponseEntity<?> saveChildCategory(CategoryDTO dto);

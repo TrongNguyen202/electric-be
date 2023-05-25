@@ -15,10 +15,11 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
     Page<Products> findAllByStatus(Boolean status, Pageable pageable);
     Optional<Products> findByIdAndStatus(Integer id, Boolean status);
 
+    List<Products> findAllByStatus(Boolean status);
+
     Optional<Products> findByCodeAndStatus(String code, Boolean status);
 
     List<Products> findByStatusAndCategoryId(Boolean status, Integer categoryId);
 
-    Optional<Products> findByBrandId(Integer id);
-    List<Products> findAllByIdIn(List<Integer> ids);
+    List<Products> findByStatusAndWarehouseId(Boolean status, Integer warehouseId);
 }
