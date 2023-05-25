@@ -59,6 +59,8 @@ public class BillServiceImpl implements BillService {
             bill = billRepository.findByUserId(users.getId()).orElse(new Bill());
             bill.setUserId(users.getId());
         }
+        bill.setPrice(shop.getPrice());
+        bill.setTotalPrice(shop.getTotalPrice());
         bill.setFullname(shop.getFullname());
         bill.setEmail(shop.getEmail());
         bill.setStatus(2);
@@ -72,7 +74,7 @@ public class BillServiceImpl implements BillService {
                 billDetail = list.stream().filter(x -> x.getProductDetailId().equals(c.getProductDetailId())).findAny().orElse(null);
             if (billDetail == null)
                 return ResponseUtil.badRequest("Id sản phẩm trong giỏ không đúng!");
-            if (productRepository.findByIdAndStatusIsActive(billDetail.getProductDetailId()).isEmpty())
+            if (productRepository.findByIdAndStatus(billDetail.getProductDetailId(), true).isEmpty())
                 return ResponseUtil.badRequest("Sản phẩm không còn bán!");
             billDetail.setQuantity(c.getQuantity());
             billDetail.setProductDetailId(c.getProductDetailId());

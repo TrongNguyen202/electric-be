@@ -19,6 +19,7 @@ public class Bill extends BaseEntity {
     private String code;
     private Double transportFee;
     private String paymentMethod;
+    private Double price;
     private Double totalPrice;
     private String note;
     private Integer userId;

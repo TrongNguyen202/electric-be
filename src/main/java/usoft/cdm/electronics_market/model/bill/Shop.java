@@ -9,6 +9,7 @@ public class Shop {
     private String code;
     private Double transportFee;
     private String paymentMethod;
+    private Double price;
     private Double totalPrice;
     private String note;
     private String phone;
