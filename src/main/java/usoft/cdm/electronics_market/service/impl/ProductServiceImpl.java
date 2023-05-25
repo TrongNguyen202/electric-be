@@ -9,23 +9,15 @@ import org.springframework.transaction.annotation.Transactional;
 import usoft.cdm.electronics_market.config.expection.BadRequestException;
 import usoft.cdm.electronics_market.constant.Message;
 import usoft.cdm.electronics_market.entities.*;
-import usoft.cdm.electronics_market.model.AttributeDTO;
-import usoft.cdm.electronics_market.model.ProductDetailDTO;
-import usoft.cdm.electronics_market.model.ProductsDTO;
-import usoft.cdm.electronics_market.model.TitleAttributeDTO;
-import usoft.cdm.electronics_market.repository.AttributeRepository;
-import usoft.cdm.electronics_market.repository.ImageRepository;
-import usoft.cdm.electronics_market.repository.ProductRepository;
-import usoft.cdm.electronics_market.repository.TitleAttibuteRepository;
+import usoft.cdm.electronics_market.model.*;
+import usoft.cdm.electronics_market.repository.*;
 import usoft.cdm.electronics_market.service.ProductService;
 import usoft.cdm.electronics_market.service.UserService;
 import usoft.cdm.electronics_market.util.MapperUtil;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 import usoft.cdm.electronics_market.util.TextUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -43,6 +35,8 @@ public class ProductServiceImpl implements ProductService {
     private final TitleAttibuteRepository titleAttibuteRepository;
 
     private final AttributeRepository attributeRepository;
+
+    private final CategoryRepository categoryRepository;
 
 
     @Override
@@ -202,6 +196,54 @@ public class ProductServiceImpl implements ProductService {
         });
         this.productRepository.saveAll(productsList);
         return ResponseUtil.message(Message.REMOVE);
+    }
+
+    @Override
+    public ResponseEntity<?> getAllProductAndCategoryForHome() {
+        List<Category> categories = this.categoryRepository.findAllByStatus(true);
+        List<Integer> categoryIds = categories.stream().map(Category::getId).collect(Collectors.toList());
+        List<Image> images = this.imageRepository.findByDetailIdInAndType(categoryIds, 1);
+        List<String> imgs = images.stream().map(Image::getImg).collect(Collectors.toList());
+        Random random = new Random();
+        int randomIndex = random.nextInt(imgs.size());
+        String imgRandom = imgs.get(randomIndex);
+        List<Category> categoryList = this.categoryRepository.findAllByStatusAndParentIdIn(true, categoryIds);
+        List<CategoryDTO> categoryDTOS = MapperUtil.mapList(categories, CategoryDTO.class);
+        categoryDTOS.forEach(categoryDTO -> {
+            categoryDTO.setCategoryList(categoryList);
+            categoryDTO.setPicCategory(imgRandom);
+        });
+        List<Products> products = this.productRepository.findAllByStatus(true);
+        List<Integer> productIds = products.stream().map(Products::getId).collect(Collectors.toList());
+        List<Image> imageProduct = this.imageRepository.findByDetailIdInAndType(productIds, 2);
+        List<String> imgProduct = imageProduct.stream().map(Image::getImg).collect(Collectors.toList());
+        List<ProductsDTO> productsDTOS = MapperUtil.mapList(products, ProductsDTO.class);
+        productsDTOS.forEach(productsDTO -> {
+            productsDTO.setImg(imgProduct);
+        });
+        Map<String, Object> map = new HashMap<>();
+        map.put("categories", categoryDTOS);
+        map.put("products", productsDTOS);
+        return ResponseUtil.ok(map);
+    }
+
+    @Override
+    public ResponseEntity<?> getAllProductFromCategoryId(Integer categoryId) {
+        List<Products> products = this.productRepository.findByStatusAndCategoryId(true, categoryId);
+        List<Integer> productIds = products.stream().map(Products::getId).collect(Collectors.toList());
+        List<Image> imageProduct = this.imageRepository.findByDetailIdInAndType(productIds, 2);
+        List<String> imgProduct = imageProduct.stream().map(Image::getImg).collect(Collectors.toList());
+        List<ProductsDTO> productsDTOS = MapperUtil.mapList(products, ProductsDTO.class);
+        productsDTOS.forEach(productsDTO -> {
+            productsDTO.setImg(imgProduct);
+            if (null == productsDTO.getPriceAfterSale()) {
+                productsDTO.setDiscount(0.0);
+            } else {
+                Double discountPercent = (productsDTO.getPriceAfterSale() / productsDTO.getPriceSell()) * 100;
+                productsDTO.setDiscount(discountPercent);
+            }
+        });
+        return ResponseUtil.ok(productsDTOS);
     }
 
 
