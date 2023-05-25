@@ -17,8 +17,8 @@ public class BrandAPI {
     private final BrandService brandService;
 
     @GetMapping
-    private ResponseEntity<?> getAll(){
-        return brandService.getAll();
+    private ResponseEntity<?> getAll(@RequestParam String type){
+        return brandService.getAll(type);
     }
 
     @GetMapping("page")
