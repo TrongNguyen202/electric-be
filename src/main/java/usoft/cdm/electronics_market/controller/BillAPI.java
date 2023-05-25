@@ -35,4 +35,9 @@ public class BillAPI {
     private ResponseEntity<?> shop(@RequestBody Shop shop){
         return billService.shop(shop);
     }
+
+    @PostMapping("approve")
+    private ResponseEntity<?> approve(@RequestParam Integer id, @RequestParam String note, @RequestParam Integer status){
+        return billService.approve(id, note, status);
+    }
 }

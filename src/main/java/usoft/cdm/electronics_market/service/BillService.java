@@ -14,4 +14,6 @@ public interface BillService {
     ResponseEntity<?> shop(Shop shop);
 
     ResponseEntity<?> getCart();
+
+    ResponseEntity<?> approve(Integer id, String note, Integer status);
 }

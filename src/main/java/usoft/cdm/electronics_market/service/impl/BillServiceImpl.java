@@ -36,7 +36,7 @@ public class BillServiceImpl implements BillService {
         Users users = userService.getCurrentUser();
         if (users == null)
             return ResponseUtil.badRequest("Chưa đăng nhập mà!");
-        Bill bill = billRepository.findByUserId(users.getId()).orElse(new Bill());
+        Bill bill = billRepository.findByUserIdAndStatus(users.getId(), 1).orElse(new Bill());
         bill.setFullname(users.getFullname());
         bill.setEmail(users.getEmail());
         bill.setStatus(1);
@@ -63,7 +63,7 @@ public class BillServiceImpl implements BillService {
         Users users = userService.getCurrentUser();
         Bill bill = new Bill();
         if (users != null) {
-            bill = billRepository.findByUserId(users.getId()).orElse(new Bill());
+            bill = billRepository.findByUserIdAndStatus(users.getId(), 1).orElse(new Bill());
             bill.setUserId(users.getId());
         }
         bill.setPrice(shop.getPrice());
@@ -95,10 +95,22 @@ public class BillServiceImpl implements BillService {
         Users users = userService.getCurrentUser();
         if (users == null)
             return null;
-        Bill bill = billRepository.findByUserId(users.getId()).orElse(null);
+        Bill bill = billRepository.findByUserIdAndStatus(users.getId(), 1).orElse(null);
         if (bill == null)
             return null;
         List<Integer> list = billDetailRepository.findAllProductIdByBillId(bill.getId());
         return ResponseUtil.ok(productRepository.findAllByIdIn(list));
+    }
+
+    @Override
+    public ResponseEntity<?> approve(Integer id, String note, Integer status){
+        Bill bill = billRepository.findById(id).orElse(null);
+        if (bill == null)
+            return null;
+        if (status != null)
+            bill.setStatus(status);
+        if (note != null)
+            bill.setNote(note);
+        return ResponseUtil.ok("Duyệt hóa đơn thành công!");
     }
 }
