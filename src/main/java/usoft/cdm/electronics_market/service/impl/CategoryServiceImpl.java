@@ -96,6 +96,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public ResponseEntity<?> findByAllForParentIdNull() {
+        List<Category> categories = this.categoryRepository.findAllByParentIdIsNullAndStatus(true);
+        return ResponseUtil.ok(categories);
+    }
+
+    @Override
     public ResponseEntity<?> update(CategoryDTO dto, List<String> imgList) {
         Users userLogin = this.userService.getCurrentUser();
         Optional<Category> optionalCategory = this.categoryRepository.findById(dto.getId());
@@ -187,11 +193,10 @@ public class CategoryServiceImpl implements CategoryService {
                 throw new BadRequestException("Đã có sản phẩm không thể xóa ở danh mục " + category.getName());
             }
 
-            if (categoryList.isEmpty() && products.isEmpty()) {
-                category.setStatus(false);
-                category.setUpdatedBy(userLogin.getUsername());
-                categories.add(category);
-            }
+            category.setStatus(false);
+            category.setUpdatedBy(userLogin.getUsername());
+            categories.add(category);
+
         });
         this.categoryRepository.saveAll(categories);
         return ResponseUtil.message(Message.REMOVE);

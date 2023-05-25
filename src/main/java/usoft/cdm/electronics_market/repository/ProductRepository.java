@@ -14,7 +14,11 @@ public interface ProductRepository extends JpaRepository<Products, Integer> {
 
     Page<Products> findAllByStatus(Boolean status, Pageable pageable);
 
+    List<Products> findAllByStatus(Boolean status);
+
     Optional<Products> findByCodeAndStatus(String code, Boolean status);
 
     List<Products> findByStatusAndCategoryId(Boolean status, Integer categoryId);
+
+    List<Products> findByStatusAndWarehouseId(Boolean status, Integer warehouseId);
 }

@@ -11,4 +11,6 @@ public interface ImageRepository extends JpaRepository<Image, Integer> {
 
     List<Image> findByDetailIdAndType(Integer detailId, Integer type);
 
+    List<Image> findByDetailIdInAndType(List<Integer> detailIds,Integer type);
+
 }
