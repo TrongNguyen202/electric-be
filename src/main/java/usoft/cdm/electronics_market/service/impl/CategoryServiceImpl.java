@@ -102,6 +102,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public ResponseEntity<?> displayCategoryChild(Integer categoryId) {
+        List<Category> categories = this.categoryRepository.findAllByParentIdAndStatus(categoryId, true);
+        return ResponseUtil.ok(categories);
+    }
+
+    @Override
     public ResponseEntity<?> update(CategoryDTO dto, List<String> imgList) {
         Users userLogin = this.userService.getCurrentUser();
         Optional<Category> optionalCategory = this.categoryRepository.findById(dto.getId());

@@ -17,6 +17,8 @@ public interface CategoryService {
 
     ResponseEntity<?> findByAllForParentIdNull();
 
+    ResponseEntity<?> displayCategoryChild(Integer categoryId);
+
 
     ResponseEntity<?> update(CategoryDTO dto, List<String> imgList);
 
