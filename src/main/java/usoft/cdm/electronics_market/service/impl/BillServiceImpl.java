@@ -26,6 +26,12 @@ public class BillServiceImpl implements BillService {
     private final ProductRepository productRepository;
     private final UserService userService;
 
+    @Override
+    public ResponseEntity<?> getAll(){
+        return ResponseUtil.ok(billRepository.findAllNotStatus(1));
+    }
+
+    @Override
     public ResponseEntity<?> addCartToBill(List<Cart> cart) {
         Users users = userService.getCurrentUser();
         if (users == null)
@@ -52,6 +58,7 @@ public class BillServiceImpl implements BillService {
         return ResponseUtil.message("Thêm vô giỏ thành công!");
     }
 
+    @Override
     public ResponseEntity<?> shop(Shop shop) {
         Users users = userService.getCurrentUser();
         Bill bill = new Bill();
@@ -83,6 +90,7 @@ public class BillServiceImpl implements BillService {
         return ResponseUtil.message("Thêm vô giỏ thành công!");
     }
 
+    @Override
     public ResponseEntity<?> getCart(){
         Users users = userService.getCurrentUser();
         if (users == null)
