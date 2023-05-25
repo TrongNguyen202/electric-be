@@ -32,4 +32,9 @@ public class HomePageAPI {
         return this.categoryService.findByAllForParentIdNull();
     }
 
+    @GetMapping("/category-child")
+    public ResponseEntity<?> getAllCategoryChild(@RequestParam Integer categoryId) {
+        return this.categoryService.displayCategoryChild(categoryId);
+    }
+
 }
