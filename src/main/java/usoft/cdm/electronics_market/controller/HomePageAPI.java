@@ -37,4 +37,8 @@ public class HomePageAPI {
         return this.categoryService.displayCategoryChild(categoryId);
     }
 
+    @GetMapping("/related-product")
+    public ResponseEntity<?> getRelatedProducts(@RequestParam Integer productId) {
+        return this.productService.getRelatedProducts(productId);
+    }
 }
