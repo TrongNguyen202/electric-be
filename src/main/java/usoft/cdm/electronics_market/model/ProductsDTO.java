@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import usoft.cdm.electronics_market.entities.Brand;
+import usoft.cdm.electronics_market.entities.Category;
+import usoft.cdm.electronics_market.entities.Warehouse;
 
 import javax.validation.constraints.*;
 import java.util.Date;
@@ -60,5 +63,8 @@ public class ProductsDTO extends BaseModel {
     private Double discount;
     private List<String> img;
     private List<TitleAttributeDTO> dto;
+    private String categoryName;
+    private String brandName;
+    private String warehouseName;
 
 }

@@ -38,11 +38,24 @@ public class ProductServiceImpl implements ProductService {
 
     private final CategoryRepository categoryRepository;
 
+    private final BrandRepository brandRepository;
+
+    private final WarehouseRepository warehouseRepository;
+
 
     @Override
     public ResponseEntity<?> getAllProducts(Pageable pageable) {
         Page<Products> productsPage = this.productRepository.findAllByStatus(true, pageable);
         Page<ProductsDTO> productsDTOS = MapperUtil.mapEntityPageIntoDtoPage(productsPage, ProductsDTO.class);
+        productsDTOS.forEach(productsDTO -> {
+            Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
+            productsDTO.setBrandName(brand.getName());
+            Category category = this.categoryRepository.findById(productsDTO.getCategoryId()).orElseThrow();
+            productsDTO.setCategoryName(category.getName());
+            Warehouse warehouse = this.warehouseRepository.findById(productsDTO.getWarehouseId()).orElseThrow();
+            productsDTO.setWarehouseName(warehouse.getName());
+        });
+
         return ResponseUtil.ok(productsDTOS);
     }
 
@@ -253,6 +266,30 @@ public class ProductServiceImpl implements ProductService {
             throw new BadRequestException("Không tìm thấy id sản phẩm");
         Products product = optionalProducts.get();
         List<Products> products = this.productRepository.findByStatusAndCategoryId(true, product.getCategoryId());
+        products.remove(product);
+        List<Integer> productIds = products.stream().map(Products::getId).collect(Collectors.toList());
+        List<Image> imageProduct = this.imageRepository.findByDetailIdInAndType(productIds, 2);
+        List<String> imgProduct = imageProduct.stream().map(Image::getImg).collect(Collectors.toList());
+        List<ProductsDTO> productsDTOS = MapperUtil.mapList(products, ProductsDTO.class);
+        productsDTOS.forEach(productsDTO -> {
+            productsDTO.setImg(imgProduct);
+            if (null == productsDTO.getPriceAfterSale()) {
+                productsDTO.setDiscount(0.0);
+            } else {
+                Double discountPercent = (productsDTO.getPriceAfterSale() / productsDTO.getPriceSell()) * 100;
+                productsDTO.setDiscount(discountPercent);
+            }
+        });
+        return ResponseUtil.ok(productsDTOS);
+    }
+
+    @Override
+    public ResponseEntity<?> getProductsInSameBrand(Integer productId) {
+        Optional<Products> optionalProducts = this.productRepository.findById(productId);
+        if (optionalProducts.isEmpty())
+            throw new BadRequestException("Không tìm thấy id sản phẩm");
+        Products product = optionalProducts.get();
+        List<Products> products = this.productRepository.findByStatusAndBrandId(true, product.getBrandId());
         products.remove(product);
         List<Integer> productIds = products.stream().map(Products::getId).collect(Collectors.toList());
         List<Image> imageProduct = this.imageRepository.findByDetailIdInAndType(productIds, 2);
