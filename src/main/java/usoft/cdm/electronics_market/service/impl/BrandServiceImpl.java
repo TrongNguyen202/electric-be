@@ -28,6 +28,11 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
+    public ResponseEntity<?> getById(Integer id) {
+        return ResponseUtil.ok(brandRepository.findById(id));
+    }
+
+    @Override
     public ResponseEntity<?> getPage(Pageable pageable) {
         return ResponseUtil.ok(brandRepository.findAll(pageable));
     }

@@ -21,6 +21,11 @@ public class BrandAPI {
         return brandService.getAll(type);
     }
 
+    @GetMapping("getById")
+    private ResponseEntity<?> getById(@RequestParam Integer id){
+        return brandService.getById(id);
+    }
+
     @GetMapping("page")
     private ResponseEntity<?> getPage(Pageable pageable){
         return brandService.getPage(pageable);
