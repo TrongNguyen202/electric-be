@@ -189,7 +189,7 @@ public class ProductServiceImpl implements ProductService {
         idProducts.forEach(idProduct -> {
             Optional<Products> optionalProducts = this.productRepository.findById(idProduct);
             if (optionalProducts.isEmpty())
-                throw new BadRequestException("Không tìm thấy id sản phẩm: " + idProduct);
+                throw new BadRequestException("Không tìm thấy id sản phẩm");
             Products products = optionalProducts.get();
             products.setStatus(false);
             productsList.add(products);
@@ -230,6 +230,30 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseEntity<?> getAllProductFromCategoryId(Integer categoryId) {
         List<Products> products = this.productRepository.findByStatusAndCategoryId(true, categoryId);
+        List<Integer> productIds = products.stream().map(Products::getId).collect(Collectors.toList());
+        List<Image> imageProduct = this.imageRepository.findByDetailIdInAndType(productIds, 2);
+        List<String> imgProduct = imageProduct.stream().map(Image::getImg).collect(Collectors.toList());
+        List<ProductsDTO> productsDTOS = MapperUtil.mapList(products, ProductsDTO.class);
+        productsDTOS.forEach(productsDTO -> {
+            productsDTO.setImg(imgProduct);
+            if (null == productsDTO.getPriceAfterSale()) {
+                productsDTO.setDiscount(0.0);
+            } else {
+                Double discountPercent = (productsDTO.getPriceAfterSale() / productsDTO.getPriceSell()) * 100;
+                productsDTO.setDiscount(discountPercent);
+            }
+        });
+        return ResponseUtil.ok(productsDTOS);
+    }
+
+    @Override
+    public ResponseEntity<?> getRelatedProducts(Integer productId) {
+        Optional<Products> optionalProducts = this.productRepository.findById(productId);
+        if (optionalProducts.isEmpty())
+            throw new BadRequestException("Không tìm thấy id sản phẩm");
+        Products product = optionalProducts.get();
+        List<Products> products = this.productRepository.findByStatusAndCategoryId(true, product.getCategoryId());
+        products.remove(product);
         List<Integer> productIds = products.stream().map(Products::getId).collect(Collectors.toList());
         List<Image> imageProduct = this.imageRepository.findByDetailIdInAndType(productIds, 2);
         List<String> imgProduct = imageProduct.stream().map(Image::getImg).collect(Collectors.toList());

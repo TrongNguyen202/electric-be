@@ -22,4 +22,6 @@ public interface ProductService {
     ResponseEntity<?> getAllProductAndCategoryForHome();
 
     ResponseEntity<?> getAllProductFromCategoryId(Integer categoryId);
+
+    ResponseEntity<?> getRelatedProducts(Integer productId);
 }
