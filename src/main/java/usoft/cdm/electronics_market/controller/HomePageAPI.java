@@ -41,4 +41,10 @@ public class HomePageAPI {
     public ResponseEntity<?> getRelatedProducts(@RequestParam Integer productId) {
         return this.productService.getRelatedProducts(productId);
     }
+
+
+    @GetMapping("/same-brand")
+    public ResponseEntity<?> getProductsInSameBrand(@RequestParam Integer productId) {
+        return this.productService.getProductsInSameBrand(productId);
+    }
 }
