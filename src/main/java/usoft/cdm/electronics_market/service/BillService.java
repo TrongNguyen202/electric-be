@@ -9,6 +9,8 @@ import java.util.List;
 public interface BillService {
     ResponseEntity<?> getAll();
 
+    ResponseEntity<?> getById(Integer id);
+
     ResponseEntity<?> addCartToBill(List<Cart> cart);
 
     ResponseEntity<?> shop(Shop shop);

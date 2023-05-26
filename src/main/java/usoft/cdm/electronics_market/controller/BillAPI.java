@@ -21,6 +21,11 @@ public class BillAPI {
         return billService.getAll();
     }
 
+    @GetMapping
+    private ResponseEntity<?> getById(@RequestParam Integer id){
+        return billService.getById(id);
+    }
+
     @PostMapping
     private ResponseEntity<?> addCartToBill(@RequestBody List<Cart> list){
         return billService.addCartToBill(list);

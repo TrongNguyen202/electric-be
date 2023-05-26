@@ -32,6 +32,11 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
+    public ResponseEntity<?> getById(Integer id){
+        return ResponseUtil.ok(billRepository.findById(id));
+    }
+
+    @Override
     public ResponseEntity<?> addCartToBill(List<Cart> cart) {
         Users users = userService.getCurrentUser();
         if (users == null)
