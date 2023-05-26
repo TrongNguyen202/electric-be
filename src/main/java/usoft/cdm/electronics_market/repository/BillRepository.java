@@ -12,6 +12,6 @@ import java.util.Optional;
 public interface BillRepository extends JpaRepository<Bill, Integer> {
     Optional<Bill> findByUserIdAndStatus(Integer userId, Integer status);
 
-    @Query("SELECT b.* FROM Bill b WHERE b.status <> :status")
+    @Query("SELECT b FROM Bill b WHERE b.status <> :status")
     List<Bill> findAllNotStatus(Integer status);
 }

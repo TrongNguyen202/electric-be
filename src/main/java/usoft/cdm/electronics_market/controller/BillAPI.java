@@ -21,7 +21,7 @@ public class BillAPI {
         return billService.getAll();
     }
 
-    @GetMapping
+    @GetMapping("getById")
     private ResponseEntity<?> getById(@RequestParam Integer id){
         return billService.getById(id);
     }
