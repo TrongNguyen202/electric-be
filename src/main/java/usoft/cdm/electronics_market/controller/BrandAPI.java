@@ -26,6 +26,14 @@ public class BrandAPI {
         return brandService.getById(id);
     }
 
+
+    @GetMapping("/list")
+    private ResponseEntity<?> getAllList() {
+
+        return brandService.getAllList();
+    }
+
+
     @GetMapping("page")
     private ResponseEntity<?> getPage(Pageable pageable){
         return brandService.getPage(pageable);

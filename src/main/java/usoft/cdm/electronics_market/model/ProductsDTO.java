@@ -56,9 +56,11 @@ public class ProductsDTO extends BaseModel {
 
     private String slug;
 
-    @NotNull(message = "Số lượng không được rỗng")
-    @DecimalMin(value = "1", message = "Số lượng lớn hơn 0")
     private Integer quantity;
+
+    @NotNull(message = "Số lượng không được rỗng")
+    private Integer quantityImport;
+
     private Integer reviewId;
     private Double discount;
     private List<String> img;

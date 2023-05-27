@@ -28,6 +28,11 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
+    public ResponseEntity<?> getAllList() {
+        return ResponseUtil.ok(this.brandRepository.findAllByStatus(true));
+    }
+
+    @Override
     public ResponseEntity<?> getById(Integer id) {
         return ResponseUtil.ok(brandRepository.findById(id));
     }
@@ -48,7 +53,8 @@ public class BrandServiceImpl implements BrandService {
         brand.setName(dto.getName());
         brand.setType(dto.getType());
         brand.setStatus(true);
-        return ResponseUtil.ok(brandRepository.save(brand));
+        brandRepository.save(brand);
+        return ResponseUtil.message(Message.SUCCESS);
     }
 
     @Override

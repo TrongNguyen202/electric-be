@@ -28,6 +28,12 @@ public class CategoryAPI {
         return ResponseUtil.ok(this.categoryService.findByAll(pageable));
     }
 
+
+    @GetMapping("/list")
+    public ResponseEntity<?> getAll() {
+        return ResponseUtil.ok(this.categoryService.getAllList());
+    }
+
     @GetMapping()
     public ResponseEntity<?> getById(@RequestParam Integer idCategory) {
         return this.categoryService.displayById(idCategory);
