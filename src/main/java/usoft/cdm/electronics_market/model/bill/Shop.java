@@ -15,5 +15,6 @@ public class Shop {
     private String phone;
     private String email;
     private String fullname;
-    List<Cart> cart;
+    private List<Cart> cart;
+    private List<Integer> voucherId;
 }
