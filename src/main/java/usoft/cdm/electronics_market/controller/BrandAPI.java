@@ -17,22 +17,30 @@ public class BrandAPI {
     private final BrandService brandService;
 
     @GetMapping
-    private ResponseEntity<?> getAll(@RequestParam String type){
+    private ResponseEntity<?> getAll(@RequestParam String type) {
         return brandService.getAll(type);
     }
 
+
+    @GetMapping("/list")
+    private ResponseEntity<?> getAllList() {
+
+        return brandService.getAllList();
+    }
+
+
     @GetMapping("page")
-    private ResponseEntity<?> getPage(Pageable pageable){
+    private ResponseEntity<?> getPage(Pageable pageable) {
         return brandService.getPage(pageable);
     }
 
     @PostMapping
-    private ResponseEntity<?> save(@RequestBody BrandDTO dto){
+    private ResponseEntity<?> save(@RequestBody BrandDTO dto) {
         return brandService.save(dto);
     }
 
     @DeleteMapping
-    private ResponseEntity<?> deleteAll(@RequestParam List<Integer> ids){
+    private ResponseEntity<?> deleteAll(@RequestParam List<Integer> ids) {
         return brandService.remove(ids);
     }
 }

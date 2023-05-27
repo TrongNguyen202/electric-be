@@ -28,6 +28,12 @@ public class WarehouseAPI {
         return ResponseUtil.ok(this.warehouseService.getAllWarehouse(pageable));
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<?> getAllWarehouse() {
+
+        return ResponseUtil.ok(this.warehouseService.getAllWarehouseList());
+    }
+
     @GetMapping()
     public ResponseEntity<?> getByWarehouseId(@RequestParam Integer warehouseId) {
         return this.warehouseService.getByWarehouseId(warehouseId);

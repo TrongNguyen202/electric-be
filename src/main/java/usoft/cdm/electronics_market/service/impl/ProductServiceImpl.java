@@ -88,6 +88,10 @@ public class ProductServiceImpl implements ProductService {
         if (productCheck.isPresent()) {
             throw new BadRequestException("Mã sản phẩm đã tồn tại");
         }
+
+        if (dto.getQuantityImport() <= 0) {
+            throw new BadRequestException("Phải nhập số lượng nhập");
+        }
         Products products = Products
                 .builder()
                 .code(dto.getCode())
@@ -101,7 +105,7 @@ public class ProductServiceImpl implements ProductService {
                 .capicityId(dto.getCapicityId())
                 .priceAfterSale(dto.getPriceAfterSale())
                 .information(dto.getInformation())
-                .quantity(dto.getQuantity())
+                .quantity(dto.getQuantityImport())
                 .status(true)
                 .build();
         products.setCreatedBy(userLogin.getUsername());
@@ -143,6 +147,7 @@ public class ProductServiceImpl implements ProductService {
     public ResponseEntity<?> update(ProductsDTO dto, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs) {
         Users userLogin = this.userService.getCurrentUser();
         Optional<Products> optionalProducts = this.productRepository.findById(dto.getId());
+
         if (!optionalProducts.get().getCode().equals(dto.getCode())) {
             Optional<Products> productCheck = this.productRepository.findByCodeAndStatus(dto.getCode(), true);
             if (productCheck.isPresent()) {
@@ -153,6 +158,7 @@ public class ProductServiceImpl implements ProductService {
             throw new BadRequestException("Không có id sản phẩm");
         } else {
             Products products = MapperUtil.map(dto, Products.class);
+            products.setQuantity(products.getQuantity() + dto.getQuantityImport());
             products.setUpdatedBy(userLogin.getUsername());
             products.setSlug(TextUtil.slug(dto.getName()));
             products.setStatus(true);

@@ -10,9 +10,13 @@ import java.util.List;
 public interface BrandService {
     ResponseEntity<?> getAll(String type);
 
+    ResponseEntity<?> getAllList();
+
     ResponseEntity<?> getPage(Pageable pageable);
 
     ResponseEntity<?> save(BrandDTO dto);
 
     ResponseEntity<?> remove(List<Integer> ids);
+
+
 }

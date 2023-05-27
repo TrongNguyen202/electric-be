@@ -11,6 +11,8 @@ public interface CategoryService {
 
     ResponseEntity<?> save(CategoryDTO dto, List<String> imgList);
 
+    ResponseEntity<?> getAllList();
+
     ResponseEntity<?> displayById(Integer idCategory);
 
     Page<CategoryDTO> findByAll(Pageable pageable);

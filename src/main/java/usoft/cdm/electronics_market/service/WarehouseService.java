@@ -12,6 +12,8 @@ public interface WarehouseService {
 
     Page<WarehouseDTO> getAllWarehouse(Pageable pageable);
 
+    ResponseEntity<?> getAllWarehouseList();
+
     ResponseEntity<?> getByWarehouseId(Integer warehouseId);
 
     ResponseEntity<?> save(WarehouseDTO warehouseDTO);

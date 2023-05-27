@@ -44,6 +44,11 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
+    public ResponseEntity<?> getAllWarehouseList() {
+        return ResponseUtil.ok(this.warehouseRepository.findAllByStatus(true));
+    }
+
+    @Override
     public ResponseEntity<?> getByWarehouseId(Integer warehouseId) {
         Optional<Warehouse> optionalWarehouse = this.warehouseRepository.findById(warehouseId);
         if (optionalWarehouse.isEmpty()) {
