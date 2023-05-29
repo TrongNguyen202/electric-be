@@ -185,27 +185,29 @@ public class ProductServiceImpl implements ProductService {
                 images.add(image);
             }
             this.imageRepository.saveAll(images);
-            for (TitleAttributeDTO titleAttributeDTO : titleAttributeDTOs) {
-                Optional<TitleAttribute> optionalTitleAttribute = this.titleAttibuteRepository.findById(titleAttributeDTO.getId());
-                if (optionalTitleAttribute.isEmpty()) {
-                    throw new BadRequestException("Không tìm thấy id tiêu đề thuộc tính");
-                } else {
-                    TitleAttribute titleAttribute = MapperUtil.map(titleAttributeDTO, TitleAttribute.class);
-                    titleAttribute.setProductId(products.getId());
-                    this.titleAttibuteRepository.save(titleAttribute);
-                    titleAttributeDTO.getAttributeDTOS().forEach(attributeDTO -> {
-                        Optional<Attribute> optionalAttribute = this.attributeRepository.findById(attributeDTO.getId());
-                        if (optionalAttribute.isEmpty()) {
-                            throw new BadRequestException("Không tìm thấy id thuộc tính");
-                        } else {
-                            Attribute attribute = MapperUtil.map(attributeDTO, Attribute.class);
-                            attribute.setTitleAttributeId(titleAttribute.getId());
-                            this.attributeRepository.save(attribute);
-                        }
-                    });
-                }
-            }
 
+            List<TitleAttribute> titleAttributes = this.titleAttibuteRepository.findByProductId(products.getId());
+            List<Integer> titleAttributesIds = titleAttributes.stream().map(TitleAttribute::getId).collect(Collectors.toList());
+            List<Attribute> attributes = this.attributeRepository.findByTitleAttributeIdIn(titleAttributesIds);
+            this.attributeRepository.deleteAll(attributes);
+            this.titleAttibuteRepository.deleteAll(titleAttributes);
+            for (TitleAttributeDTO titleAttributeDTO : titleAttributeDTOs) {
+                TitleAttribute titleAttribute = TitleAttribute
+                        .builder()
+                        .name(titleAttributeDTO.getName())
+                        .productId(products.getId())
+                        .build();
+                TitleAttribute titleAttributeNew = this.titleAttibuteRepository.save(titleAttribute);
+                titleAttributeDTO.getAttributeDTOS().forEach(attributeDTO -> {
+                    Attribute attribute = Attribute
+                            .builder()
+                            .titleAttributeId(titleAttributeNew.getId())
+                            .name(attributeDTO.getName())
+                            .value(attributeDTO.getValue())
+                            .build();
+                    this.attributeRepository.save(attribute);
+                });
+            }
 
         }
         return ResponseUtil.ok(optionalProducts.get());
