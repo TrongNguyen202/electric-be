@@ -1,5 +1,6 @@
 package usoft.cdm.electronics_market.service;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import usoft.cdm.electronics_market.model.bill.Cart;
 import usoft.cdm.electronics_market.model.bill.Shop;
@@ -7,7 +8,7 @@ import usoft.cdm.electronics_market.model.bill.Shop;
 import java.util.List;
 
 public interface BillService {
-    ResponseEntity<?> getAll();
+    ResponseEntity<?> getAll(Integer status, Pageable pageable);
 
     ResponseEntity<?> getById(Integer id);
 
@@ -17,5 +18,5 @@ public interface BillService {
 
     ResponseEntity<?> getCart();
 
-    ResponseEntity<?> approve(Integer id, String note, Integer status);
+    ResponseEntity<?> approve(Integer id, String note, Double transferFee, Integer status);
 }

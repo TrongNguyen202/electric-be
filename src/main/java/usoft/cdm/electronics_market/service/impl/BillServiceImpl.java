@@ -1,12 +1,11 @@
 package usoft.cdm.electronics_market.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import usoft.cdm.electronics_market.entities.Bill;
-import usoft.cdm.electronics_market.entities.BillDetail;
-import usoft.cdm.electronics_market.entities.Products;
-import usoft.cdm.electronics_market.entities.Users;
+import usoft.cdm.electronics_market.entities.*;
+import usoft.cdm.electronics_market.model.bill.BillResponse;
 import usoft.cdm.electronics_market.model.bill.Cart;
 import usoft.cdm.electronics_market.model.bill.Shop;
 import usoft.cdm.electronics_market.repository.BillDetailRepository;
@@ -31,13 +30,33 @@ public class BillServiceImpl implements BillService {
     private final BillVoucherRepository billVoucherRepository;
 
     @Override
-    public ResponseEntity<?> getAll() {
-        return ResponseUtil.ok(billRepository.findAllNotStatus(1));
+    public ResponseEntity<?> getAll(Integer status, Pageable pageable) {
+        if (status == null)
+            return ResponseUtil.ok(billRepository.findAllNotStatus(pageable, 1));
+        else
+            return ResponseUtil.ok(billRepository.findAllByStatus(pageable, status));
     }
 
     @Override
     public ResponseEntity<?> getById(Integer id) {
-        return ResponseUtil.ok(billRepository.findById(id));
+        Bill bill = billRepository.findById(id).orElseThrow();
+        BillResponse response = new BillResponse(
+                bill.getCode(),
+                bill.getTransportFee(),
+                bill.getPaymentMethod(),
+                bill.getPrice(),
+                bill.getTotalPrice(),
+                bill.getNote(),
+                bill.getPhone(),
+                bill.getEmail(),
+                bill.getFullname()
+        );
+        List<Integer> list = billDetailRepository.findAllProductIdByBillId(bill.getId());
+        response.setProduct(productRepository.findAllByIdIn(list));
+        List<Voucher> vouchers = new ArrayList<>();
+        vouchers.add(new Voucher());
+        response.setVoucher(vouchers);
+        return ResponseUtil.ok(response);
     }
 
     @Override
@@ -55,23 +74,24 @@ public class BillServiceImpl implements BillService {
         if (bill.getId() != null)
             list = billDetailRepository.findAllByBillId(bill.getId());
         List<BillDetail> details = new ArrayList<>();
+        bill = billRepository.save(bill);
         for (Cart c : cart) {
             BillDetail billDetail = new BillDetail();
             if (c.getId() != null) {
-                billDetail = list.stream().filter(x -> x.getProductDetailId().equals(c.getProductDetailId())).findAny().orElse(null);
+                billDetail = list.stream().filter(x -> x.getProductId().equals(c.getProductDetailId())).findAny().orElse(null);
                 if (billDetail == null)
                     return ResponseUtil.badRequest("Id sản phẩm trong giỏ không đúng!");
                 list.remove(billDetail);
             }
             billDetail.setQuantity(c.getQuantity());
-            billDetail.setProductDetailId(c.getProductDetailId());
+            billDetail.setProductId(c.getProductDetailId());
             billDetail.setQuantity(c.getQuantity());
+            billDetail.setBillId(bill.getId());
             details.add(billDetail);
         }
         billDetailRepository.saveAll(details);
         if (!list.isEmpty())
             billDetailRepository.deleteAll(list);
-        billRepository.save(bill);
         return ResponseUtil.message("Thêm vô giỏ thành công!");
     }
 
@@ -93,23 +113,25 @@ public class BillServiceImpl implements BillService {
         if (bill.getId() != null)
             list = billDetailRepository.findAllByBillId(bill.getId());
         List<BillDetail> details = new ArrayList<>();
+        bill = billRepository.save(bill);
         for (Cart c : shop.getCart()) {
             BillDetail billDetail = new BillDetail();
             if (c.getId() != null) {
-                billDetail = list.stream().filter(x -> x.getProductDetailId().equals(c.getProductDetailId())).findAny().orElse(null);
+                billDetail = list.stream().filter(x -> x.getProductId().equals(c.getProductDetailId())).findAny().orElse(null);
                 if (billDetail == null)
                     return ResponseUtil.badRequest("Id sản phẩm trong giỏ không đúng!");
                 list.remove(billDetail);
             }
-            Optional<Products> products = productRepository.findByIdAndStatus(billDetail.getProductDetailId(), true);
+            Optional<Products> products = productRepository.findByIdAndStatus(billDetail.getProductId(), true);
             if (products.isEmpty())
                 return ResponseUtil.badRequest("Sản phẩm không còn bán!");
             Products p = products.get();
             billDetail.setQuantity(c.getQuantity());
-            billDetail.setProductDetailId(c.getProductDetailId());
+            billDetail.setProductId(c.getProductDetailId());
             double price = p.getPriceAfterSale() == null ? p.getPriceSell() : p.getPriceAfterSale();
             totalPrice += price;
             billDetail.setPriceSell(price);
+            billDetail.setBillId(bill.getId());
             details.add(billDetail);
         }
         bill.setTotalPrice(totalPrice);
@@ -133,14 +155,17 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public ResponseEntity<?> approve(Integer id, String note, Integer status) {
+    public ResponseEntity<?> approve(Integer id, String note, Double transferFee, Integer status) {
         Bill bill = billRepository.findById(id).orElse(null);
         if (bill == null)
-            return null;
+            return ResponseUtil.badRequest("Id bill không chính xác!");
         if (status != null)
             bill.setStatus(status);
         if (note != null)
             bill.setNote(note);
+        if (transferFee != null)
+            bill.setTransportFee(transferFee);
+        billRepository.save(bill);
         return ResponseUtil.ok("Duyệt hóa đơn thành công!");
     }
 }
