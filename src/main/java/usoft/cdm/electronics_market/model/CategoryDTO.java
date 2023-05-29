@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import usoft.cdm.electronics_market.entities.Category;
+import usoft.cdm.electronics_market.entities.Products;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -38,4 +39,6 @@ public class CategoryDTO extends BaseModel {
     private String picCategory;
 
     private Boolean status;
+
+    private List<Products> products;
 }

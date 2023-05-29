@@ -1,5 +1,6 @@
 package usoft.cdm.electronics_market.service;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import usoft.cdm.electronics_market.model.ProductsDTO;
@@ -21,7 +22,7 @@ public interface ProductService {
 
     ResponseEntity<?> getAllProductAndCategoryForHome();
 
-    ResponseEntity<?> getAllProductFromCategoryId(Integer categoryId);
+    Page<ProductsDTO> getAllProductFromCategoryId(Integer categoryId, Pageable pageable);
 
     ResponseEntity<?> getRelatedProducts(Integer productId);
 

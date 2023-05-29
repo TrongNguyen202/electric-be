@@ -2,10 +2,12 @@ package usoft.cdm.electronics_market.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import usoft.cdm.electronics_market.service.CategoryService;
 import usoft.cdm.electronics_market.service.ProductService;
+import usoft.cdm.electronics_market.util.ResponseUtil;
 
 @RestController
 @CrossOrigin
@@ -23,8 +25,8 @@ public class HomePageAPI {
     }
 
     @GetMapping("/product")
-    public ResponseEntity<?> getAllProductFromCategoryId(@RequestParam Integer categoryId) {
-        return this.productService.getAllProductFromCategoryId(categoryId);
+    public ResponseEntity<?> getAllProductFromCategoryId(@RequestParam Integer categoryId, Pageable pageable) {
+        return ResponseUtil.ok(this.productService.getAllProductFromCategoryId(categoryId, pageable));
     }
 
     @GetMapping("/category")
