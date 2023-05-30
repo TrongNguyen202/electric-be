@@ -244,4 +244,22 @@ public class CategoryServiceImpl implements CategoryService {
         return ResponseUtil.message(Message.REMOVE);
     }
 
+    @Override
+    public Page<CategoryDTO> searchByName(Pageable pageable, String name) {
+        Page<Category> categoryPage = this.categoryRepository.searchByName(pageable, name);
+        Page<CategoryDTO> categoryDTOS = MapperUtil.mapEntityPageIntoDtoPage(categoryPage, CategoryDTO.class);
+        List<Integer> categoryIds = categoryDTOS.stream().map(CategoryDTO::getId).collect(Collectors.toList());
+        List<Category> categoriesChild = this.categoryRepository.findAllByStatusAndParentIdIn(true, categoryIds);
+        for (CategoryDTO dto : categoryDTOS) {
+            dto.setCategoryList(categoriesChild);
+        }
+        return categoryDTOS;
+    }
+
+    @Override
+    public List<Category> getForProduct() {
+
+        return null;
+    }
+
 }

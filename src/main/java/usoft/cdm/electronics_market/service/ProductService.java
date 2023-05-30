@@ -3,6 +3,7 @@ package usoft.cdm.electronics_market.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import usoft.cdm.electronics_market.entities.Products;
 import usoft.cdm.electronics_market.model.ProductsDTO;
 import usoft.cdm.electronics_market.model.TitleAttributeDTO;
 
@@ -22,9 +23,13 @@ public interface ProductService {
 
     ResponseEntity<?> getAllProductAndCategoryForHome();
 
-    Page<ProductsDTO> getAllProductFromCategoryId(Integer categoryId, Pageable pageable,ProductsDTO dto);
+    Page<ProductsDTO> getAllProductFromCategoryId(Integer categoryId, Pageable pageable, ProductsDTO dto);
 
     ResponseEntity<?> getRelatedProducts(Integer productId);
 
     ResponseEntity<?> getProductsInSameBrand(Integer productId);
+
+    Page<Products> searchByCategory(Integer categoryId, Pageable pageable);
+
+    Page<Products> searchByName(String name, Pageable pageable);
 }

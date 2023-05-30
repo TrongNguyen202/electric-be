@@ -33,4 +33,8 @@ public interface CategoryService {
 
     ResponseEntity<?> deleteCategoryIds(List<Integer> categoryIds);
 
+    Page<CategoryDTO> searchByName(Pageable pageable, String name);
+
+    List<Category> getForProduct();
+
 }

@@ -341,5 +341,15 @@ public class ProductServiceImpl implements ProductService {
         return ResponseUtil.ok(productsDTOS);
     }
 
+    @Override
+    public Page<Products> searchByCategory(Integer categoryId, Pageable pageable) {
+        return this.productRepository.searchByCategory(pageable, categoryId);
+    }
+
+    @Override
+    public Page<Products> searchByName(String name, Pageable pageable) {
+        return this.productRepository.searchByName(pageable, name);
+    }
+
 
 }

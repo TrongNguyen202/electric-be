@@ -28,6 +28,11 @@ public class CategoryAPI {
         return ResponseUtil.ok(this.categoryService.findByAll(pageable));
     }
 
+    @GetMapping("/search-name")
+    public ResponseEntity<?> searchByName(Pageable pageable, @RequestParam(required = false) String name) {
+
+        return ResponseUtil.ok(this.categoryService.searchByName(pageable, name));
+    }
 
     @GetMapping("/list")
     public ResponseEntity<?> getAll() {
