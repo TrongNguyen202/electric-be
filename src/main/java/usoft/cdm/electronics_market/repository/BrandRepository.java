@@ -7,7 +7,7 @@ import usoft.cdm.electronics_market.entities.Brand;
 import java.util.List;
 
 @Repository
-public interface BrandRepository extends JpaRepository<Brand, Integer> {
+public interface BrandRepository extends JpaRepository<Brand, Integer>, BrandRepositoryCustom {
     List<Brand> findAllByType(String type);
 
     List<Brand> findAllByStatus(Boolean status);

@@ -12,7 +12,10 @@ import usoft.cdm.electronics_market.entities.Category;
 import usoft.cdm.electronics_market.entities.Image;
 import usoft.cdm.electronics_market.entities.Products;
 import usoft.cdm.electronics_market.entities.Users;
+import usoft.cdm.electronics_market.model.BrandDTO;
 import usoft.cdm.electronics_market.model.CategoryDTO;
+import usoft.cdm.electronics_market.model.ProductsDTO;
+import usoft.cdm.electronics_market.repository.BrandRepository;
 import usoft.cdm.electronics_market.repository.CategoryRepository;
 import usoft.cdm.electronics_market.repository.ImageRepository;
 import usoft.cdm.electronics_market.repository.ProductRepository;
@@ -22,9 +25,7 @@ import usoft.cdm.electronics_market.util.MapperUtil;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 import usoft.cdm.electronics_market.util.TextUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -40,6 +41,8 @@ public class CategoryServiceImpl implements CategoryService {
     private final ImageRepository imageRepository;
 
     private final ProductRepository productRepository;
+
+    private final BrandRepository brandRepository;
 
     @Override
     public ResponseEntity<?> save(CategoryDTO dto, List<String> imgList) {
@@ -129,9 +132,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseEntity<?> displayCategoryChild(Integer categoryId) {
+    public ResponseEntity<?> displayCategoryChild(Integer categoryId, Pageable pageable) {
         List<Category> categories = this.categoryRepository.findAllByParentIdAndStatus(categoryId, true);
-        return ResponseUtil.ok(categories);
+        Page<BrandDTO> brandDTOS = this.brandRepository.getAllBrandByCategoryId(categoryId, pageable);
+        Page<ProductsDTO> productsDTOS = this.productRepository.getAllMadeByProducts(categoryId, pageable);
+        Map<String, Object> map = new HashMap<>();
+        map.put("categories", categories);
+        map.put("brandDTOS", brandDTOS);
+        map.put("productsDTOS", productsDTOS);
+        return ResponseUtil.ok(map);
     }
 
     @Override

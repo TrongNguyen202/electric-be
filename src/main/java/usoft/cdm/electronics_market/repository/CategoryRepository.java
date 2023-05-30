@@ -3,6 +3,7 @@ package usoft.cdm.electronics_market.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import usoft.cdm.electronics_market.entities.Category;
 
@@ -22,4 +23,6 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
     List<Category> findAllByStatus(Boolean status);
 
     List<Category> findAllByStatusAndParentIdIn(Boolean status, List<Integer> parentIds);
+
+
 }

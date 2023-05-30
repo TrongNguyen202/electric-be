@@ -115,6 +115,7 @@ public class ProductServiceImpl implements ProductService {
                 .priceAfterSale(dto.getPriceAfterSale())
                 .information(dto.getInformation())
                 .quantity(dto.getQuantityImport())
+                .madeIn(dto.getMadeIn())
                 .status(true)
                 .build();
         products.setCreatedBy(userLogin.getUsername());
@@ -258,28 +259,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductsDTO> getAllProductFromCategoryId(Integer categoryId, Pageable pageable) {
-        List<Products> products = this.productRepository.findByStatusAndCategoryId(true, categoryId);
-        List<Integer> productIds = products.stream().map(Products::getId).collect(Collectors.toList());
-        List<Image> imageProduct = this.imageRepository.findByDetailIdInAndType(productIds, 2);
-        List<String> imgProduct = imageProduct.stream().map(Image::getImg).collect(Collectors.toList());
-        List<ProductsDTO> productsDTOS = MapperUtil.mapList(products, ProductsDTO.class);
-        productsDTOS.forEach(productsDTO -> {
-            productsDTO.setImg(imgProduct);
+    public Page<ProductsDTO> getAllProductFromCategoryId(Integer categoryId, Pageable pageable, ProductsDTO dto) {
+        Page<ProductsDTO> productsDTOSSearch = this.productRepository.findByBrandAndPriceAndMadeIn(categoryId, dto, pageable);
+        List<Integer> productIdsSearch = productsDTOSSearch.stream().map(ProductsDTO::getId).collect(Collectors.toList());
+        List<Image> imageProductSearch = this.imageRepository.findByDetailIdInAndType(productIdsSearch, 2);
+        List<String> imgProductSearch = imageProductSearch.stream().map(Image::getImg).collect(Collectors.toList());
+        productsDTOSSearch.forEach(productsDTO -> {
+            productsDTO.setImg(imgProductSearch);
             if (null == productsDTO.getPriceAfterSale()) {
                 productsDTO.setDiscount(0.0);
             } else {
                 Double discountPercent = (productsDTO.getPriceAfterSale() / productsDTO.getPriceSell()) * 100;
-                productsDTO.setDiscount(discountPercent);
+                Double discount = 100 - discountPercent;
+                productsDTO.setDiscount(discount);
             }
         });
-        int startIndex = (int) pageable.getOffset();
-        int endIndex = (int) ((pageable.getOffset() + pageable.getPageSize()) > productsDTOS.size() ?
-                productsDTOS.size() :
-                pageable.getOffset() + pageable.getPageSize());
-        List<ProductsDTO> dtosNew = productsDTOS.subList(startIndex, endIndex);
-        Page<ProductsDTO> productsDTOPageable = new PageImpl<>(dtosNew, pageable, productsDTOS.size());
-        return productsDTOPageable;
+
+        return productsDTOSSearch;
     }
 
     @Override

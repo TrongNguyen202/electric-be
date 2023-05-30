@@ -61,6 +61,9 @@ public class ProductsDTO extends BaseModel {
     @NotNull(message = "Số lượng không được rỗng")
     private Integer quantityImport;
 
+    @NotBlank(message = "Nơi sản xuất không được rỗng")
+    private String madeIn;
+
     private Integer reviewId;
     private Double discount;
     private List<String> img;
@@ -68,5 +71,24 @@ public class ProductsDTO extends BaseModel {
     private String categoryName;
     private String brandName;
     private String warehouseName;
+    private Integer sumProduct;
+
+    private List<Price> price;
+    private List<Integer> brandIds;
+    private List<String> madeIns;
+
+    public ProductsDTO(Integer id, String madeIn, Integer sumProduct) {
+        this.id = id;
+        this.madeIn = madeIn;
+        this.sumProduct = sumProduct;
+    }
+
+    public ProductsDTO(Integer id, String name, Double priceSell, Double priceAfterSale, String slug) {
+        this.id = id;
+        this.name = name;
+        this.priceSell = priceSell;
+        this.priceAfterSale = priceAfterSale;
+        this.slug = slug;
+    }
 
 }
