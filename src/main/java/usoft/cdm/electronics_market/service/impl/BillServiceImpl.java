@@ -78,13 +78,13 @@ public class BillServiceImpl implements BillService {
         for (Cart c : cart) {
             BillDetail billDetail = new BillDetail();
             if (c.getId() != null) {
-                billDetail = list.stream().filter(x -> x.getProductId().equals(c.getProductDetailId())).findAny().orElse(null);
+                billDetail = list.stream().filter(x -> x.getProductId().equals(c.getProductId())).findAny().orElse(null);
                 if (billDetail == null)
                     return ResponseUtil.badRequest("Id sản phẩm trong giỏ không đúng!");
                 list.remove(billDetail);
             }
             billDetail.setQuantity(c.getQuantity());
-            billDetail.setProductId(c.getProductDetailId());
+            billDetail.setProductId(c.getProductId());
             billDetail.setQuantity(c.getQuantity());
             billDetail.setBillId(bill.getId());
             details.add(billDetail);
@@ -117,7 +117,7 @@ public class BillServiceImpl implements BillService {
         for (Cart c : shop.getCart()) {
             BillDetail billDetail = new BillDetail();
             if (c.getId() != null) {
-                billDetail = list.stream().filter(x -> x.getProductId().equals(c.getProductDetailId())).findAny().orElse(null);
+                billDetail = list.stream().filter(x -> x.getProductId().equals(c.getProductId())).findAny().orElse(null);
                 if (billDetail == null)
                     return ResponseUtil.badRequest("Id sản phẩm trong giỏ không đúng!");
                 list.remove(billDetail);
@@ -127,7 +127,7 @@ public class BillServiceImpl implements BillService {
                 return ResponseUtil.badRequest("Sản phẩm không còn bán!");
             Products p = products.get();
             billDetail.setQuantity(c.getQuantity());
-            billDetail.setProductId(c.getProductDetailId());
+            billDetail.setProductId(c.getProductId());
             double price = p.getPriceAfterSale() == null ? p.getPriceSell() : p.getPriceAfterSale();
             totalPrice += price;
             billDetail.setPriceSell(price);
