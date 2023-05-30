@@ -40,5 +40,5 @@ public class CategoryDTO extends BaseModel {
 
     private Boolean status;
 
-    private List<Products> products;
+    private List<ProductsDTO> productsDTOS;
 }
