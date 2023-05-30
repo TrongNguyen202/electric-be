@@ -27,4 +27,5 @@ public class Bill extends BaseEntity {
     private String email;
     private String fullname;
     private Integer status;  //cart 1 waiting 2
+    private String addressTransfer;
 }

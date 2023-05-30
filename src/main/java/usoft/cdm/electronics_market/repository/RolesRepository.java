@@ -7,4 +7,5 @@ import usoft.cdm.electronics_market.entities.Roles;
 
 @Repository
 public interface RolesRepository extends JpaRepository<Roles,Integer> {
+    Roles findByName(String name);
 }

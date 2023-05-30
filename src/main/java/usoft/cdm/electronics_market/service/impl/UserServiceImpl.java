@@ -3,6 +3,7 @@ package usoft.cdm.electronics_market.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.websocket.AuthenticationException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +16,7 @@ import usoft.cdm.electronics_market.config.security.CustomUserDetails;
 import usoft.cdm.electronics_market.config.security.JwtTokenProvider;
 import usoft.cdm.electronics_market.entities.Permission;
 import usoft.cdm.electronics_market.entities.RolePermission;
+import usoft.cdm.electronics_market.entities.Roles;
 import usoft.cdm.electronics_market.entities.Users;
 import usoft.cdm.electronics_market.model.LoginDTO;
 import usoft.cdm.electronics_market.model.UserDTO;
@@ -82,6 +84,11 @@ public class UserServiceImpl implements UserService {
         CustomUserDetails customUserDetails = (CustomUserDetails) this.getInfoUser();
         String currentUser = customUserDetails.getUsers().getUsername();
         return userRepository.findByUsernameAndStatus(currentUser, true).orElseThrow();
+    }
+
+    public ResponseEntity<?> getList(Pageable pageable) {
+        Roles role = rolesRepository.findByName("USER");
+        return ResponseUtil.ok(userRepository.findAllByRoleId(role.getId(), pageable));
     }
 
     @Override
@@ -152,6 +159,20 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Không tìm thấy id của người dùng");
         }
         return ResponseUtil.ok(user.get());
+    }
+
+    public ResponseEntity<?> delete(List<Integer> ids){
+        List<Users> list = new ArrayList<>();
+        ids.forEach(x -> {
+            Optional<Users> optional = userRepository.findById(x);
+            if (optional.isEmpty())
+                throw new BadRequestException("Không tìm thấy id của người dùng");
+            Users users = optional.get();
+            users.setStatus(false);
+            list.add(users);
+        });
+        userRepository.saveAll(list);
+        return ResponseUtil.message("Xóa thành công");
     }
 
 

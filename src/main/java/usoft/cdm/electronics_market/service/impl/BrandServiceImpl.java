@@ -53,8 +53,7 @@ public class BrandServiceImpl implements BrandService {
         brand.setName(dto.getName());
         brand.setType(dto.getType());
         brand.setStatus(true);
-        brandRepository.save(brand);
-        return ResponseUtil.message(Message.SUCCESS);
+        return ResponseUtil.ok(brandRepository.save(brand));
     }
 
     @Override
