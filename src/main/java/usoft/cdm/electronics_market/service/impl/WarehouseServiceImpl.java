@@ -44,6 +44,12 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
+    public Page<WarehouseDTO> search(String name, Pageable pageable) {
+        Page<Warehouse> warehousePage = this.warehouseRepository.findAllByStatusAndName(true, name, pageable);
+        return MapperUtil.mapEntityPageIntoDtoPage(warehousePage, WarehouseDTO.class);
+    }
+
+    @Override
     public ResponseEntity<?> getAllWarehouseList() {
         return ResponseUtil.ok(this.warehouseRepository.findAllByStatus(true));
     }

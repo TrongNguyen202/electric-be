@@ -2,7 +2,6 @@ package usoft.cdm.electronics_market.service;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import usoft.cdm.electronics_market.entities.Brand;
 import usoft.cdm.electronics_market.model.BrandDTO;
 
 import java.util.List;
@@ -14,7 +13,7 @@ public interface BrandService {
 
     ResponseEntity<?> getById(Integer id);
 
-    ResponseEntity<?> search(String name);
+    ResponseEntity<?> search(String name, Pageable pageable);
 
     ResponseEntity<?> getPage(Pageable pageable);
 

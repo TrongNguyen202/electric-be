@@ -28,6 +28,12 @@ public class WarehouseAPI {
         return ResponseUtil.ok(this.warehouseService.getAllWarehouse(pageable));
     }
 
+    @GetMapping("search")
+    public ResponseEntity<?> search(@RequestParam String name, Pageable pageable) {
+
+        return ResponseUtil.ok(this.warehouseService.search(name, pageable));
+    }
+
     @GetMapping("/list")
     public ResponseEntity<?> getAllWarehouse() {
 

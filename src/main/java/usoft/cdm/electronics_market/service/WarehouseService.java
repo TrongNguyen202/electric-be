@@ -12,6 +12,8 @@ public interface WarehouseService {
 
     Page<WarehouseDTO> getAllWarehouse(Pageable pageable);
 
+    Page<WarehouseDTO> search(String name, Pageable pageable);
+
     ResponseEntity<?> getAllWarehouseList();
 
     ResponseEntity<?> getByWarehouseId(Integer warehouseId);

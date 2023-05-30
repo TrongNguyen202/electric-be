@@ -27,8 +27,8 @@ public class BrandAPI {
     }
 
     @GetMapping("search")
-    private ResponseEntity<?> getById(@RequestParam String name){
-        return brandService.search(name);
+    private ResponseEntity<?> getById(@RequestParam String name, Pageable pageable){
+        return brandService.search(name, pageable);
     }
 
     @GetMapping("/list")

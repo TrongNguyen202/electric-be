@@ -38,8 +38,8 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public ResponseEntity<?> search(String name) {
-        return ResponseUtil.ok(brandRepository.findAllByNameContaining(name));
+    public ResponseEntity<?> search(String name, Pageable pageable) {
+        return ResponseUtil.ok(brandRepository.findAllByStatusAndNameContaining(true, name, pageable));
     }
 
     @Override

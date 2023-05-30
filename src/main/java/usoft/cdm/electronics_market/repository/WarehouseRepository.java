@@ -13,6 +13,7 @@ import java.util.List;
 public interface WarehouseRepository extends JpaRepository<Warehouse, Integer> {
 
     Page<Warehouse> findAllByStatus(Boolean status, Pageable pageable);
+    Page<Warehouse> findAllByStatusAndName(Boolean status, String name, Pageable pageable);
 
     List<Warehouse> findAllByStatus(Boolean status);
 }
