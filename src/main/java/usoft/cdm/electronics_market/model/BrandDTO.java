@@ -8,4 +8,12 @@ public class BrandDTO {
     private String name;
     private String type;
     private String img;
+    private Integer sumProducts;
+
+    public BrandDTO(Integer id, String name, Integer sumProducts) {
+        this.id = id;
+        this.name = name;
+        this.sumProducts = sumProducts;
+
+    }
 }

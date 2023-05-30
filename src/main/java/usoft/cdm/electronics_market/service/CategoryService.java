@@ -22,7 +22,7 @@ public interface CategoryService {
 
     ResponseEntity<?> findByAllForParentIdNull();
 
-    ResponseEntity<?> displayCategoryChild(Integer categoryId);
+    ResponseEntity<?> displayCategoryChild(Integer categoryId, Pageable pageable);
 
 
     ResponseEntity<?> update(CategoryDTO dto, List<String> imgList);

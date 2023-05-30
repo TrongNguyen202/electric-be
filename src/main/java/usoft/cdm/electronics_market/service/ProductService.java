@@ -22,7 +22,7 @@ public interface ProductService {
 
     ResponseEntity<?> getAllProductAndCategoryForHome();
 
-    Page<ProductsDTO> getAllProductFromCategoryId(Integer categoryId, Pageable pageable);
+    Page<ProductsDTO> getAllProductFromCategoryId(Integer categoryId, Pageable pageable,ProductsDTO dto);
 
     ResponseEntity<?> getRelatedProducts(Integer productId);
 

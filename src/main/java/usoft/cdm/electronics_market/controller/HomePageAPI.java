@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import usoft.cdm.electronics_market.model.ProductsDTO;
 import usoft.cdm.electronics_market.service.CategoryService;
 import usoft.cdm.electronics_market.service.ProductService;
 import usoft.cdm.electronics_market.util.ResponseUtil;
@@ -25,8 +26,8 @@ public class HomePageAPI {
     }
 
     @GetMapping("/product")
-    public ResponseEntity<?> getAllProductFromCategoryId(@RequestParam Integer categoryId, Pageable pageable) {
-        return ResponseUtil.ok(this.productService.getAllProductFromCategoryId(categoryId, pageable));
+    public ResponseEntity<?> getAllProductFromCategoryId(@RequestParam Integer categoryId, @RequestBody ProductsDTO dto, Pageable pageable) {
+        return ResponseUtil.ok(this.productService.getAllProductFromCategoryId(categoryId, pageable, dto));
     }
 
     @GetMapping("/category")
@@ -35,8 +36,8 @@ public class HomePageAPI {
     }
 
     @GetMapping("/category-child")
-    public ResponseEntity<?> getAllCategoryChild(@RequestParam Integer categoryId) {
-        return this.categoryService.displayCategoryChild(categoryId);
+    public ResponseEntity<?> getAllCategoryChild(@RequestParam Integer categoryId, Pageable pageable) {
+        return this.categoryService.displayCategoryChild(categoryId, pageable);
     }
 
     @GetMapping("/related-product")
