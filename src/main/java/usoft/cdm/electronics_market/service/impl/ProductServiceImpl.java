@@ -243,11 +243,26 @@ public class ProductServiceImpl implements ProductService {
             List<Category> categoryList = this.categoryRepository.findByParentIdAndStatus(categoryDTO.getId(), true);
             if (categoryList.isEmpty()) {
                 List<Products> productsList = this.productRepository.findByStatusAndCategoryId(true, categoryDTO.getId());
-                categoryDTO.setProducts(productsList);
+                List<Integer> productIds = productsList.stream().map(Products::getId).collect(Collectors.toList());
+                List<Image> imagesProduct = this.imageRepository.findByDetailIdInAndType(productIds, 2);
+                List<String> imgsProduct = imagesProduct.stream().map(Image::getImg).collect(Collectors.toList());
+                List<ProductsDTO> dtos = MapperUtil.mapList(productsList, ProductsDTO.class);
+                for (ProductsDTO dto : dtos) {
+                    dto.setImg(imgsProduct);
+                }
+                categoryDTO.setProductsDTOS(dtos);
+
             } else {
                 List<Integer> categoryIdsNoChild = categoryList.stream().map(Category::getId).collect(Collectors.toList());
                 List<Products> products = this.productRepository.findAllByStatusAndCategoryIdIn(true, categoryIdsNoChild);
-                categoryDTO.setProducts(products);
+                List<Integer> productIds = products.stream().map(Products::getId).collect(Collectors.toList());
+                List<Image> imagesProduct = this.imageRepository.findByDetailIdInAndType(productIds, 2);
+                List<String> imgsProduct = imagesProduct.stream().map(Image::getImg).collect(Collectors.toList());
+                List<ProductsDTO> dtos = MapperUtil.mapList(products, ProductsDTO.class);
+                for (ProductsDTO dto : dtos) {
+                    dto.setImg(imgsProduct);
+                }
+                categoryDTO.setProductsDTOS(dtos);
             }
             categoryDTO.setCategoryList(categoryList);
 
