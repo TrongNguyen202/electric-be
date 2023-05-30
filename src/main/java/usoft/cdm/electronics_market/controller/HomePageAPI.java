@@ -25,7 +25,7 @@ public class HomePageAPI {
         return this.productService.getAllProductAndCategoryForHome();
     }
 
-    @GetMapping("/product")
+    @PostMapping("/product")
     public ResponseEntity<?> getAllProductFromCategoryId(@RequestParam Integer categoryId, @RequestBody ProductsDTO dto, Pageable pageable) {
         return ResponseUtil.ok(this.productService.getAllProductFromCategoryId(categoryId, pageable, dto));
     }
