@@ -26,6 +26,10 @@ public class BrandAPI {
         return brandService.getById(id);
     }
 
+    @GetMapping("search")
+    private ResponseEntity<?> getById(@RequestParam String name){
+        return brandService.search(name);
+    }
 
     @GetMapping("/list")
     private ResponseEntity<?> getAllList() {

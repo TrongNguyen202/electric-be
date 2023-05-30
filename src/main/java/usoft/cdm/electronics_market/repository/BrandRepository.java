@@ -11,4 +11,5 @@ public interface BrandRepository extends JpaRepository<Brand, Integer>, BrandRep
     List<Brand> findAllByType(String type);
 
     List<Brand> findAllByStatus(Boolean status);
+    List<Brand> findAllByNameContaining(String name);
 }
