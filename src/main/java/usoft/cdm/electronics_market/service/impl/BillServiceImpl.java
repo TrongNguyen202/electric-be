@@ -50,7 +50,8 @@ public class BillServiceImpl implements BillService {
                 bill.getPhone(),
                 bill.getEmail(),
                 bill.getFullname(),
-                bill.getAddressTransfer()
+                bill.getAddressTransfer(),
+                bill.getStatus()
         );
         List<Integer> list = billDetailRepository.findAllProductIdByBillId(bill.getId());
         response.setProduct(productRepository.findAllByIdInBill(list));

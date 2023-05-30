@@ -22,10 +22,11 @@ public class BillResponse {
     private String email;
     private String fullname;
     private String addressTransfer;
+    private Integer status;
     private List<ProductBill> product;
     private List<Voucher> voucher;
 
-    public BillResponse(String code, Double transportFee, String paymentMethod, Double price, Double totalPrice, String note, String phone, String email, String fullname, String addressTransfer) {
+    public BillResponse(String code, Double transportFee, String paymentMethod, Double price, Double totalPrice, String note, String phone, String email, String fullname, String addressTransfer, Integer status) {
         this.code = code;
         this.transportFee = transportFee;
         this.paymentMethod = paymentMethod;
@@ -36,5 +37,6 @@ public class BillResponse {
         this.email = email;
         this.fullname = fullname;
         this.addressTransfer = addressTransfer;
+        this.status = status;
     }
 }
