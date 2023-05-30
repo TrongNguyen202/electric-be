@@ -33,6 +33,16 @@ public class ProductAPI {
         return this.productService.getByProductId(productId);
     }
 
+    @GetMapping("search-category")
+    public ResponseEntity<?> searchByCategory(@RequestParam(required = false) Integer categoryId, Pageable pageable) {
+        return ResponseUtil.ok(this.productService.searchByCategory(categoryId, pageable));
+    }
+
+    @GetMapping("search-name")
+    public ResponseEntity<?> searchByName(@RequestParam(required = false) String name, Pageable pageable) {
+        return ResponseUtil.ok(this.productService.searchByName(name, pageable));
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationExceptions(
