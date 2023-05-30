@@ -3,8 +3,11 @@ package usoft.cdm.electronics_market.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import usoft.cdm.electronics_market.entities.Products;
+import usoft.cdm.electronics_market.model.bill.ProductBill;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +29,11 @@ public interface ProductRepository extends JpaRepository<Products, Integer>, Pro
 
     List<Products> findByStatusAndWarehouseId(Boolean status, Integer warehouseId);
 
+    @Query("SELECT new usoft.cdm.electronics_market.model.bill.ProductBill" +
+            " (bd.id, bd.billId, p.code, p.name, bd.quantity, bd.priceSell)" +
+            " FROM Products p, BillDetail bd" +
+            " WHERE p.id = bd.productId AND bd.id IN :ids")
+    List<ProductBill> findAllByIdInBill(@Param("ids") List<Integer> ids);
     List<Products> findAllByIdIn(List<Integer> ids);
 
     List<Products> findAllByStatusAndCategoryIdIn(Boolean status, List<Integer> categoryIds);

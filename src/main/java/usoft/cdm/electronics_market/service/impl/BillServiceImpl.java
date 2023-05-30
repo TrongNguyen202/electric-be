@@ -49,10 +49,11 @@ public class BillServiceImpl implements BillService {
                 bill.getNote(),
                 bill.getPhone(),
                 bill.getEmail(),
-                bill.getFullname()
+                bill.getFullname(),
+                bill.getAddressTransfer()
         );
         List<Integer> list = billDetailRepository.findAllProductIdByBillId(bill.getId());
-        response.setProduct(productRepository.findAllByIdIn(list));
+        response.setProduct(productRepository.findAllByIdInBill(list));
         List<Voucher> vouchers = new ArrayList<>();
         vouchers.add(new Voucher());
         response.setVoucher(vouchers);
@@ -151,7 +152,7 @@ public class BillServiceImpl implements BillService {
         if (bill == null)
             return null;
         List<Integer> list = billDetailRepository.findAllProductIdByBillId(bill.getId());
-        return ResponseUtil.ok(productRepository.findAllByIdIn(list));
+        return ResponseUtil.ok(productRepository.findAllByIdInBill(list));
     }
 
     @Override
