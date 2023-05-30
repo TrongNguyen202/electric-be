@@ -83,6 +83,20 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<Category> findAllCategoryNoChild() {
+        List<Category> categories = this.categoryRepository.findAllByParentIdIsNullAndStatus(true);
+        List<Category> categoriesNew = new ArrayList<>();
+        for (Category category : categories) {
+            List<Category> categoryList = this.categoryRepository.findByParentIdAndStatus(category.getId(), true);
+            if (categoryList.size() == 0) {
+                categoriesNew.add(category);
+            }
+        }
+        System.out.println(categoriesNew);
+        return categoriesNew;
+    }
+
+    @Override
     public ResponseEntity<?> displayById(Integer idCategory) {
         Optional<Category> optionalCategory = this.categoryRepository.findById(idCategory);
         if (optionalCategory.isEmpty()) {

@@ -2,6 +2,8 @@ package usoft.cdm.electronics_market.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import usoft.cdm.electronics_market.constant.Message;
 import usoft.cdm.electronics_market.entities.*;
 import usoft.cdm.electronics_market.model.*;
 import usoft.cdm.electronics_market.repository.*;
+import usoft.cdm.electronics_market.service.CategoryService;
 import usoft.cdm.electronics_market.service.ProductService;
 import usoft.cdm.electronics_market.service.UserService;
 import usoft.cdm.electronics_market.util.MapperUtil;
@@ -69,6 +72,12 @@ public class ProductServiceImpl implements ProductService {
             List<String> imgs = image.stream().map(Image::getImg).collect(Collectors.toList());
             ProductsDTO productsDTO = MapperUtil.map(optionalProducts.get(), ProductsDTO.class);
             productsDTO.setImg(imgs);
+            Category category = this.categoryRepository.findById(productsDTO.getCategoryId()).orElseThrow();
+            productsDTO.setCategoryName(category.getName());
+            Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
+            productsDTO.setBrandName(brand.getName());
+            Warehouse warehouse = this.warehouseRepository.findById(productsDTO.getWarehouseId()).orElseThrow();
+            productsDTO.setWarehouseName(warehouse.getName());
             List<TitleAttribute> titleAttributes = this.titleAttibuteRepository.findByProductId(productId);
             List<TitleAttributeDTO> titleAttributeDTOS = MapperUtil.mapList(titleAttributes, TitleAttributeDTO.class);
             for (TitleAttributeDTO titleAttributeDTO : titleAttributeDTOS) {
@@ -176,27 +185,29 @@ public class ProductServiceImpl implements ProductService {
                 images.add(image);
             }
             this.imageRepository.saveAll(images);
-            for (TitleAttributeDTO titleAttributeDTO : titleAttributeDTOs) {
-                Optional<TitleAttribute> optionalTitleAttribute = this.titleAttibuteRepository.findById(titleAttributeDTO.getId());
-                if (optionalTitleAttribute.isEmpty()) {
-                    throw new BadRequestException("Không tìm thấy id tiêu đề thuộc tính");
-                } else {
-                    TitleAttribute titleAttribute = MapperUtil.map(titleAttributeDTO, TitleAttribute.class);
-                    titleAttribute.setProductId(products.getId());
-                    this.titleAttibuteRepository.save(titleAttribute);
-                    titleAttributeDTO.getAttributeDTOS().forEach(attributeDTO -> {
-                        Optional<Attribute> optionalAttribute = this.attributeRepository.findById(attributeDTO.getId());
-                        if (optionalAttribute.isEmpty()) {
-                            throw new BadRequestException("Không tìm thấy id thuộc tính");
-                        } else {
-                            Attribute attribute = MapperUtil.map(attributeDTO, Attribute.class);
-                            attribute.setTitleAttributeId(titleAttribute.getId());
-                            this.attributeRepository.save(attribute);
-                        }
-                    });
-                }
-            }
 
+            List<TitleAttribute> titleAttributes = this.titleAttibuteRepository.findByProductId(products.getId());
+            List<Integer> titleAttributesIds = titleAttributes.stream().map(TitleAttribute::getId).collect(Collectors.toList());
+            List<Attribute> attributes = this.attributeRepository.findByTitleAttributeIdIn(titleAttributesIds);
+            this.attributeRepository.deleteAll(attributes);
+            this.titleAttibuteRepository.deleteAll(titleAttributes);
+            for (TitleAttributeDTO titleAttributeDTO : titleAttributeDTOs) {
+                TitleAttribute titleAttribute = TitleAttribute
+                        .builder()
+                        .name(titleAttributeDTO.getName())
+                        .productId(products.getId())
+                        .build();
+                TitleAttribute titleAttributeNew = this.titleAttibuteRepository.save(titleAttribute);
+                titleAttributeDTO.getAttributeDTOS().forEach(attributeDTO -> {
+                    Attribute attribute = Attribute
+                            .builder()
+                            .titleAttributeId(titleAttributeNew.getId())
+                            .name(attributeDTO.getName())
+                            .value(attributeDTO.getValue())
+                            .build();
+                    this.attributeRepository.save(attribute);
+                });
+            }
 
         }
         return ResponseUtil.ok(optionalProducts.get());
@@ -219,35 +230,35 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ResponseEntity<?> getAllProductAndCategoryForHome() {
-        List<Category> categories = this.categoryRepository.findAllByStatus(true);
+        List<Category> categories = this.categoryRepository.findAllByParentIdIsNullAndStatus(true);
         List<Integer> categoryIds = categories.stream().map(Category::getId).collect(Collectors.toList());
         List<Image> images = this.imageRepository.findByDetailIdInAndType(categoryIds, 1);
         List<String> imgs = images.stream().map(Image::getImg).collect(Collectors.toList());
         Random random = new Random();
         int randomIndex = random.nextInt(imgs.size());
         String imgRandom = imgs.get(randomIndex);
-        List<Category> categoryList = this.categoryRepository.findAllByStatusAndParentIdIn(true, categoryIds);
         List<CategoryDTO> categoryDTOS = MapperUtil.mapList(categories, CategoryDTO.class);
         categoryDTOS.forEach(categoryDTO -> {
+            List<Category> categoryList = this.categoryRepository.findByParentIdAndStatus(categoryDTO.getId(), true);
+            if (categoryList.isEmpty()) {
+                List<Products> productsList = this.productRepository.findByStatusAndCategoryId(true, categoryDTO.getId());
+                categoryDTO.setProducts(productsList);
+            } else {
+                List<Integer> categoryIdsNoChild = categoryList.stream().map(Category::getId).collect(Collectors.toList());
+                List<Products> products = this.productRepository.findAllByStatusAndCategoryIdIn(true, categoryIdsNoChild);
+                categoryDTO.setProducts(products);
+            }
             categoryDTO.setCategoryList(categoryList);
+
             categoryDTO.setPicCategory(imgRandom);
+
         });
-        List<Products> products = this.productRepository.findAllByStatus(true);
-        List<Integer> productIds = products.stream().map(Products::getId).collect(Collectors.toList());
-        List<Image> imageProduct = this.imageRepository.findByDetailIdInAndType(productIds, 2);
-        List<String> imgProduct = imageProduct.stream().map(Image::getImg).collect(Collectors.toList());
-        List<ProductsDTO> productsDTOS = MapperUtil.mapList(products, ProductsDTO.class);
-        productsDTOS.forEach(productsDTO -> {
-            productsDTO.setImg(imgProduct);
-        });
-        Map<String, Object> map = new HashMap<>();
-        map.put("categories", categoryDTOS);
-        map.put("products", productsDTOS);
-        return ResponseUtil.ok(map);
+
+        return ResponseUtil.ok(categoryDTOS);
     }
 
     @Override
-    public ResponseEntity<?> getAllProductFromCategoryId(Integer categoryId) {
+    public Page<ProductsDTO> getAllProductFromCategoryId(Integer categoryId, Pageable pageable) {
         List<Products> products = this.productRepository.findByStatusAndCategoryId(true, categoryId);
         List<Integer> productIds = products.stream().map(Products::getId).collect(Collectors.toList());
         List<Image> imageProduct = this.imageRepository.findByDetailIdInAndType(productIds, 2);
@@ -262,7 +273,13 @@ public class ProductServiceImpl implements ProductService {
                 productsDTO.setDiscount(discountPercent);
             }
         });
-        return ResponseUtil.ok(productsDTOS);
+        int startIndex = (int) pageable.getOffset();
+        int endIndex = (int) ((pageable.getOffset() + pageable.getPageSize()) > productsDTOS.size() ?
+                productsDTOS.size() :
+                pageable.getOffset() + pageable.getPageSize());
+        List<ProductsDTO> dtosNew = productsDTOS.subList(startIndex, endIndex);
+        Page<ProductsDTO> productsDTOPageable = new PageImpl<>(dtosNew, pageable, productsDTOS.size());
+        return productsDTOPageable;
     }
 
     @Override
