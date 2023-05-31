@@ -72,6 +72,7 @@ public class ProductsDTO extends BaseModel {
     private String brandName;
     private String warehouseName;
     private Integer sumProduct;
+    private String condition;
 
     private List<Price> price;
     private List<Integer> brandIds;
