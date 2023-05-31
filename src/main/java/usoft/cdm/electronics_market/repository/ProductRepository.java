@@ -34,6 +34,7 @@ public interface ProductRepository extends JpaRepository<Products, Integer>, Pro
             " FROM Products p, BillDetail bd" +
             " WHERE p.id = bd.productId AND bd.id IN :ids")
     List<ProductBill> findAllByIdInBill(@Param("ids") List<Integer> ids);
+
     List<Products> findAllByIdIn(List<Integer> ids);
 
     List<Products> findAllByStatusAndCategoryIdIn(Boolean status, List<Integer> categoryIds);
@@ -46,4 +47,8 @@ public interface ProductRepository extends JpaRepository<Products, Integer>, Pro
     @Query("SELECT p FROM Products p where p.status = true AND p.name LIKE %:name%")
     Page<Products> searchByName(Pageable pageable, @Param("name") String name);
 
+    @Query("SELECT count(p.id) FROM Products p where p.status = true AND p.categoryId = :category " +
+            "AND (p.priceSell between :from AND :to)")
+    Integer sumProduct(@Param("category") Integer category,
+                       @Param("from") Double priceFrom, @Param("to") Double priceTo);
 }
