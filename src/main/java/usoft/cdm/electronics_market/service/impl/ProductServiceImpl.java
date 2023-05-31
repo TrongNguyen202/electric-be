@@ -263,9 +263,9 @@ public class ProductServiceImpl implements ProductService {
                 List<String> imgsProduct = imagesProduct.stream().map(Image::getImg).collect(Collectors.toList());
                 List<ProductsDTO> dtos = MapperUtil.mapList(productsList, ProductsDTO.class);
                 for (ProductsDTO dto : dtos) {
+                    dto.setImg(imgsProduct);
                     Brand brand = this.brandRepository.findById(dto.getBrandId()).orElseThrow();
                     dto.setBrandName(brand.getName());
-                    dto.setImg(imgsProduct);
                     if (null == dto.getPriceAfterSale()) {
                         dto.setDiscount(0.0);
                     } else {
@@ -285,6 +285,15 @@ public class ProductServiceImpl implements ProductService {
                 List<ProductsDTO> dtos = MapperUtil.mapList(products, ProductsDTO.class);
                 for (ProductsDTO dto : dtos) {
                     dto.setImg(imgsProduct);
+                    Brand brand = this.brandRepository.findById(dto.getBrandId()).orElseThrow();
+                    dto.setBrandName(brand.getName());
+                    if (null == dto.getPriceAfterSale()) {
+                        dto.setDiscount(0.0);
+                    } else {
+                        Double discountPercent = (dto.getPriceAfterSale() / dto.getPriceSell()) * 100;
+                        Double discount = 100 - discountPercent;
+                        dto.setDiscount(discount);
+                    }
                 }
                 categoryDTO.setProductsDTOS(dtos);
             }
