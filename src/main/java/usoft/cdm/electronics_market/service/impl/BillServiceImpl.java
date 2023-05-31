@@ -137,6 +137,7 @@ public class BillServiceImpl implements BillService {
             billDetail.setBillId(bill.getId());
             details.add(billDetail);
         }
+        bill.setPaymentMethod(shop.getPaymentMethod());
         bill.setTotalPrice(totalPrice);
         billDetailRepository.saveAll(details);
         if (!list.isEmpty())
