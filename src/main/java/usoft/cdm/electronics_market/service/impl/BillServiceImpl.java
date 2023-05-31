@@ -129,7 +129,9 @@ public class BillServiceImpl implements BillService {
                     list.remove(billDetail);
             }
             assert billDetail != null;
-            if (billDetail.getProductId() == null)
+            if (c.getProductId() != null)
+                billDetail.setProductId(c.getProductId());
+            else
                 return ResponseUtil.badRequest("Id sản phẩm null!");
             Optional<Products> products = productRepository.findByIdAndStatus(billDetail.getProductId(), true);
             if (products.isEmpty())
