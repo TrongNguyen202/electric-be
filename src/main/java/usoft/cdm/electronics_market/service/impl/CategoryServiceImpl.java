@@ -119,10 +119,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Page<CategoryDTO> findByAll(Pageable pageable) {
         Page<Category> categoryPage = this.categoryRepository.findAllByParentIdIsNullAndStatus(pageable, true);
-        List<Integer> categoryIds = categoryPage.stream().map(Category::getId).collect(Collectors.toList());
-        List<Category> categoryList = this.categoryRepository.findAllByStatusAndParentIdIn(true, categoryIds);
         Page<CategoryDTO> categoryDTOS = MapperUtil.mapEntityPageIntoDtoPage(categoryPage, CategoryDTO.class);
         for (CategoryDTO dto : categoryDTOS) {
+            List<Category> categoryList = this.categoryRepository.findByParentIdAndStatus(dto.getId(), true);
             dto.setCategoryList(categoryList);
         }
         return categoryDTOS;
