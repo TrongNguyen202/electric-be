@@ -125,10 +125,12 @@ public class BillServiceImpl implements BillService {
             BillDetail billDetail = new BillDetail();
             if (c.getId() != null) {
                 billDetail = list.stream().filter(x -> x.getProductId().equals(c.getProductId())).findAny().orElse(null);
-                if (billDetail == null)
-                    return ResponseUtil.badRequest("Id sản phẩm trong giỏ không đúng!");
-                list.remove(billDetail);
+                if (billDetail != null)
+                    list.remove(billDetail);
             }
+            assert billDetail != null;
+            if (billDetail.getProductId() == null)
+                return ResponseUtil.badRequest("Id sản phẩm null!");
             Optional<Products> products = productRepository.findByIdAndStatus(billDetail.getProductId(), true);
             if (products.isEmpty())
                 return ResponseUtil.badRequest("Sản phẩm không còn bán!");
