@@ -99,11 +99,15 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public ResponseEntity<?> shop(Shop shop) {
-        Users users = userService.getCurrentUser();
         Bill bill = new Bill();
-        if (users != null) {
-            bill = billRepository.findByUserIdAndStatus(users.getId(), 1).orElse(new Bill());
-            bill.setUserId(users.getId());
+        try {
+            Users users = userService.getCurrentUser();
+            if (users != null) {
+                bill = billRepository.findByUserIdAndStatus(users.getId(), 1).orElse(new Bill());
+                bill.setUserId(users.getId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         bill.setPrice(shop.getPrice());
         double totalPrice = 0d;
