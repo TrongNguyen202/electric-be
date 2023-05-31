@@ -63,7 +63,10 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                     sql.append(" OR ");
                 String priceFrom = "from" + cnt;
                 String priceTo = "to" + cnt;
-                sql.append(" (p.price_sell BETWEEN :").append(priceFrom).append(" AND :").append(priceTo).append(")");
+                if (priceTo != null)
+                    sql.append(" (p.price_sell BETWEEN :").append(priceFrom).append(" AND :").append(priceTo).append(")");
+                else
+                    sql.append(" (p.price_sell > 200000000)");
                 params.put(priceFrom, x.getFrom());
                 params.put(priceTo, x.getTo());
                 check = false;

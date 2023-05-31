@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import usoft.cdm.electronics_market.config.expection.BadRequestException;
 import usoft.cdm.electronics_market.constant.Message;
+import usoft.cdm.electronics_market.constant.PriceRange;
 import usoft.cdm.electronics_market.entities.Category;
 import usoft.cdm.electronics_market.entities.Image;
 import usoft.cdm.electronics_market.entities.Products;
 import usoft.cdm.electronics_market.entities.Users;
 import usoft.cdm.electronics_market.model.BrandDTO;
 import usoft.cdm.electronics_market.model.CategoryDTO;
+import usoft.cdm.electronics_market.model.PriceRangeModel;
 import usoft.cdm.electronics_market.model.ProductsDTO;
 import usoft.cdm.electronics_market.repository.BrandRepository;
 import usoft.cdm.electronics_market.repository.CategoryRepository;
@@ -43,6 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final ProductRepository productRepository;
 
     private final BrandRepository brandRepository;
+
 
     @Override
     public ResponseEntity<?> save(CategoryDTO dto, List<String> imgList) {
@@ -136,10 +139,21 @@ public class CategoryServiceImpl implements CategoryService {
         List<Category> categories = this.categoryRepository.findAllByParentIdAndStatus(categoryId, true);
         Page<BrandDTO> brandDTOS = this.brandRepository.getAllBrandByCategoryId(categoryId, pageable);
         Page<ProductsDTO> productsDTOS = this.productRepository.getAllMadeByProducts(categoryId, pageable);
+        List<PriceRangeModel> list = PriceRange.list;
+        List<PriceRangeModel> res = new ArrayList<>();
+        for (PriceRangeModel rangeModel : list) {
+            Integer sumProduct = this.productRepository.sumProduct(categoryId, rangeModel.getPriceFrom(), rangeModel.getPriceTo());
+            rangeModel.setQuantity(sumProduct);
+            if (sumProduct > 0) {
+                res.add(rangeModel);
+            }
+        }
+
         Map<String, Object> map = new HashMap<>();
         map.put("categories", categories);
         map.put("brandDTOS", brandDTOS);
         map.put("productsDTOS", productsDTOS);
+        map.put("Khoảng giá ", res);
         return ResponseUtil.ok(map);
     }
 
