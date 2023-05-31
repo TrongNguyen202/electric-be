@@ -148,13 +148,18 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public ResponseEntity<?> getCart() {
-        Users users = userService.getCurrentUser();
-        if (users == null)
-            return null;
-        Bill bill = billRepository.findByUserIdAndStatus(users.getId(), 1).orElse(null);
-        if (bill == null)
-            return null;
-        List<Integer> list = billDetailRepository.findAllProductIdByBillId(bill.getId());
+        List<Integer> list = new ArrayList<>();
+        try {
+            Users users = userService.getCurrentUser();
+            if (users == null)
+                return null;
+            Bill bill = billRepository.findByUserIdAndStatus(users.getId(), 1).orElse(null);
+            if (bill == null)
+                return null;
+            list = billDetailRepository.findAllProductIdByBillId(bill.getId());
+        } catch (Exception e) {
+            return ResponseUtil.badRequest(e.getMessage());
+        }
         return ResponseUtil.ok(productRepository.findAllByIdInBill(list));
     }
 
