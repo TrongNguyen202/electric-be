@@ -85,6 +85,20 @@ public class ProductServiceImpl implements ProductService {
                 List<AttributeDTO> attributeDTOS = MapperUtil.mapList(attributes, AttributeDTO.class);
                 titleAttributeDTO.setAttributeDTOS(attributeDTOS);
             }
+            if (null == productsDTO.getPriceAfterSale()) {
+                productsDTO.setDiscount(0.0);
+            } else {
+                Double discountPercent = (productsDTO.getPriceAfterSale() / productsDTO.getPriceSell()) * 100;
+                Double discount = 100 - discountPercent;
+                productsDTO.setDiscount(discount);
+            }
+            if (productsDTO.getQuantity() > 0) {
+                productsDTO.setCondition("Còn hàng");
+            } else if (null == productsDTO.getQuantity()) {
+                productsDTO.setCondition("Hết hàng");
+            } else {
+                productsDTO.setCondition("Hết hàng");
+            }
             productsDTO.setDto(titleAttributeDTOS);
             return ResponseUtil.ok(productsDTO);
         }
@@ -335,7 +349,8 @@ public class ProductServiceImpl implements ProductService {
                 productsDTO.setDiscount(0.0);
             } else {
                 Double discountPercent = (productsDTO.getPriceAfterSale() / productsDTO.getPriceSell()) * 100;
-                productsDTO.setDiscount(discountPercent);
+                Double discount = 100 - discountPercent;
+                productsDTO.setDiscount(discount);
             }
         });
         return ResponseUtil.ok(productsDTOS);
