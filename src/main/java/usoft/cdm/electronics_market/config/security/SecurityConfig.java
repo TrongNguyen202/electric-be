@@ -56,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/v1/user/login", "/api/v1/homepage/**").permitAll() // Cho phép tất cả mọi người truy cập vào địa chỉ này
-                .antMatchers("/api/v1/bill","/api/v1/bill/getCart", "/api/v1/bill/shop").permitAll() // Cho phép tất cả mọi người truy cập vào địa chỉ này
+                .antMatchers("/api/v1/bill", "/api/v1/bill/getCart", "/api/v1/bill/shop").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/product").permitAll()
                 .antMatchers("/static/upload/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/user").hasAnyAuthority("1")
