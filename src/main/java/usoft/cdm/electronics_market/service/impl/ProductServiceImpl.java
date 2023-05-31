@@ -313,8 +313,7 @@ public class ProductServiceImpl implements ProductService {
         List<Image> imageProductSearch = this.imageRepository.findByDetailIdInAndType(productIdsSearch, 2);
         List<String> imgProductSearch = imageProductSearch.stream().map(Image::getImg).collect(Collectors.toList());
         productsDTOSSearch.forEach(productsDTO -> {
-            Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
-            productsDTO.setBrandName(brand.getName());
+
             productsDTO.setImg(imgProductSearch);
             if (null == productsDTO.getPriceAfterSale()) {
                 productsDTO.setDiscount(0.0);
