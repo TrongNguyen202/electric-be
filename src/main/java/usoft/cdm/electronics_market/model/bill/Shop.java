@@ -19,6 +19,7 @@ public class Shop {
     private String phone;
     private String email;
     private String fullname;
+    private String addressTransfer;
     private List<Cart> cart;
     private List<Integer> voucherId;
 }

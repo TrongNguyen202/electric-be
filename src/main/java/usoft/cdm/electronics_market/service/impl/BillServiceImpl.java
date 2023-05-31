@@ -111,6 +111,7 @@ public class BillServiceImpl implements BillService {
         bill.setEmail(shop.getEmail());
         bill.setStatus(2);
         bill.setPhone(shop.getPhone());
+        bill.setAddressTransfer(shop.getAddressTransfer());
         List<BillDetail> list = new ArrayList<>();
         if (bill.getId() != null)
             list = billDetailRepository.findAllByBillId(bill.getId());
