@@ -37,7 +37,7 @@ public class ImageServiceImpl implements ImageService {
             try (OutputStream os = Files.newOutputStream(path)) {
                 os.write(file.getBytes());
             }
-            return "/" + staticPath + "/" + imagePath + "/" + filename;
+            return "/" + imagePath + "/" + filename;
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -57,7 +57,7 @@ public class ImageServiceImpl implements ImageService {
                 try (OutputStream os = Files.newOutputStream(path)) {
                     os.write(file.getBytes());
                 }
-                img.add("/" + staticPath + "/" + imagePath + "/" + filename);
+                img.add("/" + imagePath + "/" + filename);
             }
             return img;
         } catch (Exception e) {
