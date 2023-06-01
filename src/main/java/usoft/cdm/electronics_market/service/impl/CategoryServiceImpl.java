@@ -152,7 +152,7 @@ public class CategoryServiceImpl implements CategoryService {
         map.put("categories", categories);
         map.put("brandDTOS", brandDTOS);
         map.put("productsDTOS", productsDTOS);
-        map.put("Khoảng giá ", res);
+        map.put("priceRange ", res);
         return ResponseUtil.ok(map);
     }
 
