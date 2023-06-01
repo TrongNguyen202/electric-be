@@ -112,8 +112,12 @@ public class BillServiceImpl implements BillService {
         bill.setPrice(shop.getPrice());
         double totalPrice = 0d;
         bill.setFullname(shop.getFullname());
+        if (shop.getEmail() != null && shop.getEmail().matches("\\w+@\\w+[.]\\w+([.]\\w+)?"))
+            return ResponseUtil.badRequest("Email không đúng định dạng!");
         bill.setEmail(shop.getEmail());
         bill.setStatus(2);
+        if (!shop.getPhone().matches("^0\\d{9,10}$"))
+            return ResponseUtil.badRequest("Số điện thoại chỉ được nhập số!");
         bill.setPhone(shop.getPhone());
         bill.setAddressTransfer(shop.getAddressTransfer());
         List<BillDetail> list = new ArrayList<>();
@@ -137,6 +141,10 @@ public class BillServiceImpl implements BillService {
             if (products.isEmpty())
                 return ResponseUtil.badRequest("Sản phẩm không còn bán!");
             Products p = products.get();
+            if (c.getQuantity() <= 0)
+                return ResponseUtil.badRequest("Số lượng phải lớn hơn 0!");
+            if (c.getQuantity() > p.getQuantity())
+                return ResponseUtil.badRequest("Số lượng trong kho không đủ!");
             billDetail.setQuantity(c.getQuantity());
             billDetail.setProductId(c.getProductId());
             double price = p.getPriceAfterSale() == null ? p.getPriceSell() : p.getPriceAfterSale();
