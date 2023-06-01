@@ -22,9 +22,8 @@ import java.util.List;
 public class ImageServiceImpl implements ImageService {
     private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
     private final Path staticPath = Paths.get("static");
-    private final Path imagePath = Paths.get("upload");
+    private final Path imagePath = Paths.get("images");
 
-    private final ImageRepository imageRepository;
 
     @Override
     public String uploadFile(MultipartFile file) {
