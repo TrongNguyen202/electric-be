@@ -255,11 +255,7 @@ public class ProductServiceImpl implements ProductService {
                 List<Products> productsList = this.productRepository.findByStatusAndCategoryId(true, categoryDTO.getId());
                 List<ProductsDTO> dtos = MapperUtil.mapList(productsList, ProductsDTO.class);
                 for (ProductsDTO dto : dtos) {
-                    List<String> imgsProduct = getImgs(dto.getId(), 2);
-                    dto.setImg(imgsProduct);
-                    Brand brand = this.brandRepository.findById(dto.getBrandId()).orElseThrow();
-                    dto.setBrandName(brand.getName());
-                    setDiscount(dto);
+                    displaySet(dto, 2);
                 }
                 categoryDTO.setProductsDTOS(dtos);
 
@@ -268,11 +264,7 @@ public class ProductServiceImpl implements ProductService {
                     List<Products> products = this.productRepository.findByStatusAndCategoryId(true, category.getId());
                     List<ProductsDTO> dtos = MapperUtil.mapList(products, ProductsDTO.class);
                     for (ProductsDTO dto : dtos) {
-                        List<String> imgsProduct = getImgs(dto.getId(), 2);
-                        dto.setImg(imgsProduct);
-                        Brand brand = this.brandRepository.findById(dto.getBrandId()).orElseThrow();
-                        dto.setBrandName(brand.getName());
-                        setDiscount(dto);
+                        displaySet(dto, 2);
                     }
                     categoryDTO.setProductsDTOS(dtos);
                 }
@@ -307,11 +299,7 @@ public class ProductServiceImpl implements ProductService {
         products.remove(product);
         List<ProductsDTO> productsDTOS = MapperUtil.mapList(products, ProductsDTO.class);
         productsDTOS.forEach(productsDTO -> {
-            List<String> imgProduct = getImgs(productsDTO.getId(), 2);
-            Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
-            productsDTO.setBrandName(brand.getName());
-            productsDTO.setImg(imgProduct);
-            setDiscount(productsDTO);
+            displaySet(productsDTO, 2);
         });
         return ResponseUtil.ok(productsDTOS);
     }
@@ -326,11 +314,7 @@ public class ProductServiceImpl implements ProductService {
         products.remove(product);
         List<ProductsDTO> productsDTOS = MapperUtil.mapList(products, ProductsDTO.class);
         productsDTOS.forEach(productsDTO -> {
-            List<String> imgProduct = getImgs(productsDTO.getId(), 2);
-            Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
-            productsDTO.setBrandName(brand.getName());
-            productsDTO.setImg(imgProduct);
-            setDiscount(productsDTO);
+            displaySet(productsDTO, 2);
         });
         return ResponseUtil.ok(productsDTOS);
     }
@@ -361,6 +345,15 @@ public class ProductServiceImpl implements ProductService {
             Double discount = 100 - discountPercent;
             dto.setDiscount(discount);
         }
+    }
+
+    //set(Brand,Img,Discount)
+    private void displaySet(ProductsDTO productsDTO, Integer type) {
+        List<String> imgProduct = getImgs(productsDTO.getId(), type);
+        Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
+        productsDTO.setBrandName(brand.getName());
+        productsDTO.setImg(imgProduct);
+        setDiscount(productsDTO);
     }
 
 
