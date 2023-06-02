@@ -19,8 +19,6 @@ public interface ProductRepository extends JpaRepository<Products, Integer>, Pro
 
     Optional<Products> findByIdAndStatus(Integer id, Boolean status);
 
-//    List<Products> findAllByStatus(Boolean status);
-
     Optional<Products> findByCodeAndStatus(String code, Boolean status);
 
     List<Products> findByStatusAndCategoryId(Boolean status, Integer categoryId);
@@ -35,9 +33,7 @@ public interface ProductRepository extends JpaRepository<Products, Integer>, Pro
             " WHERE p.id = bd.productId AND bd.id IN :ids")
     List<ProductBill> findAllByIdInBill(@Param("ids") List<Integer> ids);
 
-    List<Products> findAllByIdIn(List<Integer> ids);
-
-    List<Products> findAllByStatusAndCategoryIdIn(Boolean status, List<Integer> categoryIds);
+//    List<Products> findAllByStatusAndCategoryIdIn(Boolean status, List<Integer> categoryIds);
 
     List<Products> findByBrandId(Integer brandId);
 
