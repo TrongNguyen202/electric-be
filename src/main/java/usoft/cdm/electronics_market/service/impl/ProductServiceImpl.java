@@ -247,22 +247,20 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseEntity<?> getAllProductAndCategoryForHome() {
         List<Category> categories = this.categoryRepository.findAllByParentIdIsNullAndStatus(true);
-        List<Integer> categoryIds = categories.stream().map(Category::getId).collect(Collectors.toList());
-        List<Image> images = this.imageRepository.findByDetailIdInAndType(categoryIds, 1);
-        List<String> imgs = images.stream().map(Image::getImg).collect(Collectors.toList());
-        Random random = new Random();
-        int randomIndex = random.nextInt(imgs.size());
-        String imgRandom = imgs.get(randomIndex);
         List<CategoryDTO> categoryDTOS = MapperUtil.mapList(categories, CategoryDTO.class);
         categoryDTOS.forEach(categoryDTO -> {
+            List<Image> images = this.imageRepository.findByDetailIdAndType(categoryDTO.getId(), 1);
+            List<String> imgs = images.stream().map(Image::getImg).collect(Collectors.toList());
+            Random random = new Random();
+            int randomIndex = random.nextInt(imgs.size());
+            String imgRandom = imgs.get(randomIndex);
             List<Category> categoryList = this.categoryRepository.findByParentIdAndStatus(categoryDTO.getId(), true);
             if (categoryList.isEmpty()) {
                 List<Products> productsList = this.productRepository.findByStatusAndCategoryId(true, categoryDTO.getId());
-                List<Integer> productIds = productsList.stream().map(Products::getId).collect(Collectors.toList());
-                List<Image> imagesProduct = this.imageRepository.findByDetailIdInAndType(productIds, 2);
-                List<String> imgsProduct = imagesProduct.stream().map(Image::getImg).collect(Collectors.toList());
                 List<ProductsDTO> dtos = MapperUtil.mapList(productsList, ProductsDTO.class);
                 for (ProductsDTO dto : dtos) {
+                    List<Image> imagesProduct = this.imageRepository.findByDetailIdAndType(dto.getId(), 2);
+                    List<String> imgsProduct = imagesProduct.stream().map(Image::getImg).collect(Collectors.toList());
                     dto.setImg(imgsProduct);
                     Brand brand = this.brandRepository.findById(dto.getBrandId()).orElseThrow();
                     dto.setBrandName(brand.getName());
@@ -277,28 +275,27 @@ public class ProductServiceImpl implements ProductService {
                 categoryDTO.setProductsDTOS(dtos);
 
             } else {
-                List<Integer> categoryIdsNoChild = categoryList.stream().map(Category::getId).collect(Collectors.toList());
-                List<Products> products = this.productRepository.findAllByStatusAndCategoryIdIn(true, categoryIdsNoChild);
-                List<Integer> productIds = products.stream().map(Products::getId).collect(Collectors.toList());
-                List<Image> imagesProduct = this.imageRepository.findByDetailIdInAndType(productIds, 2);
-                List<String> imgsProduct = imagesProduct.stream().map(Image::getImg).collect(Collectors.toList());
-                List<ProductsDTO> dtos = MapperUtil.mapList(products, ProductsDTO.class);
-                for (ProductsDTO dto : dtos) {
-                    dto.setImg(imgsProduct);
-                    Brand brand = this.brandRepository.findById(dto.getBrandId()).orElseThrow();
-                    dto.setBrandName(brand.getName());
-                    if (null == dto.getPriceAfterSale()) {
-                        dto.setDiscount(0.0);
-                    } else {
-                        Double discountPercent = (dto.getPriceAfterSale() / dto.getPriceSell()) * 100;
-                        Double discount = 100 - discountPercent;
-                        dto.setDiscount(discount);
+                for (Category category : categoryList) {
+                    List<Products> products = this.productRepository.findByStatusAndCategoryId(true, category.getId());
+                    List<ProductsDTO> dtos = MapperUtil.mapList(products, ProductsDTO.class);
+                    for (ProductsDTO dto : dtos) {
+                        List<Image> imagesProduct = this.imageRepository.findByDetailIdAndType(dto.getId(), 2);
+                        List<String> imgsProduct = imagesProduct.stream().map(Image::getImg).collect(Collectors.toList());
+                        dto.setImg(imgsProduct);
+                        Brand brand = this.brandRepository.findById(dto.getBrandId()).orElseThrow();
+                        dto.setBrandName(brand.getName());
+                        if (null == dto.getPriceAfterSale()) {
+                            dto.setDiscount(0.0);
+                        } else {
+                            Double discountPercent = (dto.getPriceAfterSale() / dto.getPriceSell()) * 100;
+                            Double discount = 100 - discountPercent;
+                            dto.setDiscount(discount);
+                        }
                     }
+                    categoryDTO.setProductsDTOS(dtos);
                 }
-                categoryDTO.setProductsDTOS(dtos);
             }
             categoryDTO.setCategoryList(categoryList);
-
             categoryDTO.setPicCategory(imgRandom);
 
         });
@@ -309,11 +306,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<ProductsDTO> getAllProductFromCategoryId(Integer categoryId, Pageable pageable, ProductsDTO dto) {
         Page<ProductsDTO> productsDTOSSearch = this.productRepository.findByBrandAndPriceAndMadeIn(categoryId, dto, pageable);
-        List<Integer> productIdsSearch = productsDTOSSearch.stream().map(ProductsDTO::getId).collect(Collectors.toList());
-        List<Image> imageProductSearch = this.imageRepository.findByDetailIdInAndType(productIdsSearch, 2);
-        List<String> imgProductSearch = imageProductSearch.stream().map(Image::getImg).collect(Collectors.toList());
         productsDTOSSearch.forEach(productsDTO -> {
-
+            List<Image> imageProductSearch = this.imageRepository.findByDetailIdAndType(productsDTO.getId(), 2);
+            List<String> imgProductSearch = imageProductSearch.stream().map(Image::getImg).collect(Collectors.toList());
             productsDTO.setImg(imgProductSearch);
             if (null == productsDTO.getPriceAfterSale()) {
                 productsDTO.setDiscount(0.0);
@@ -336,10 +331,10 @@ public class ProductServiceImpl implements ProductService {
         List<Products> products = this.productRepository.findByStatusAndCategoryId(true, product.getCategoryId());
         products.remove(product);
         List<Integer> productIds = products.stream().map(Products::getId).collect(Collectors.toList());
-        List<Image> imageProduct = this.imageRepository.findByDetailIdInAndType(productIds, 2);
-        List<String> imgProduct = imageProduct.stream().map(Image::getImg).collect(Collectors.toList());
         List<ProductsDTO> productsDTOS = MapperUtil.mapList(products, ProductsDTO.class);
         productsDTOS.forEach(productsDTO -> {
+            List<Image> imageProduct = this.imageRepository.findByDetailIdAndType(productsDTO.getId(), 2);
+            List<String> imgProduct = imageProduct.stream().map(Image::getImg).collect(Collectors.toList());
             Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
             productsDTO.setBrandName(brand.getName());
             productsDTO.setImg(imgProduct);
@@ -361,11 +356,10 @@ public class ProductServiceImpl implements ProductService {
         Products product = optionalProducts.get();
         List<Products> products = this.productRepository.findByStatusAndBrandId(true, product.getBrandId());
         products.remove(product);
-        List<Integer> productIds = products.stream().map(Products::getId).collect(Collectors.toList());
-        List<Image> imageProduct = this.imageRepository.findByDetailIdInAndType(productIds, 2);
-        List<String> imgProduct = imageProduct.stream().map(Image::getImg).collect(Collectors.toList());
         List<ProductsDTO> productsDTOS = MapperUtil.mapList(products, ProductsDTO.class);
         productsDTOS.forEach(productsDTO -> {
+            List<Image> imageProduct = this.imageRepository.findByDetailIdAndType(productsDTO.getId(), 2);
+            List<String> imgProduct = imageProduct.stream().map(Image::getImg).collect(Collectors.toList());
             Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
             productsDTO.setBrandName(brand.getName());
             productsDTO.setImg(imgProduct);
