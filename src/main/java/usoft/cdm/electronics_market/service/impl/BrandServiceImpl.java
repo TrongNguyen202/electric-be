@@ -69,7 +69,7 @@ public class BrandServiceImpl implements BrandService {
             if (optional.isEmpty())
                 return ResponseUtil.badRequest("Không tìm thấy id thương hiệu: x");
             Brand brand = optional.get();
-            if (productRepository.findByBrandId(brand.getId()).isPresent())
+            if (!productRepository.findByBrandId(brand.getId()).isEmpty())
                 return ResponseUtil.badRequest("Thương hiệu " + brand.getName() + "đã có sản phẩm");
             list.add(brand);
         }

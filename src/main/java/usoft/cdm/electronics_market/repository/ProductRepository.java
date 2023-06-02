@@ -39,7 +39,7 @@ public interface ProductRepository extends JpaRepository<Products, Integer>, Pro
 
     List<Products> findAllByStatusAndCategoryIdIn(Boolean status, List<Integer> categoryIds);
 
-    Optional<Products> findByBrandId(Integer brandId);
+    List<Products> findByBrandId(Integer brandId);
 
     @Query("SELECT p FROM Products p where p.status = true AND p.categoryId = :category")
     Page<Products> searchByCategory(Pageable pageable, @Param("category") Integer category);
