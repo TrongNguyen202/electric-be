@@ -32,4 +32,8 @@ public interface ProductService {
     Page<Products> searchByCategory(Integer categoryId, Pageable pageable);
 
     Page<Products> searchByName(String name, Pageable pageable);
+
+    List<String> getImgs(Integer id, Integer type);
+
+    void setDiscount(ProductsDTO dto);
 }

@@ -35,6 +35,5 @@ public interface CategoryService {
 
     Page<CategoryDTO> searchByName(Pageable pageable, String name);
 
-    List<Category> getForProduct();
 
 }

@@ -22,6 +22,7 @@ import usoft.cdm.electronics_market.repository.CategoryRepository;
 import usoft.cdm.electronics_market.repository.ImageRepository;
 import usoft.cdm.electronics_market.repository.ProductRepository;
 import usoft.cdm.electronics_market.service.CategoryService;
+import usoft.cdm.electronics_market.service.ProductService;
 import usoft.cdm.electronics_market.service.UserService;
 import usoft.cdm.electronics_market.util.MapperUtil;
 import usoft.cdm.electronics_market.util.ResponseUtil;
@@ -45,6 +46,8 @@ public class CategoryServiceImpl implements CategoryService {
     private final ProductRepository productRepository;
 
     private final BrandRepository brandRepository;
+
+    private final ProductService productService;
 
 
     @Override
@@ -98,7 +101,6 @@ public class CategoryServiceImpl implements CategoryService {
                 categoriesNew.add(category);
             }
         }
-        System.out.println(categoriesNew);
         return categoriesNew;
     }
 
@@ -109,8 +111,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new BadRequestException("Phải có id của thể loại");
         } else {
             CategoryDTO dto = MapperUtil.map(optionalCategory.get(), CategoryDTO.class);
-            List<Image> imageList = this.imageRepository.findByDetailIdAndType(dto.getId(), 1);
-            List<String> imgs = imageList.stream().map(Image::getImg).collect(Collectors.toList());
+            List<String> imgs = this.productService.getImgs(dto.getId(), 1);
             dto.setImageList(imgs);
             return ResponseUtil.ok(dto);
         }
@@ -261,18 +262,12 @@ public class CategoryServiceImpl implements CategoryService {
     public Page<CategoryDTO> searchByName(Pageable pageable, String name) {
         Page<Category> categoryPage = this.categoryRepository.searchByName(pageable, name);
         Page<CategoryDTO> categoryDTOS = MapperUtil.mapEntityPageIntoDtoPage(categoryPage, CategoryDTO.class);
-        List<Integer> categoryIds = categoryDTOS.stream().map(CategoryDTO::getId).collect(Collectors.toList());
-        List<Category> categoriesChild = this.categoryRepository.findAllByStatusAndParentIdIn(true, categoryIds);
         for (CategoryDTO dto : categoryDTOS) {
+            List<Category> categoriesChild = this.categoryRepository.findByParentIdAndStatus(dto.getId(), true);
             dto.setCategoryList(categoriesChild);
         }
         return categoryDTOS;
     }
 
-    @Override
-    public List<Category> getForProduct() {
-
-        return null;
-    }
 
 }

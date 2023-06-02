@@ -11,5 +11,4 @@ public interface AttributeRepository extends JpaRepository<Attribute, Integer> {
 
     List<Attribute> findByTitleAttributeId(Integer titleAttributeId);
 
-    List<Attribute> findByTitleAttributeIdIn(List<Integer> titleAttributeId);
 }

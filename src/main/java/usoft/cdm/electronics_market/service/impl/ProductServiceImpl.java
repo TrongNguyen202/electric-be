@@ -85,13 +85,8 @@ public class ProductServiceImpl implements ProductService {
                 List<AttributeDTO> attributeDTOS = MapperUtil.mapList(attributes, AttributeDTO.class);
                 titleAttributeDTO.setAttributeDTOS(attributeDTOS);
             }
-            if (null == productsDTO.getPriceAfterSale()) {
-                productsDTO.setDiscount(0.0);
-            } else {
-                Double discountPercent = (productsDTO.getPriceAfterSale() / productsDTO.getPriceSell()) * 100;
-                Double discount = 100 - discountPercent;
-                productsDTO.setDiscount(discount);
-            }
+
+            setDiscount(productsDTO);
             if (productsDTO.getQuantity() > 0) {
                 productsDTO.setCondition("Còn hàng");
             } else if (null == productsDTO.getQuantity()) {
@@ -203,9 +198,10 @@ public class ProductServiceImpl implements ProductService {
             this.imageRepository.saveAll(images);
 
             List<TitleAttribute> titleAttributes = this.titleAttibuteRepository.findByProductId(products.getId());
-            List<Integer> titleAttributesIds = titleAttributes.stream().map(TitleAttribute::getId).collect(Collectors.toList());
-            List<Attribute> attributes = this.attributeRepository.findByTitleAttributeIdIn(titleAttributesIds);
-            this.attributeRepository.deleteAll(attributes);
+            for (TitleAttribute titleAttribute : titleAttributes) {
+                List<Attribute> attributes = this.attributeRepository.findByTitleAttributeId(titleAttribute.getId());
+                this.attributeRepository.deleteAll(attributes);
+            }
             this.titleAttibuteRepository.deleteAll(titleAttributes);
             for (TitleAttributeDTO titleAttributeDTO : titleAttributeDTOs) {
                 TitleAttribute titleAttribute = TitleAttribute
@@ -244,13 +240,13 @@ public class ProductServiceImpl implements ProductService {
         return ResponseUtil.message(Message.REMOVE);
     }
 
+
     @Override
     public ResponseEntity<?> getAllProductAndCategoryForHome() {
         List<Category> categories = this.categoryRepository.findAllByParentIdIsNullAndStatus(true);
         List<CategoryDTO> categoryDTOS = MapperUtil.mapList(categories, CategoryDTO.class);
         categoryDTOS.forEach(categoryDTO -> {
-            List<Image> images = this.imageRepository.findByDetailIdAndType(categoryDTO.getId(), 1);
-            List<String> imgs = images.stream().map(Image::getImg).collect(Collectors.toList());
+            List<String> imgs = getImgs(categoryDTO.getId(), 1);
             Random random = new Random();
             int randomIndex = random.nextInt(imgs.size());
             String imgRandom = imgs.get(randomIndex);
@@ -259,18 +255,11 @@ public class ProductServiceImpl implements ProductService {
                 List<Products> productsList = this.productRepository.findByStatusAndCategoryId(true, categoryDTO.getId());
                 List<ProductsDTO> dtos = MapperUtil.mapList(productsList, ProductsDTO.class);
                 for (ProductsDTO dto : dtos) {
-                    List<Image> imagesProduct = this.imageRepository.findByDetailIdAndType(dto.getId(), 2);
-                    List<String> imgsProduct = imagesProduct.stream().map(Image::getImg).collect(Collectors.toList());
+                    List<String> imgsProduct = getImgs(dto.getId(), 2);
                     dto.setImg(imgsProduct);
                     Brand brand = this.brandRepository.findById(dto.getBrandId()).orElseThrow();
                     dto.setBrandName(brand.getName());
-                    if (null == dto.getPriceAfterSale()) {
-                        dto.setDiscount(0.0);
-                    } else {
-                        Double discountPercent = (dto.getPriceAfterSale() / dto.getPriceSell()) * 100;
-                        Double discount = 100 - discountPercent;
-                        dto.setDiscount(discount);
-                    }
+                    setDiscount(dto);
                 }
                 categoryDTO.setProductsDTOS(dtos);
 
@@ -279,18 +268,11 @@ public class ProductServiceImpl implements ProductService {
                     List<Products> products = this.productRepository.findByStatusAndCategoryId(true, category.getId());
                     List<ProductsDTO> dtos = MapperUtil.mapList(products, ProductsDTO.class);
                     for (ProductsDTO dto : dtos) {
-                        List<Image> imagesProduct = this.imageRepository.findByDetailIdAndType(dto.getId(), 2);
-                        List<String> imgsProduct = imagesProduct.stream().map(Image::getImg).collect(Collectors.toList());
+                        List<String> imgsProduct = getImgs(dto.getId(), 2);
                         dto.setImg(imgsProduct);
                         Brand brand = this.brandRepository.findById(dto.getBrandId()).orElseThrow();
                         dto.setBrandName(brand.getName());
-                        if (null == dto.getPriceAfterSale()) {
-                            dto.setDiscount(0.0);
-                        } else {
-                            Double discountPercent = (dto.getPriceAfterSale() / dto.getPriceSell()) * 100;
-                            Double discount = 100 - discountPercent;
-                            dto.setDiscount(discount);
-                        }
+                        setDiscount(dto);
                     }
                     categoryDTO.setProductsDTOS(dtos);
                 }
@@ -307,16 +289,9 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductsDTO> getAllProductFromCategoryId(Integer categoryId, Pageable pageable, ProductsDTO dto) {
         Page<ProductsDTO> productsDTOSSearch = this.productRepository.findByBrandAndPriceAndMadeIn(categoryId, dto, pageable);
         productsDTOSSearch.forEach(productsDTO -> {
-            List<Image> imageProductSearch = this.imageRepository.findByDetailIdAndType(productsDTO.getId(), 2);
-            List<String> imgProductSearch = imageProductSearch.stream().map(Image::getImg).collect(Collectors.toList());
+            List<String> imgProductSearch = getImgs(productsDTO.getId(), 2);
             productsDTO.setImg(imgProductSearch);
-            if (null == productsDTO.getPriceAfterSale()) {
-                productsDTO.setDiscount(0.0);
-            } else {
-                Double discountPercent = (productsDTO.getPriceAfterSale() / productsDTO.getPriceSell()) * 100;
-                Double discount = 100 - discountPercent;
-                productsDTO.setDiscount(discount);
-            }
+            setDiscount(productsDTO);
         });
 
         return productsDTOSSearch;
@@ -330,20 +305,13 @@ public class ProductServiceImpl implements ProductService {
         Products product = optionalProducts.get();
         List<Products> products = this.productRepository.findByStatusAndCategoryId(true, product.getCategoryId());
         products.remove(product);
-        List<Integer> productIds = products.stream().map(Products::getId).collect(Collectors.toList());
         List<ProductsDTO> productsDTOS = MapperUtil.mapList(products, ProductsDTO.class);
         productsDTOS.forEach(productsDTO -> {
-            List<Image> imageProduct = this.imageRepository.findByDetailIdAndType(productsDTO.getId(), 2);
-            List<String> imgProduct = imageProduct.stream().map(Image::getImg).collect(Collectors.toList());
+            List<String> imgProduct = getImgs(productsDTO.getId(), 2);
             Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
             productsDTO.setBrandName(brand.getName());
             productsDTO.setImg(imgProduct);
-            if (null == productsDTO.getPriceAfterSale()) {
-                productsDTO.setDiscount(0.0);
-            } else {
-                Double discountPercent = (productsDTO.getPriceAfterSale() / productsDTO.getPriceSell()) * 100;
-                productsDTO.setDiscount(discountPercent);
-            }
+            setDiscount(productsDTO);
         });
         return ResponseUtil.ok(productsDTOS);
     }
@@ -358,18 +326,11 @@ public class ProductServiceImpl implements ProductService {
         products.remove(product);
         List<ProductsDTO> productsDTOS = MapperUtil.mapList(products, ProductsDTO.class);
         productsDTOS.forEach(productsDTO -> {
-            List<Image> imageProduct = this.imageRepository.findByDetailIdAndType(productsDTO.getId(), 2);
-            List<String> imgProduct = imageProduct.stream().map(Image::getImg).collect(Collectors.toList());
+            List<String> imgProduct = getImgs(productsDTO.getId(), 2);
             Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
             productsDTO.setBrandName(brand.getName());
             productsDTO.setImg(imgProduct);
-            if (null == productsDTO.getPriceAfterSale()) {
-                productsDTO.setDiscount(0.0);
-            } else {
-                Double discountPercent = (productsDTO.getPriceAfterSale() / productsDTO.getPriceSell()) * 100;
-                Double discount = 100 - discountPercent;
-                productsDTO.setDiscount(discount);
-            }
+            setDiscount(productsDTO);
         });
         return ResponseUtil.ok(productsDTOS);
     }
@@ -382,6 +343,24 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<Products> searchByName(String name, Pageable pageable) {
         return this.productRepository.searchByName(pageable, name);
+    }
+
+    @Override
+    public List<String> getImgs(Integer id, Integer type) {
+        List<Image> images = this.imageRepository.findByDetailIdAndType(id, type);
+        List<String> imgs = images.stream().map(Image::getImg).collect(Collectors.toList());
+        return imgs;
+    }
+
+    @Override
+    public void setDiscount(ProductsDTO dto) {
+        if (null == dto.getPriceAfterSale()) {
+            dto.setDiscount(0.0);
+        } else {
+            Double discountPercent = (dto.getPriceAfterSale() / dto.getPriceSell()) * 100;
+            Double discount = 100 - discountPercent;
+            dto.setDiscount(discount);
+        }
     }
 
 
