@@ -54,6 +54,8 @@ public class BillServiceImpl implements BillService {
                 bill.getStatus()
         );
         List<Integer> list = billDetailRepository.findAllProductIdByBillId(bill.getId());
+        System.out.println(list);
+        System.out.println(productRepository.findAllByIdInBill(list));
         response.setProduct(productRepository.findAllByIdInBill(list));
         List<Voucher> vouchers = new ArrayList<>();
         vouchers.add(new Voucher());
