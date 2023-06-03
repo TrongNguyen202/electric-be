@@ -148,7 +148,7 @@ public class BillServiceImpl implements BillService {
             billDetail.setQuantity(c.getQuantity());
             billDetail.setProductId(c.getProductId());
             double price = p.getPriceAfterSale() == null ? p.getPriceSell() : p.getPriceAfterSale();
-            totalPrice += price;
+            totalPrice += price * c.getQuantity();
             billDetail.setPriceSell(price);
             billDetail.setBillId(bill.getId());
             details.add(billDetail);
