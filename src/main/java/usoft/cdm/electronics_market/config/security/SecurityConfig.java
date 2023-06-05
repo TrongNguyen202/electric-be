@@ -39,7 +39,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth)
             throws Exception {
@@ -55,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/user/login", "/api/v1/homepage/**").permitAll() // Cho phép tất cả mọi người truy cập vào địa chỉ này
+                .antMatchers("/api/v1/user/login", "/api/v1/homepage/**", "/api/v1/user/login-google").permitAll() // Cho phép tất cả mọi người truy cập vào địa chỉ này
                 .antMatchers("/api/v1/bill", "/api/v1/bill/getCart", "/api/v1/bill/shop").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/product").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/category").permitAll()

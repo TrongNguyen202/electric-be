@@ -2,12 +2,21 @@ package usoft.cdm.electronics_market.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.bind.annotation.*;
+import usoft.cdm.electronics_market.entities.GooglePojo;
 import usoft.cdm.electronics_market.model.UserDTO;
 import usoft.cdm.electronics_market.service.UserService;
+import usoft.cdm.electronics_market.util.GoogleUtils;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -16,6 +25,22 @@ import java.util.List;
 @RequestMapping("/api/v1/user")
 public class UserAPI {
     private final UserService userService;
+    private final GoogleUtils googleUtils;
+
+    @GetMapping()
+    public ResponseEntity<?> getUser(Pageable pageable) {
+        return this.userService.getList(pageable, true);
+    }
+
+    @GetMapping("getCustomer")
+    public ResponseEntity<?> getCustomer(Pageable pageable) {
+        return this.userService.getList(pageable, false);
+    }
+
+    @GetMapping("getById")
+    public ResponseEntity<?> getById(@RequestParam Integer id) {
+        return this.userService.findById(id);
+    }
 
     @PostMapping()
     public ResponseEntity<?> create(@RequestBody UserDTO userDTO) {
@@ -39,5 +64,14 @@ public class UserAPI {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO userDTO) {
         return ResponseUtil.ok(this.userService.login(userDTO));
+    }
+
+    @GetMapping("login-google")
+    public ResponseEntity<?> loginGoogle(HttpServletRequest request) {
+        String code = request.getParameter("code");
+        if (code == null || code.isEmpty()) {
+            return ResponseUtil.badRequest("Chưa gửi code");
+        }
+        return userService.loginGoogle(code);
     }
 }

@@ -34,7 +34,7 @@ public class BillServiceImpl implements BillService {
         if (status == null)
             return ResponseUtil.ok(billRepository.findAllNotStatus(pageable, 1));
         else
-            return ResponseUtil.ok(billRepository.findAllByStatus(pageable, status));
+            return ResponseUtil.ok(billRepository.findAllByStatusOrderByCreatedDateDesc(pageable, status));
     }
 
     @Override
