@@ -23,12 +23,12 @@ public class UserAPI {
 
     @GetMapping
     public ResponseEntity<?> getUser(Pageable pageable) {
-        return this.userService.getList(pageable, true);
+        return this.userService.getList(pageable, false);
     }
 
     @GetMapping("getCustomer")
     public ResponseEntity<?> getCustomer(Pageable pageable) {
-        return this.userService.getList(pageable, false);
+        return this.userService.getList(pageable, true);
     }
 
     @GetMapping("getById")
