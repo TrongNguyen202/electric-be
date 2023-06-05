@@ -31,6 +31,8 @@ public interface UserService extends UserDetailsService {
 
     UserDetails loadUserById(Integer userId);
 
+    ResponseEntity<?> delete(List<Integer> ids);
+
     ResponseEntity<?> setPermission(Integer userId, List<Integer> ids);
 
     ResponseEntity<?> loginGoogle(String code);

@@ -30,7 +30,6 @@ import usoft.cdm.electronics_market.service.UserService;
 import usoft.cdm.electronics_market.util.MapperUtil;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -199,6 +198,7 @@ public class UserServiceImpl implements UserService {
         return ResponseUtil.ok(user.get());
     }
 
+    @Override
     public ResponseEntity<?> delete(List<Integer> ids) {
         List<Users> list = new ArrayList<>();
         ids.forEach(x -> {

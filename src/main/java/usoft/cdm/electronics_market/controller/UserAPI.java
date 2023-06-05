@@ -4,19 +4,13 @@ package usoft.cdm.electronics_market.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.bind.annotation.*;
-import usoft.cdm.electronics_market.entities.GooglePojo;
 import usoft.cdm.electronics_market.model.UserDTO;
 import usoft.cdm.electronics_market.service.UserService;
 import usoft.cdm.electronics_market.util.GoogleUtils;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -27,7 +21,7 @@ public class UserAPI {
     private final UserService userService;
     private final GoogleUtils googleUtils;
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<?> getUser(Pageable pageable) {
         return this.userService.getList(pageable, true);
     }
@@ -42,7 +36,7 @@ public class UserAPI {
         return this.userService.findById(id);
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<?> create(@RequestBody UserDTO userDTO) {
         return this.userService.save(userDTO);
     }
@@ -52,6 +46,10 @@ public class UserAPI {
         return this.userService.update(userDTO);
     }
 
+    @DeleteMapping
+    private ResponseEntity<?> delete(@RequestParam List<Integer> ids) {
+        return userService.delete(ids);
+    }
 
     private ResponseEntity<?> setPermission(@RequestParam Integer userId, @RequestParam List<Integer> ids) {
         return userService.setPermission(userId, ids);
