@@ -1,8 +1,7 @@
 package usoft.cdm.electronics_market.service;
 
 import org.springframework.http.ResponseEntity;
-
-import java.awt.print.Pageable;
+import org.springframework.data.domain.Pageable;
 
 public interface RoleService {
     ResponseEntity<?> getAll(Pageable pageable);

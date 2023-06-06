@@ -141,13 +141,6 @@ public class UserServiceImpl implements UserService {
         } else {
             return ResponseUtil.badRequest("Mật khẩu không được để rống");
         }
-        if (userDTO.getFullname() == null)
-            return ResponseUtil.badRequest("Tên người dùng không được để trống");
-        users.setFullname(userDTO.getFullname());
-        if (userDTO.getFullname().matches("(.*)[^\\p{L}\\s_](.*)"))
-            return ResponseUtil.badRequest("Tên người dùng không được nhập số và ký tự đặc biệt");
-        if (userDTO.getFullname().length() < 6)
-            return ResponseUtil.badRequest("Tên người dùng không được ít hơn 6 ký tự");
         users.setRoleId(userDTO.getIdRole());
         users.setPassword(userDTO.getPassword());
         users.setUpdatedBy(usersLogin.getUsername());

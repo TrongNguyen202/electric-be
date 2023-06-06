@@ -9,7 +9,6 @@ import usoft.cdm.electronics_market.model.UserDTO;
 import usoft.cdm.electronics_market.service.UserService;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
