@@ -260,10 +260,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> loginGoogle(String code) {
         try {
-            String link = env.getProperty("google.link.get.user_info") + getToken(code);
-            System.out.println(link);
+            String link = env.getProperty("google.link.get.user_info") + code;
             String response = Request.Get(link).execute().returnContent().asString();
-            System.out.println(response);
             ObjectMapper mapper = new ObjectMapper();
             GooglePojo pojo = mapper.readValue(response, GooglePojo.class);
             Users users = userRepository.findByEmail(pojo.getEmail()).orElse(new Users());
@@ -272,6 +270,7 @@ public class UserServiceImpl implements UserService {
                 users.setAvatar(pojo.getPicture());
                 Roles role = rolesRepository.findByName("CUSTOMER");
                 users.setRoleId(role.getId());
+                users.setFullname(pojo.getName());
                 users = userRepository.save(users);
             }
             return ResponseUtil.ok(jwtTokenProvider.generateToken(new CustomUserDetails(users)));
@@ -281,23 +280,23 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private String getToken(final String code) {
-        try {
-            String link = env.getProperty("google.link.get.token");
-            String response = Request.Post(link)
-                    .bodyForm(Form.form().add("client_id", env.getProperty("google.app.id"))
-                            .add("client_secret", env.getProperty("google.app.secret"))
-                            .add("redirect_uri", env.getProperty("google.redirect.uri")).add("code", code)
-                            .add("grant_type", "authorization_code").build())
-                    .execute().returnContent().asString();
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(response).get("access_token");
-            return node.textValue();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BadRequestException("Đăng nhập thất bại");
-        }
-    }
+//    private String getToken(final String code) {
+//        try {
+//            String link = env.getProperty("google.link.get.token");
+//            String response = Request.Post(link)
+//                    .bodyForm(Form.form().add("client_id", env.getProperty("google.app.id"))
+//                            .add("client_secret", env.getProperty("google.app.secret"))
+//                            .add("redirect_uri", env.getProperty("google.redirect.uri")).add("code", code)
+//                            .add("grant_type", "authorization_code").build())
+//                    .execute().returnContent().asString();
+//            ObjectMapper mapper = new ObjectMapper();
+//            JsonNode node = mapper.readTree(response).get("access_token");
+//            return node.textValue();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new BadRequestException("Đăng nhập thất bại");
+//        }
+//    }
 
 
     public void authorizationUser(String name) throws AuthenticationException {

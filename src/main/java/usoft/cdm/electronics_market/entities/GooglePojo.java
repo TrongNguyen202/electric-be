@@ -10,6 +10,6 @@ public class GooglePojo {
     private String name;
     private String given_name;
     private String family_name;
-    private String link;
     private String picture;
+    private String locale;
 }
