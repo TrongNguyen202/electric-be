@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import usoft.cdm.electronics_market.model.UserDTO;
 import usoft.cdm.electronics_market.service.UserService;
-import usoft.cdm.electronics_market.util.GoogleUtils;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +18,6 @@ import java.util.List;
 @RequestMapping("/api/v1/user")
 public class UserAPI {
     private final UserService userService;
-    private final GoogleUtils googleUtils;
 
     @GetMapping
     public ResponseEntity<?> getUser(Pageable pageable) {

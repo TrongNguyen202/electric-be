@@ -261,7 +261,9 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<?> loginGoogle(String code) {
         try {
             String link = env.getProperty("google.link.get.user_info") + getToken(code);
+            System.out.println(link);
             String response = Request.Get(link).execute().returnContent().asString();
+            System.out.println(response);
             ObjectMapper mapper = new ObjectMapper();
             GooglePojo pojo = mapper.readValue(response, GooglePojo.class);
             Users users = userRepository.findByEmail(pojo.getEmail()).orElse(new Users());

@@ -1,16 +1,25 @@
 package usoft.cdm.electronics_market.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import usoft.cdm.electronics_market.config.expection.BadRequestException;
 import usoft.cdm.electronics_market.entities.Roles;
 import usoft.cdm.electronics_market.repository.RolesRepository;
 import usoft.cdm.electronics_market.service.RoleService;
+import usoft.cdm.electronics_market.util.ResponseUtil;
+
+import java.awt.print.Pageable;
 
 @Service
 @RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
     private final RolesRepository rolesRepository;
+
+    @Override
+    public ResponseEntity<?> getAll(Pageable pageable){
+        return ResponseUtil.ok(rolesRepository.findAll());
+    }
 
     @Override
     public boolean checkRole(int roleId, String name){
