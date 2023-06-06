@@ -36,7 +36,7 @@ public class BillServiceImpl implements BillService {
         if (status == null)
             return ResponseUtil.ok(billRepository.findAllNotStatus(pageable, 1));
         else
-            return ResponseUtil.ok(billRepository.findAllByStatus(pageable, status));
+            return ResponseUtil.ok(billRepository.findAllByStatusOrderByCreatedDateDesc(pageable, status));
     }
 
     @Override
@@ -56,8 +56,6 @@ public class BillServiceImpl implements BillService {
                 bill.getStatus()
         );
         List<Integer> list = billDetailRepository.findAllProductIdByBillId(bill.getId());
-        System.out.println(list);
-        System.out.println(productRepository.findAllByIdInBill(list));
         response.setProduct(productRepository.findAllByIdInBill(list));
         List<Voucher> vouchers = new ArrayList<>();
         vouchers.add(new Voucher());
@@ -120,7 +118,7 @@ public class BillServiceImpl implements BillService {
             return ResponseUtil.badRequest("Email không đúng định dạng!");
         bill.setEmail(shop.getEmail());
         bill.setStatus(2);
-        if (!shop.getPhone().matches("^0\\d{9,10}$"))
+        if (!shop.getPhone().matches("^0[1-9]{9,10}$"))
             return ResponseUtil.badRequest("Số điện thoại chỉ được nhập số!");
         bill.setPhone(shop.getPhone());
         bill.setAddressTransfer(shop.getAddressTransfer());
@@ -152,11 +150,12 @@ public class BillServiceImpl implements BillService {
             billDetail.setQuantity(c.getQuantity());
             billDetail.setProductId(c.getProductId());
             double price = p.getPriceAfterSale() == null ? p.getPriceSell() : p.getPriceAfterSale();
-            totalPrice += price;
+            totalPrice += price * c.getQuantity();
             billDetail.setPriceSell(price);
             billDetail.setBillId(bill.getId());
             details.add(billDetail);
         }
+        bill.setCode("CDM-" + bill.getId());
         bill.setPaymentMethod(shop.getPaymentMethod());
         bill.setTotalPrice(totalPrice);
         billDetailRepository.saveAll(details);

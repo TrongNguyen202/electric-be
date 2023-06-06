@@ -1,8 +1,13 @@
 package usoft.cdm.electronics_market.service.impl;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.client.fluent.Form;
+import org.apache.http.client.fluent.Request;
 import org.apache.tomcat.websocket.AuthenticationException;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,10 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import usoft.cdm.electronics_market.config.expection.BadRequestException;
 import usoft.cdm.electronics_market.config.security.CustomUserDetails;
 import usoft.cdm.electronics_market.config.security.JwtTokenProvider;
-import usoft.cdm.electronics_market.entities.Permission;
-import usoft.cdm.electronics_market.entities.RolePermission;
-import usoft.cdm.electronics_market.entities.Roles;
-import usoft.cdm.electronics_market.entities.Users;
+import usoft.cdm.electronics_market.entities.*;
 import usoft.cdm.electronics_market.model.LoginDTO;
 import usoft.cdm.electronics_market.model.UserDTO;
 import usoft.cdm.electronics_market.repository.PermissionRepository;
@@ -47,7 +49,7 @@ public class UserServiceImpl implements UserService {
 
     private final PermissionRepository permissionRepository;
     private final RolePermissionRepository rolePermissionRepository;
-
+    private final Environment env;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -86,9 +88,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsernameAndStatus(currentUser, true).orElseThrow();
     }
 
-    public ResponseEntity<?> getList(Pageable pageable) {
-        Roles role = rolesRepository.findByName("USER");
-        return ResponseUtil.ok(userRepository.findAllByRoleId(role.getId(), pageable));
+    @Override
+    public ResponseEntity<?> getList(Pageable pageable, boolean user) {
+        Roles role = rolesRepository.findByName("CUSTOMER");
+        if (user) {
+            return ResponseUtil.ok(userRepository.findAllByRoleId(role.getId(), pageable));
+        } else {
+            return ResponseUtil.ok(userRepository.findAllNotByRoleId(role.getId(), pageable));
+        }
     }
 
     @Override
@@ -114,12 +121,42 @@ public class UserServiceImpl implements UserService {
         Users users = MapperUtil.map(userDTO, Users.class);
         users.setPassword(userDTO.getPassword());
         users.setCreatedBy(usersLogin.getUsername());
-        this.userRepository.save(users);
+        users.setRoleId(userDTO.getIdRole());
+        users = this.userRepository.save(users);
+        userDTO.setId(users.getId());
         return ResponseUtil.ok(userDTO);
     }
 
     @Override
     public ResponseEntity<?> update(UserDTO userDTO) {
+        Users usersLogin = getCurrentUser();
+        Optional<Users> optional = userRepository.findById(userDTO.getId());
+        if (optional.isEmpty())
+            throw new BadRequestException("Id User không chính xác!");
+        Users users = optional.get();
+        if (userDTO.getPassword() != null) {
+            if (userDTO.getPassword().length() < 6)
+                return ResponseUtil.badRequest("Mật khẩu không được ít hơn 6 ký tự");
+            userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        } else {
+            return ResponseUtil.badRequest("Mật khẩu không được để rống");
+        }
+        if (userDTO.getFullname() == null)
+            return ResponseUtil.badRequest("Tên người dùng không được để trống");
+        users.setFullname(userDTO.getFullname());
+        if (userDTO.getFullname().matches("(.*)[^\\p{L}\\s_](.*)"))
+            return ResponseUtil.badRequest("Tên người dùng không được nhập số và ký tự đặc biệt");
+        if (userDTO.getFullname().length() < 6)
+            return ResponseUtil.badRequest("Tên người dùng không được ít hơn 6 ký tự");
+        users.setRoleId(userDTO.getIdRole());
+        users.setPassword(userDTO.getPassword());
+        users.setUpdatedBy(usersLogin.getUsername());
+        this.userRepository.save(users);
+        return ResponseUtil.ok(userDTO);
+    }
+
+    @Override
+    public ResponseEntity<?> updateCustomer(UserDTO userDTO) {
         Users usersLogin = getCurrentUser();
         Optional<Users> optional = userRepository.findById(userDTO.getId());
         if (optional.isEmpty())
@@ -161,7 +198,8 @@ public class UserServiceImpl implements UserService {
         return ResponseUtil.ok(user.get());
     }
 
-    public ResponseEntity<?> delete(List<Integer> ids){
+    @Override
+    public ResponseEntity<?> delete(List<Integer> ids) {
         List<Users> list = new ArrayList<>();
         ids.forEach(x -> {
             Optional<Users> optional = userRepository.findById(x);
@@ -185,7 +223,7 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    public ResponseEntity<?> register(String username){
+    public ResponseEntity<?> register(String username) {
         String email = "";
         String phone = "";
         if (username.matches(email) || username.matches(phone))
@@ -204,8 +242,8 @@ public class UserServiceImpl implements UserService {
         List<RolePermission> list = new ArrayList<>();
         List<Integer> check = rolePermissionRepository.getPerIdByRoleId(users.getRoleId());
         List<Integer> remove = new ArrayList<>();
-        for (Integer x : ids){
-            if (check.contains(x)){
+        for (Integer x : ids) {
+            if (check.contains(x)) {
                 remove.add(x);
                 continue;
             }
@@ -218,6 +256,47 @@ public class UserServiceImpl implements UserService {
         rolePermissionRepository.saveAll(list);
         return ResponseUtil.message("Phân quyền thành công");
     }
+
+    @Override
+    public ResponseEntity<?> loginGoogle(String code) {
+        try {
+            String link = env.getProperty("google.link.get.user_info") + getToken(code);
+            String response = Request.Get(link).execute().returnContent().asString();
+            ObjectMapper mapper = new ObjectMapper();
+            GooglePojo pojo = mapper.readValue(response, GooglePojo.class);
+            Users users = userRepository.findByEmail(pojo.getEmail()).orElse(new Users());
+            if (users.getId() == null) {
+                users.setEmail(pojo.getEmail());
+                users.setAvatar(pojo.getPicture());
+                Roles role = rolesRepository.findByName("CUSTOMER");
+                users.setRoleId(role.getId());
+                users = userRepository.save(users);
+            }
+            return ResponseUtil.ok(jwtTokenProvider.generateToken(new CustomUserDetails(users)));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseUtil.badRequest(e.getMessage());
+        }
+    }
+
+    private String getToken(final String code) {
+        try {
+            String link = env.getProperty("google.link.get.token");
+            String response = Request.Post(link)
+                    .bodyForm(Form.form().add("client_id", env.getProperty("google.app.id"))
+                            .add("client_secret", env.getProperty("google.app.secret"))
+                            .add("redirect_uri", env.getProperty("google.redirect.uri")).add("code", code)
+                            .add("grant_type", "authorization_code").build())
+                    .execute().returnContent().asString();
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(response).get("access_token");
+            return node.textValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BadRequestException("Đăng nhập thất bại");
+        }
+    }
+
 
     public void authorizationUser(String name) throws AuthenticationException {
         Optional<Permission> permission = permissionRepository.getPer(getCurrentUser().getRoleId(), name);

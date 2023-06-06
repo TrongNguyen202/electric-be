@@ -28,5 +28,5 @@ public class Users extends BaseEntity {
     private String type;
     private Boolean status;
     private String description;
-
+    private String avatar;
 }

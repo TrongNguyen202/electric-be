@@ -12,6 +12,6 @@ import java.util.List;
 public interface BillDetailRepository extends JpaRepository<BillDetail, Integer> {
     List<BillDetail> findAllByBillId(Integer billId);
 
-    @Query("SELECT bd.productId FROM BillDetail bd WHERE bd.billId = :billId")
+    @Query("SELECT bd.id FROM BillDetail bd WHERE bd.billId = :billId")
     List<Integer> findAllProductIdByBillId(@Param("billId") Integer billId);
 }
