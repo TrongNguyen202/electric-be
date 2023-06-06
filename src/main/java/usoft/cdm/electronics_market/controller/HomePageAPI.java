@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import usoft.cdm.electronics_market.model.ProductsDTO;
 import usoft.cdm.electronics_market.model.VerifyOTPRequest;
 import usoft.cdm.electronics_market.service.CategoryService;
+import usoft.cdm.electronics_market.service.HomePageService;
 import usoft.cdm.electronics_market.service.ProductService;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
@@ -24,6 +25,8 @@ public class HomePageAPI {
     private final ProductService productService;
 
     private final CategoryService categoryService;
+
+    private final HomePageService homePageService;
 
     @GetMapping("/product-category")
     public ResponseEntity<?> getAllProductAndCategoryForHome() {
@@ -61,20 +64,21 @@ public class HomePageAPI {
         return this.productService.searchNameForHomepage(name, pageable);
     }
 
-    @PostMapping("/sign-up")
-    public ResponseEntity<String> signUp(@RequestBody VerifyOTPRequest request) {
-        String otp = request.getOtp();
-        try {
-            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-            FirebaseToken token = firebaseAuth.verifyIdToken(otp);
-            token.getIssuer();
-            // Perform additional logic, such as creating a user in your system
-            // using the token information
 
-            return ResponseEntity.ok(token.toString());
-        } catch (FirebaseAuthException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid OTP");
-        }
+    @GetMapping("/banner")
+    public ResponseEntity<?> getBanner() {
+        return ResponseUtil.ok(this.homePageService.display6ImgForHomePage());
     }
+
+//    @PostMapping("/sign-up")
+//    public ResponseEntity<String> signUp(@RequestBody VerifyOTPRequest request) {
+//        String verificationId = request.getVerificationId();
+//        String otpCode = request.getOtp();
+//        try {
+//            FirebaseAuth.getInstance().checkPhoneNumberVerification(verificationId, otpCode);
+//            return "OTP verification successful!";
+//        } catch (FirebaseAuthException e) {
+//            return "OTP verification failed: " + e.getMessage();
+//        }
+//    }
 }
