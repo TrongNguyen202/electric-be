@@ -1,18 +1,15 @@
 package usoft.cdm.electronics_market.controller;
 
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import usoft.cdm.electronics_market.model.ProductsDTO;
 import usoft.cdm.electronics_market.model.VerifyOTPRequest;
 import usoft.cdm.electronics_market.service.CategoryService;
 import usoft.cdm.electronics_market.service.HomePageService;
+import usoft.cdm.electronics_market.service.OtpVerifiService;
 import usoft.cdm.electronics_market.service.ProductService;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
@@ -27,6 +24,8 @@ public class HomePageAPI {
     private final CategoryService categoryService;
 
     private final HomePageService homePageService;
+
+    private final OtpVerifiService OtpVerificationService;
 
     @GetMapping("/product-category")
     public ResponseEntity<?> getAllProductAndCategoryForHome() {
@@ -70,15 +69,8 @@ public class HomePageAPI {
         return ResponseUtil.ok(this.homePageService.display6ImgForHomePage());
     }
 
-//    @PostMapping("/sign-up")
-//    public ResponseEntity<String> signUp(@RequestBody VerifyOTPRequest request) {
-//        String verificationId = request.getVerificationId();
-//        String otpCode = request.getOtp();
-//        try {
-//            FirebaseAuth.getInstance().checkPhoneNumberVerification(verificationId, otpCode);
-//            return "OTP verification successful!";
-//        } catch (FirebaseAuthException e) {
-//            return "OTP verification failed: " + e.getMessage();
-//        }
-//    }
+    @PostMapping("/sign-up")
+    public ResponseEntity<?> signUp(@RequestBody VerifyOTPRequest request) {
+        return this.OtpVerificationService.signUp(request);
+    }
 }
