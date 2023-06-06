@@ -118,8 +118,8 @@ public class BillServiceImpl implements BillService {
             return ResponseUtil.badRequest("Email không đúng định dạng!");
         bill.setEmail(shop.getEmail());
         bill.setStatus(2);
-        if (!shop.getPhone().matches("^0[1-9]{9,10}$"))
-            return ResponseUtil.badRequest("Số điện thoại chỉ được nhập số!");
+        if (!shop.getPhone().matches("^0[1-9][0-9]{8,9}$"))
+            return ResponseUtil.badRequest("Số điện thoại không đúng định dạng!");
         bill.setPhone(shop.getPhone());
         bill.setAddressTransfer(shop.getAddressTransfer());
         List<BillDetail> list = new ArrayList<>();

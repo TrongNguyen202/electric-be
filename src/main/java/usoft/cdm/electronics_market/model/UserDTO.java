@@ -16,7 +16,7 @@ public class UserDTO extends BaseModel {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String username;
-    private Integer idRole;
+    private Integer roleId;
     private Integer addressId;
     private String addressDetail;
     private String phone;

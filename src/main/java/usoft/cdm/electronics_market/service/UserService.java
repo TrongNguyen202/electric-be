@@ -25,6 +25,8 @@ public interface UserService extends UserDetailsService {
 
     ResponseEntity<?> update(UserDTO userDTO);
 
+    ResponseEntity<?> changePassword(String password, int id);
+
     ResponseEntity<?> updateCustomer(UserDTO userDTO);
 
     ResponseEntity<?> findById(Integer idUser);
