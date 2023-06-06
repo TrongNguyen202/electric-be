@@ -68,6 +68,6 @@ public class UserAPI {
 
     @GetMapping("getUserInfo")
     public ResponseEntity<?> getUserInfo() {
-        return ResponseUtil.ok(userService.getCurrentUser());
+        return ResponseUtil.ok(userService.getInfoUser());
     }
 }
