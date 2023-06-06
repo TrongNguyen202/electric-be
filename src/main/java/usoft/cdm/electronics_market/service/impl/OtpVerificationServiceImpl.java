@@ -34,6 +34,7 @@ public class OtpVerificationServiceImpl implements OtpVerifiService {
         try {
             FirebaseToken token = firebaseAuth.verifyIdToken(verificationId);
             String phoneNumber = token.getClaims().get("phone_number").toString();
+            System.out.println(token.getClaims().get("otp").toString());
             String phoneMain = phoneNumber.replace("+84", "0");
             Optional<Users> usersOptional = this.userRepository.findByPhoneAndStatus(phoneMain, true);
             if (usersOptional.isPresent()) {
