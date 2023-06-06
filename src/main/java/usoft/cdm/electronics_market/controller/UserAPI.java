@@ -63,11 +63,7 @@ public class UserAPI {
     }
 
     @GetMapping("login-google")
-    public ResponseEntity<?> loginGoogle(HttpServletRequest request) {
-        String code = request.getParameter("code");
-        if (code == null || code.isEmpty()) {
-            return ResponseUtil.badRequest("Chưa gửi code");
-        }
+    public ResponseEntity<?> loginGoogle(@RequestParam String code) {
         return userService.loginGoogle(code);
     }
 
