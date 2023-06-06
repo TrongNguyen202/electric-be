@@ -14,8 +14,12 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<Users, Integer> {
 
     Optional<Users> findByUsernameAndStatus(String username, Boolean status);
+
     Page<Users> findAllByRoleId(Integer roleId, Pageable pageable);
+
     Optional<Users> findByEmail(String email);
+
+    Optional<Users> findByPhoneAndStatus(String phone, Boolean status);
 
     @Query("SELECT u FROM Users u WHERE u.roleId <> :roleId")
     Page<Users> findAllNotByRoleId(@Param("roleId") Integer roleId, Pageable pageable);
