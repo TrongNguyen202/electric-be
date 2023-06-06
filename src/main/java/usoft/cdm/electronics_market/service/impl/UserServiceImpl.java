@@ -1,10 +1,7 @@
 package usoft.cdm.electronics_market.service.impl;
 
-
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.http.client.fluent.Form;
 import org.apache.http.client.fluent.Request;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.core.env.Environment;
@@ -121,7 +118,7 @@ public class UserServiceImpl implements UserService {
         Users users = MapperUtil.map(userDTO, Users.class);
         users.setPassword(userDTO.getPassword());
         users.setCreatedBy(usersLogin.getUsername());
-        users.setRoleId(userDTO.getIdRole());
+        users.setRoleId(userDTO.getRoleId());
         users = this.userRepository.save(users);
         userDTO.setId(users.getId());
         return ResponseUtil.ok(userDTO);
@@ -134,18 +131,27 @@ public class UserServiceImpl implements UserService {
         if (optional.isEmpty())
             throw new BadRequestException("Id User không chính xác!");
         Users users = optional.get();
-        if (userDTO.getPassword() != null) {
-            if (userDTO.getPassword().length() < 6)
-                return ResponseUtil.badRequest("Mật khẩu không được ít hơn 6 ký tự");
-            userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        } else {
-            return ResponseUtil.badRequest("Mật khẩu không được để rống");
-        }
-        users.setRoleId(userDTO.getIdRole());
-        users.setPassword(userDTO.getPassword());
+        users.setRoleId(userDTO.getRoleId());
         users.setUpdatedBy(usersLogin.getUsername());
         this.userRepository.save(users);
         return ResponseUtil.ok(userDTO);
+    }
+
+    @Override
+    public ResponseEntity<?> changePassword(String password, int id){
+        Optional<Users> optional = userRepository.findById(id);
+        if (optional.isEmpty())
+            throw new BadRequestException("Id User không chính xác!");
+        Users users = optional.get();
+        if (password != null) {
+            if (password.length() < 6)
+                return ResponseUtil.badRequest("Mật khẩu không được ít hơn 6 ký tự");
+            users.setPassword(passwordEncoder.encode(password));
+        } else {
+            return ResponseUtil.badRequest("Mật khẩu không được để rống");
+        }
+        userRepository.save(users);
+        return ResponseUtil.ok("Đổi mật khẩu thành công");
     }
 
     @Override
@@ -155,13 +161,6 @@ public class UserServiceImpl implements UserService {
         if (optional.isEmpty())
             throw new BadRequestException("Id User không chính xác!");
         Users users = optional.get();
-        if (userDTO.getPassword() != null) {
-            if (userDTO.getPassword().length() < 6)
-                return ResponseUtil.badRequest("Mật khẩu không được ít hơn 6 ký tự");
-            userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        } else {
-            return ResponseUtil.badRequest("Mật khẩu không được để rống");
-        }
         if (userDTO.getFullname() == null)
             return ResponseUtil.badRequest("Tên người dùng không được để trống");
         users.setFullname(userDTO.getFullname());
@@ -170,12 +169,11 @@ public class UserServiceImpl implements UserService {
         if (userDTO.getFullname().length() < 6)
             return ResponseUtil.badRequest("Tên người dùng không được ít hơn 6 ký tự");
         users.setEmail(userDTO.getEmail());
-        users.setRoleId(userDTO.getIdRole());
+        users.setRoleId(userDTO.getRoleId());
         users.setPhone(userDTO.getPhone());
         users.setDescription(userDTO.getDescription());
         users.setAddressId(userDTO.getAddressId());
         users.setAddressDetail(userDTO.getAddressDetail());
-        users.setPassword(userDTO.getPassword());
         users.setUpdatedBy(usersLogin.getUsername());
         this.userRepository.save(users);
         return ResponseUtil.ok(userDTO);
