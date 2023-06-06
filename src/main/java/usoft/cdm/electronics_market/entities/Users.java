@@ -1,6 +1,7 @@
 package usoft.cdm.electronics_market.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class Users extends BaseEntity {
 
     private String fullname;
     private String username;
+    @JsonIgnore
     private String password;
     private Integer roleId;
     private Integer addressId;

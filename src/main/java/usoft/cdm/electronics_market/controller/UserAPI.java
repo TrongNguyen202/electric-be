@@ -70,4 +70,9 @@ public class UserAPI {
         }
         return userService.loginGoogle(code);
     }
+
+    @GetMapping("getUserInfo")
+    public ResponseEntity<?> getUserInfo() {
+        return ResponseUtil.ok(userService.getCurrentUser());
+    }
 }
