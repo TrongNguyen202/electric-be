@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import usoft.cdm.electronics_market.service.RoleService;
-
-import java.awt.print.Pageable;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @CrossOrigin
@@ -18,7 +17,7 @@ public class RoleAPI {
     private final RoleService roleService;
 
     @GetMapping
-    private ResponseEntity<?> getAll(Pageable pageable){
+    private ResponseEntity<?> getAll(Pageable pageable) {
         return roleService.getAll(pageable);
     }
 }
