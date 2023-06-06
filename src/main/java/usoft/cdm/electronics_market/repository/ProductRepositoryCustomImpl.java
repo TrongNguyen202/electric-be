@@ -1,6 +1,5 @@
 package usoft.cdm.electronics_market.repository;
 
-import lombok.Data;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import usoft.cdm.electronics_market.model.Price;
@@ -10,10 +9,10 @@ import usoft.cdm.electronics_market.util.DataUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
@@ -75,6 +74,28 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             if (!check)
                 sql.append(" )");
         }
+        return CommonUtil.getPageImpl(em, sql.toString(), params, pageable, "getBrandAndPriceAndMadeIn");
+
+    }
+
+    @Override
+    public Page<ProductsDTO> searchNameForHomepage(String name, Pageable pageable) {
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug  " +
+                "FROM cdm_products p \n" +
+                "WHERE p.status =1 ");
+
+        Map<String, Object> params = new HashMap<>();
+
+        if (!DataUtil.isNullString(name)) {
+            String[] keywords = name.split("\\s+");
+            String query = Arrays.stream(keywords)
+                    .map(data -> "+" + data + "*")
+                    .collect(Collectors.joining(" "));
+            sql.append(" and MATCH(p.name) AGAINST(:keyword IN BOOLEAN MODE) ");
+            params.put("keyword", query);
+
+        }
+
         return CommonUtil.getPageImpl(em, sql.toString(), params, pageable, "getBrandAndPriceAndMadeIn");
 
     }

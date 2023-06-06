@@ -36,4 +36,7 @@ public interface ProductService {
     List<String> getImgs(Integer id, Integer type);
 
     void setDiscount(ProductsDTO dto);
+
+    ResponseEntity<?> searchNameForHomepage(String name, Pageable pageable);
+
 }

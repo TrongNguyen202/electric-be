@@ -344,7 +344,19 @@ public class ProductServiceImpl implements ProductService {
             Double discountPercent = (dto.getPriceAfterSale() / dto.getPriceSell()) * 100;
             Double discount = 100 - discountPercent;
             dto.setDiscount(discount);
+
         }
+    }
+
+    @Override
+    public ResponseEntity<?> searchNameForHomepage(String name, Pageable pageable) {
+        Page<ProductsDTO> productsDTOS = this.productRepository.searchNameForHomepage(name, pageable);
+        for (ProductsDTO dto : productsDTOS) {
+            setDiscount(dto);
+            List<String> imgs = getImgs(dto.getId(), 2);
+            dto.setImg(imgs);
+        }
+        return ResponseUtil.ok(productsDTOS);
     }
 
     //set(Brand,Img,Discount)

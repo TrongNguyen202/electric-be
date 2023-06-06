@@ -92,4 +92,5 @@ public class ProductsDTO extends BaseModel {
         this.slug = slug;
     }
 
+
 }

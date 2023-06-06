@@ -29,7 +29,6 @@ import usoft.cdm.electronics_market.util.ResponseUtil;
 import usoft.cdm.electronics_market.util.TextUtil;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Service
