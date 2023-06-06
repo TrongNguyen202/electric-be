@@ -61,20 +61,15 @@ public class HomePageAPI {
         return this.productService.searchNameForHomepage(name, pageable);
     }
 
-    @PostMapping("/sign-up")
-    public ResponseEntity<String> signUp(@RequestBody VerifyOTPRequest request) {
-        String otp = request.getOtp();
-        try {
-            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-            FirebaseToken token = firebaseAuth.verifyIdToken(otp);
-            token.getIssuer();
-            // Perform additional logic, such as creating a user in your system
-            // using the token information
-
-            return ResponseEntity.ok(token.toString());
-        } catch (FirebaseAuthException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid OTP");
-        }
-    }
+//    @PostMapping("/sign-up")
+//    public ResponseEntity<String> signUp(@RequestBody VerifyOTPRequest request) {
+//        String verificationId = request.getVerificationId();
+//        String otpCode = request.getOtp();
+//        try {
+//            FirebaseAuth.getInstance().checkPhoneNumberVerification(verificationId, otpCode);
+//            return "OTP verification successful!";
+//        } catch (FirebaseAuthException e) {
+//            return "OTP verification failed: " + e.getMessage();
+//        }
+//    }
 }
