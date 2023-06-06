@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import usoft.cdm.electronics_market.model.ProductsDTO;
 import usoft.cdm.electronics_market.model.VerifyOTPRequest;
 import usoft.cdm.electronics_market.service.CategoryService;
+import usoft.cdm.electronics_market.service.HomePageService;
 import usoft.cdm.electronics_market.service.ProductService;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
@@ -24,6 +25,8 @@ public class HomePageAPI {
     private final ProductService productService;
 
     private final CategoryService categoryService;
+
+    private final HomePageService homePageService;
 
     @GetMapping("/product-category")
     public ResponseEntity<?> getAllProductAndCategoryForHome() {
@@ -59,6 +62,12 @@ public class HomePageAPI {
     @GetMapping("/search-name")
     public ResponseEntity<?> searchNameForHomepage(@RequestParam String name, Pageable pageable) {
         return this.productService.searchNameForHomepage(name, pageable);
+    }
+
+
+    @GetMapping("/banner")
+    public ResponseEntity<?> getBanner() {
+        return ResponseUtil.ok(this.homePageService.display6ImgForHomePage());
     }
 
 //    @PostMapping("/sign-up")

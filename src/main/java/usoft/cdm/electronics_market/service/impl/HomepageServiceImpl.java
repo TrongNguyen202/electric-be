@@ -104,18 +104,22 @@ public class HomepageServiceImpl implements HomePageService {
         HomePage homePage1 = homePageType1.get(randomIndex1);
         homePagesMain.add(homePage1);
         List<HomePage> homePageType2 = this.homePageRepository.findAllByType(2);
-        for (int i = 0; i < 2; i++) {
-            int randomIndex2 = random.nextInt(homePageType2.size());
-            HomePage homePage2 = homePageType2.get(randomIndex2);
-            homePagesMain.add(homePage2);
-            homePageType2.remove(randomIndex2);
+        if (homePageType2.size() >= 2) {
+            for (int i = 0; i < 2; i++) {
+                int randomIndex2 = random.nextInt(homePageType2.size());
+                HomePage homePage2 = homePageType2.get(randomIndex2);
+                homePagesMain.add(homePage2);
+                homePageType2.remove(randomIndex2);
+            }
         }
         List<HomePage> homePageType3 = this.homePageRepository.findAllByType(3);
-        for (int i = 0; i < 3; i++) {
-            int randomIndex3 = random.nextInt(homePageType3.size());
-            HomePage homePage3 = homePageType2.get(randomIndex3);
-            homePagesMain.add(homePage3);
-            homePageType2.remove(randomIndex3);
+        if (homePageType3.size() >= 3) {
+            for (int i = 0; i < 3; i++) {
+                int randomIndex3 = random.nextInt(homePageType3.size());
+                HomePage homePage3 = homePageType2.get(randomIndex3);
+                homePagesMain.add(homePage3);
+                homePageType2.remove(randomIndex3);
+            }
         }
         List<HomePageDTO> homePageDTOS = MapperUtil.mapList(homePagesMain, HomePageDTO.class);
         return homePageDTOS;
