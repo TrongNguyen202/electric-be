@@ -7,10 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import usoft.cdm.electronics_market.model.UserDTO;
 import usoft.cdm.electronics_market.service.UserService;
-import usoft.cdm.electronics_market.util.GoogleUtils;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -19,7 +17,6 @@ import java.util.List;
 @RequestMapping("/api/v1/user")
 public class UserAPI {
     private final UserService userService;
-    private final GoogleUtils googleUtils;
 
     @GetMapping
     public ResponseEntity<?> getUser(Pageable pageable) {
@@ -65,11 +62,12 @@ public class UserAPI {
     }
 
     @GetMapping("login-google")
-    public ResponseEntity<?> loginGoogle(HttpServletRequest request) {
-        String code = request.getParameter("code");
-        if (code == null || code.isEmpty()) {
-            return ResponseUtil.badRequest("Chưa gửi code");
-        }
+    public ResponseEntity<?> loginGoogle(@RequestParam String code) {
         return userService.loginGoogle(code);
+    }
+
+    @GetMapping("getUserInfo")
+    public ResponseEntity<?> getUserInfo() {
+        return ResponseUtil.ok(userService.getInfoUser());
     }
 }
