@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import usoft.cdm.electronics_market.model.UserDTO;
+import usoft.cdm.electronics_market.model.user.ChangePassword;
 import usoft.cdm.electronics_market.service.UserService;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
@@ -41,6 +42,11 @@ public class UserAPI {
     @PostMapping("update")
     public ResponseEntity<?> update(@RequestBody UserDTO userDTO) {
         return this.userService.update(userDTO);
+    }
+
+    @PostMapping("changePassword")
+    public ResponseEntity<?> update(@RequestBody ChangePassword req) {
+        return this.userService.changePassword(req.getPassword(), req.getId());
     }
 
     @DeleteMapping
