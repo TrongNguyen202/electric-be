@@ -23,7 +23,6 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class BillServiceImpl implements BillService {
     private final BillRepository billRepository;
     private final BillDetailRepository billDetailRepository;
