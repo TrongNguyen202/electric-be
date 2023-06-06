@@ -13,7 +13,12 @@ public class DataUtil {
     }
 
     public boolean isNullObject(Object obj) {
+
         return (obj == null);
+    }
+
+    public boolean isNullString(String obj) {
+        return (obj == null || obj.isEmpty());
     }
 
     public boolean isNullOrEmpty(List<?> lst) {

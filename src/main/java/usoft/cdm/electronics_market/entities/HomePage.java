@@ -19,4 +19,5 @@ import javax.persistence.Table;
 public class HomePage extends BaseEntity {
     private String img;
     private Integer type;
+    private String linkProduct;
 }
