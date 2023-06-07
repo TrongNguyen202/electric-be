@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     private EntityManager em;
 
     @Override
-    public Page<ProductsDTO> getAllMadeByProducts(Integer categoryId, Pageable pageable) {
+    public List<ProductsDTO> getAllMadeByProducts(Integer categoryId) {
         StringBuilder sql = new StringBuilder("SELECT p.id,p.made_in as madeIn,COUNT(p.id) as sumProducts FROM  cdm_products p \n" +
                 "WHERE p.status =1 ");
 
@@ -29,7 +30,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         sql.append(" and p.category_id = :categoryId ");
         params.put("categoryId", categoryId);
 
-        return CommonUtil.getPageImpl(em, sql.toString(), params, pageable, "getAllMadeInProducts");
+        return CommonUtil.getList(em, sql.toString(), params, "getAllMadeInProducts");
 
     }
 
@@ -98,5 +99,21 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
         return CommonUtil.getPageImpl(em, sql.toString(), params, pageable, "getBrandAndPriceAndMadeIn");
 
+    }
+
+    @Override
+    public ProductsDTO getDiscountByCategory(Integer categoryId) {
+        StringBuilder sql = new StringBuilder("SELECT p.id, 100-((p.price_after_sale/p.price_sell)*100) as discount\n" +
+                "FROM cdm_products p \n" +
+                "WHERE p.status = true ");
+
+        Map<String, Object> params = new HashMap<>();
+        sql.append(" and p.category_id = :categoryId ");
+        params.put("categoryId", categoryId);
+
+        sql.append("ORDER BY 100-((p.price_after_sale/p.price_sell)*100) \n" +
+                "DESC limit 1");
+
+        return CommonUtil.getObject(em, sql.toString(), params, "getDiscountByCategory");
     }
 }

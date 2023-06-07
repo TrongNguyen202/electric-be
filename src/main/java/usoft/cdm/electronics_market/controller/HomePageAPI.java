@@ -73,4 +73,9 @@ public class HomePageAPI {
     public ResponseEntity<?> signUp(@RequestBody VerifyOTPRequest request) {
         return this.OtpVerificationService.signUp(request);
     }
+
+    @PostMapping("/signup-email")
+    public ResponseEntity<?> signUpEmail(@RequestBody VerifyOTPRequest request) {
+        return this.OtpVerificationService.signUpEmail(request);
+    }
 }

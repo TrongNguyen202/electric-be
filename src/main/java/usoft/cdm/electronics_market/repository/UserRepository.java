@@ -21,6 +21,8 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
 
     Optional<Users> findByPhoneAndStatus(String phone, Boolean status);
 
+    Optional<Users> findByEmailAndStatus(String email, Boolean status);
+
     @Query("SELECT u FROM Users u WHERE u.roleId <> :roleId")
     Page<Users> findAllNotByRoleId(@Param("roleId") Integer roleId, Pageable pageable);
 
