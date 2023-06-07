@@ -7,4 +7,6 @@ import java.util.List;
 public interface BrandRepositoryCustom {
 
     List<BrandDTO> getAllBrandByCategoryId(Integer categoryId);
+
+    List<BrandDTO> getAllBrandByCategoryId(List<Integer> categoryIds);
 }

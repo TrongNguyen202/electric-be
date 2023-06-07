@@ -29,6 +29,7 @@ import usoft.cdm.electronics_market.util.ResponseUtil;
 import usoft.cdm.electronics_market.util.TextUtil;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -136,17 +137,37 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseEntity<?> displayCategoryChild(Integer categoryId, Pageable pageable) {
         List<Category> categories = this.categoryRepository.findAllByParentIdAndStatus(categoryId, true);
-        List<BrandDTO> brandDTOS = this.brandRepository.getAllBrandByCategoryId(categoryId);
-        List<ProductsDTO> productsDTOS = this.productRepository.getAllMadeByProducts(categoryId);
-        List<PriceRangeModel> list = PriceRange.list;
-        List<PriceRangeModel> res = new ArrayList<>();
-        for (PriceRangeModel rangeModel : list) {
-            Integer sumProduct = this.productRepository.sumProduct(categoryId, rangeModel.getPriceFrom(), rangeModel.getPriceTo());
-            rangeModel.setQuantity(sumProduct);
-            if (sumProduct > 0) {
-                res.add(rangeModel);
+        List<Category> categoryChilds = this.categoryRepository.findAllByParentIdAndStatus(categoryId, true);
+        List<Integer> categoryChildIds = categoryChilds.stream().map(Category::getId).collect(Collectors.toList());
+        List<BrandDTO> brandDTOS;
+        List<ProductsDTO> productsDTOS;
+        List<PriceRangeModel> res;
+        if (categoryChilds.isEmpty()) {
+            brandDTOS = this.brandRepository.getAllBrandByCategoryId(categoryId);
+            productsDTOS = this.productRepository.getAllMadeByProducts(categoryId);
+            List<PriceRangeModel> list = PriceRange.list;
+            res = new ArrayList<>();
+            for (PriceRangeModel rangeModel : list) {
+                Integer sumProduct = this.productRepository.sumProduct(categoryId, rangeModel.getPriceFrom(), rangeModel.getPriceTo());
+                rangeModel.setQuantity(sumProduct);
+                if (sumProduct > 0) {
+                    res.add(rangeModel);
+                }
+            }
+        } else {
+            brandDTOS = this.brandRepository.getAllBrandByCategoryId(categoryChildIds);
+            productsDTOS = this.productRepository.getAllMadeByProducts(categoryChildIds);
+            List<PriceRangeModel> list = PriceRange.list;
+            res = new ArrayList<>();
+            for (PriceRangeModel rangeModel : list) {
+                Integer sumProduct = this.productRepository.sumProduct(categoryChildIds, rangeModel.getPriceFrom(), rangeModel.getPriceTo());
+                rangeModel.setQuantity(sumProduct);
+                if (sumProduct > 0) {
+                    res.add(rangeModel);
+                }
             }
         }
+
 
         Map<String, Object> map = new HashMap<>();
         map.put("categories", categories);

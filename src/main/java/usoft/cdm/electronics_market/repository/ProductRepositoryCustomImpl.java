@@ -36,6 +36,21 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     }
 
     @Override
+    public List<ProductsDTO> getAllMadeByProducts(List<Integer> categoryIds) {
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.made_in as madeIn,COUNT(p.made_in) as sumProducts FROM  cdm_products p \n" +
+                "WHERE p.status =1 ");
+
+        Map<String, Object> params = new HashMap<>();
+
+        sql.append(" and p.category_id In :categoryIds ");
+        params.put("categoryIds", categoryIds);
+        sql.append("GROUP BY p.made_in");
+
+        return CommonUtil.getList(em, sql.toString(), params, "getAllMadeInProducts");
+
+    }
+
+    @Override
     public Page<ProductsDTO> findByBrandAndPriceAndMadeIn(List<Integer> categoryIds, ProductsDTO dto, Pageable pageable) {
         StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug  FROM cdm_products p \n" +
                 "WHERE p.status =1 ");

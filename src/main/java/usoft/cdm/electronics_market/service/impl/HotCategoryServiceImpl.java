@@ -104,7 +104,6 @@ public class HotCategoryServiceImpl implements HotCategoryService {
 
     @Override
     public ResponseEntity<?> delete(List<Integer> hotCategoryIds) {
-        Users userLogin = this.userService.getCurrentUser();
         List<HotCategory> hotCategoryList = new ArrayList<>();
         hotCategoryIds.forEach(hotCategoryId -> {
             Optional<HotCategory> optionalHotCategory = this.hotCategoryRepository.findById(hotCategoryId);
@@ -112,7 +111,6 @@ public class HotCategoryServiceImpl implements HotCategoryService {
                 throw new BadRequestException("Không tìm thấy id của kho");
             }
             HotCategory hotCategory = optionalHotCategory.get();
-            hotCategory.setUpdatedBy(userLogin.getUsername());
             hotCategoryList.add(hotCategory);
         });
         this.hotCategoryRepository.deleteAll(hotCategoryList);
