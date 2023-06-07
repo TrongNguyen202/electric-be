@@ -15,10 +15,12 @@ import usoft.cdm.electronics_market.util.ResponseUtil;
 public class FooterServiceImpl implements FooterService {
     private final FooterPageRepository footerPageRepository;
 
-    public ResponseEntity<?> getHotline(String hotline){
+    @Override
+    public ResponseEntity<?> getHotline(){
         return ResponseUtil.ok(footerPageRepository.findByType(1).orElse(new FooterPage()));
     }
 
+    @Override
     public ResponseEntity<?> saveHotline(String hotline){
         FooterPage f = footerPageRepository.findByType(1).orElse(new FooterPage());
         f.setType(1);
@@ -27,18 +29,22 @@ public class FooterServiceImpl implements FooterService {
         return ResponseUtil.ok(f);
     }
 
+    @Override
     public ResponseEntity<?> getCustomerCareById(Integer id){
         return ResponseUtil.ok(footerPageRepository.findById(id).orElseThrow());
     }
 
+    @Override
     public ResponseEntity<?> getCustomerCare(Pageable pageable){
         return ResponseUtil.ok(footerPageRepository.findAllByType(pageable, 2));
     }
 
+    @Override
     public ResponseEntity<?> getAllCustomerCare(){
         return ResponseUtil.ok(footerPageRepository.findAllByType(2));
     }
 
+    @Override
     public ResponseEntity<?> saveCustomerCare(FooterModel model){
         FooterPage f = footerPageRepository.findById(model.getId()).orElse(new FooterPage());
         f.setName(model.getName());
