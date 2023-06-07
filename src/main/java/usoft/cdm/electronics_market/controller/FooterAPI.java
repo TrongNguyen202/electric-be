@@ -15,32 +15,32 @@ public class FooterAPI {
     private final FooterService footerService;
 
     @GetMapping
-    private ResponseEntity<?> getHotline(){
+    private ResponseEntity<?> getHotline() {
         return footerService.getHotline();
     }
 
     @PostMapping
-    private ResponseEntity<?> getHotline(@RequestParam String hotline){
+    private ResponseEntity<?> getHotline(@RequestParam String hotline) {
         return footerService.saveHotline(hotline);
     }
 
     @GetMapping
-    private ResponseEntity<?> getCustomerCare(Pageable pageable){
+    private ResponseEntity<?> getCustomerCare(Pageable pageable) {
         return footerService.getCustomerCare(pageable);
     }
 
     @GetMapping
-    private ResponseEntity<?> getAllCustomerCare(){
+    private ResponseEntity<?> getAllCustomerCare() {
         return footerService.getAllCustomerCare();
     }
 
     @GetMapping
-    private ResponseEntity<?> getHotline(@RequestParam Integer id){
+    private ResponseEntity<?> getHotline(@RequestParam Integer id) {
         return footerService.getCustomerCareById(id);
     }
 
     @GetMapping
-    private ResponseEntity<?> getHotline(@RequestBody FooterModel model){
+    private ResponseEntity<?> getHotline(@RequestBody FooterModel model) {
         return footerService.saveCustomerCare(model);
     }
 }
