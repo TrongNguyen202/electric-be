@@ -10,6 +10,8 @@ public interface ProductRepositoryCustom {
 
     List<ProductsDTO> getAllMadeByProducts(Integer categoryId);
 
+    List<ProductsDTO> getAllMadeByProducts(List<Integer> categoryIds);
+
     Page<ProductsDTO> findByBrandAndPriceAndMadeIn(List<Integer> categoryIds, ProductsDTO dto, Pageable pageable);
 
     Page<ProductsDTO> findByBrandAndPriceAndMadeIn(Integer categoryId, ProductsDTO dto, Pageable pageable);
