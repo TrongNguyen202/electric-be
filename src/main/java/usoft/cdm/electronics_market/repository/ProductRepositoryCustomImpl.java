@@ -22,13 +22,14 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
     @Override
     public List<ProductsDTO> getAllMadeByProducts(Integer categoryId) {
-        StringBuilder sql = new StringBuilder("SELECT p.id,p.made_in as madeIn,COUNT(p.id) as sumProducts FROM  cdm_products p \n" +
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.made_in as madeIn,COUNT(p.made_in) as sumProducts FROM  cdm_products p \n" +
                 "WHERE p.status =1 ");
 
         Map<String, Object> params = new HashMap<>();
 
         sql.append(" and p.category_id = :categoryId ");
         params.put("categoryId", categoryId);
+        sql.append("GROUP BY p.made_in");
 
         return CommonUtil.getList(em, sql.toString(), params, "getAllMadeInProducts");
 

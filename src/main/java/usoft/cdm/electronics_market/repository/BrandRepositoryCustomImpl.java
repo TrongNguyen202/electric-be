@@ -20,7 +20,7 @@ public class BrandRepositoryCustomImpl implements BrandRepositoryCustom {
 
     @Override
     public List<BrandDTO> getAllBrandByCategoryId(Integer categoryId) {
-        StringBuilder sql = new StringBuilder("SELECT b.id,b.name,COUNT(p.id) as sumProducts FROM cdm_brand b \n" +
+        StringBuilder sql = new StringBuilder("SELECT b.id,b.name,COUNT(b.id) as sumProducts FROM cdm_brand b \n" +
                 "JOIN cdm_products p ON b.id = p.brand_id\n" +
                 "WHERE b.status =1 and p.status =1  ");
 
@@ -28,7 +28,7 @@ public class BrandRepositoryCustomImpl implements BrandRepositoryCustom {
 
         sql.append(" and p.category_id = :categoryId  ");
         params.put("categoryId", categoryId);
-
+        sql.append("GROUP BY b.id");
         return CommonUtil.getList(em, sql.toString(), params, "getAllBrandByProducts");
 
     }
