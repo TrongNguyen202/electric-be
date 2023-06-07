@@ -34,6 +34,7 @@ public class OtpVerificationServiceImpl implements OtpVerifiService {
         try {
             FirebaseToken token = firebaseAuth.verifyIdToken(verificationId);
             String phoneNumber = token.getClaims().get("phone_number").toString();
+//            System.out.println(token.getClaims().get("otp").toString());
             String phoneMain = phoneNumber.replace("+84", "0");
             Optional<Users> usersOptional = this.userRepository.findByPhoneAndStatus(phoneMain, true);
             if (usersOptional.isPresent()) {
@@ -44,6 +45,31 @@ public class OtpVerificationServiceImpl implements OtpVerifiService {
                     .username(phoneMain)
                     .password(this.passwordEncoder.encode(request.getOtp()))
                     .phone(phoneMain)
+                    .roleId(3)
+                    .status(true)
+                    .build();
+            this.userRepository.save(users);
+            return ResponseUtil.ok("Sign-up is successful");
+        } catch (FirebaseAuthException e) {
+            e.printStackTrace();
+            return ResponseUtil.badRequest("Xác thực OTP sai");
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> signUpEmail(VerifyOTPRequest request) {
+        String verificationId = request.getVerificationId();
+        try {
+            FirebaseToken token = firebaseAuth.verifyIdToken(verificationId);
+            Optional<Users> usersOptional = this.userRepository.findByEmailAndStatus(token.getEmail(), true);
+            if (usersOptional.isPresent()) {
+                throw new BadRequestException("Đã đăng ký tài khoản vs Email này rồi");
+            }
+            Users users = Users
+                    .builder()
+                    .username(token.getEmail())
+                    .password(this.passwordEncoder.encode(request.getOtp()))
+                    .email(token.getEmail())
                     .roleId(3)
                     .status(true)
                     .build();

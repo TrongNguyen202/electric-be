@@ -279,14 +279,22 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<ProductsDTO> getAllProductFromCategoryId(Integer categoryId, Pageable pageable, ProductsDTO dto) {
-        Page<ProductsDTO> productsDTOSSearch = this.productRepository.findByBrandAndPriceAndMadeIn(categoryId, dto, pageable);
+        List<Category> categories = this.categoryRepository.findAllByParentIdAndStatus(categoryId, true);
+        Page<ProductsDTO> productsDTOSSearch;
+        if (categories.size() > 0) {
+            List<Integer> categoryIds = categories.stream().map(Category::getId).collect(Collectors.toList());
+            productsDTOSSearch = this.productRepository.findByBrandAndPriceAndMadeIn(categoryIds, dto, pageable);
+
+        } else {
+            productsDTOSSearch = this.productRepository.findByBrandAndPriceAndMadeIn(categoryId, dto, pageable);
+        }
         productsDTOSSearch.forEach(productsDTO -> {
             List<String> imgProductSearch = getImgs(productsDTO.getId(), 2);
             productsDTO.setImg(imgProductSearch);
             setDiscount(productsDTO);
         });
-
         return productsDTOSSearch;
+
     }
 
     @Override
@@ -357,6 +365,12 @@ public class ProductServiceImpl implements ProductService {
             dto.setImg(imgs);
         }
         return ResponseUtil.ok(productsDTOS);
+    }
+
+    @Override
+    public ProductsDTO displayMaxDiscountByCategory(Integer categoryId) {
+        ProductsDTO dto = this.productRepository.getDiscountByCategory(categoryId);
+        return dto;
     }
 
     //set(Brand,Img,Discount)

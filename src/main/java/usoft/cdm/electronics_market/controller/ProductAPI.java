@@ -72,6 +72,11 @@ public class ProductAPI {
 
         return this.productService.deleteProductByIds(productIds);
     }
+
+    @GetMapping("max-discount")
+    public ResponseEntity<?> displayMaxDiscountByCategory(@RequestParam(required = false) Integer categoryId) {
+        return ResponseUtil.ok(this.productService.displayMaxDiscountByCategory(categoryId));
+    }
 }
 
 @Data

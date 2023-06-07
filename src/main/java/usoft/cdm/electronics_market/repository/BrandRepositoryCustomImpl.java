@@ -9,6 +9,7 @@ import usoft.cdm.electronics_market.util.CommonUtil;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BrandRepositoryCustomImpl implements BrandRepositoryCustom {
@@ -18,7 +19,7 @@ public class BrandRepositoryCustomImpl implements BrandRepositoryCustom {
     private EntityManager em;
 
     @Override
-    public Page<BrandDTO> getAllBrandByCategoryId(Integer categoryId, Pageable pageable) {
+    public List<BrandDTO> getAllBrandByCategoryId(Integer categoryId) {
         StringBuilder sql = new StringBuilder("SELECT b.id,b.name,COUNT(p.id) as sumProducts FROM cdm_brand b \n" +
                 "JOIN cdm_products p ON b.id = p.brand_id\n" +
                 "WHERE b.status =1 and p.status =1  ");
@@ -28,7 +29,7 @@ public class BrandRepositoryCustomImpl implements BrandRepositoryCustom {
         sql.append(" and p.category_id = :categoryId  ");
         params.put("categoryId", categoryId);
 
-        return CommonUtil.getPageImpl(em, sql.toString(), params, pageable, "getAllBrandByProducts");
+        return CommonUtil.getList(em, sql.toString(), params, "getAllBrandByProducts");
 
     }
 }
