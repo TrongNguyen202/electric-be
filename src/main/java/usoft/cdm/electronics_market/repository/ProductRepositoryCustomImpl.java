@@ -45,12 +45,12 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         sql.append(" and p.category_id IN :categoryIds ");
         params.put("categoryIds", categoryIds);
 
-        if (!DataUtil.isNullObject(dto.getBrandId())) {
+        if (!DataUtil.isNullObject(dto.getBrandIds())) {
             sql.append(" and p.brand_id IN :brand");
             params.put("brand", dto.getBrandIds());
         }
 
-        if (!DataUtil.isNullObject(dto.getMadeIn())) {
+        if (!DataUtil.isNullObject(dto.getMadeIns())) {
             sql.append(" and p.p.made_in IN :madeIn");
             params.put("madeIn", dto.getMadeIns());
         }
@@ -90,12 +90,13 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         sql.append(" and p.category_id = :categoryIds ");
         params.put("categoryIds", categoryId);
 
-        if (!DataUtil.isNullObject(dto.getBrandId())) {
+        if (!DataUtil.isNullObject(dto.getBrandIds())) {
             sql.append(" and p.brand_id IN :brand");
             params.put("brand", dto.getBrandIds());
         }
 
-        if (!DataUtil.isNullObject(dto.getMadeIn())) {
+
+        if (!DataUtil.isNullObject(dto.getMadeIns())) {
             sql.append(" and p.p.made_in IN :madeIn");
             params.put("madeIn", dto.getMadeIns());
         }
@@ -109,7 +110,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                     sql.append(" OR ");
                 String priceFrom = "from" + cnt;
                 String priceTo = "to" + cnt;
-                if (priceTo != null)
+                if (x.getTo() != null)
                     sql.append(" (p.price_sell BETWEEN :").append(priceFrom).append(" AND :").append(priceTo).append(")");
                 else
                     sql.append(" (p.price_sell > 200000000)");
