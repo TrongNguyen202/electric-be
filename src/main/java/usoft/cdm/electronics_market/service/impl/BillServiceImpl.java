@@ -5,14 +5,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import usoft.cdm.electronics_market.config.security.CustomUserDetails;
 import usoft.cdm.electronics_market.entities.*;
 import usoft.cdm.electronics_market.model.bill.BillResponse;
 import usoft.cdm.electronics_market.model.bill.Cart;
 import usoft.cdm.electronics_market.model.bill.Shop;
-import usoft.cdm.electronics_market.repository.BillDetailRepository;
-import usoft.cdm.electronics_market.repository.BillRepository;
-import usoft.cdm.electronics_market.repository.BillVoucherRepository;
-import usoft.cdm.electronics_market.repository.ProductRepository;
+import usoft.cdm.electronics_market.repository.*;
 import usoft.cdm.electronics_market.service.BillService;
 import usoft.cdm.electronics_market.service.UserService;
 import usoft.cdm.electronics_market.util.ResponseUtil;
@@ -28,6 +26,7 @@ public class BillServiceImpl implements BillService {
     private final BillDetailRepository billDetailRepository;
     private final ProductRepository productRepository;
     private final UserService userService;
+    private final RolesRepository rolesRepository;
     private final BillVoucherRepository billVoucherRepository;
 
     @Override
@@ -102,7 +101,7 @@ public class BillServiceImpl implements BillService {
     public ResponseEntity<?> shop(Shop shop) {
         Bill bill = new Bill();
         try {
-            Users users = userService.getCurrentUser();
+            Users users = ((CustomUserDetails) userService.getInfoUser()).getUsers();
             if (users != null) {
                 bill = billRepository.findByUserIdAndStatus(users.getId(), 1).orElse(new Bill());
                 bill.setUserId(users.getId());
@@ -117,7 +116,7 @@ public class BillServiceImpl implements BillService {
             return ResponseUtil.badRequest("Email không đúng định dạng!");
         bill.setEmail(shop.getEmail());
         bill.setStatus(2);
-        if (!shop.getPhone().matches("^0[1-9][0-9]{8,9}$"))
+        if (!shop.getPhone().matches("^0[1-9]\\d{8,9}$"))
             return ResponseUtil.badRequest("Số điện thoại không đúng định dạng!");
         bill.setPhone(shop.getPhone());
         bill.setAddressTransfer(shop.getAddressTransfer());
@@ -125,6 +124,8 @@ public class BillServiceImpl implements BillService {
         if (bill.getId() != null)
             list = billDetailRepository.findAllByBillId(bill.getId());
         List<BillDetail> details = new ArrayList<>();
+        if (shop.getCart() == null || shop.getCart().isEmpty())
+            return ResponseUtil.badRequest("Trong giỏ không có hàng!");
         bill = billRepository.save(bill);
         for (Cart c : shop.getCart()) {
             BillDetail billDetail = new BillDetail();

@@ -1,6 +1,7 @@
 package usoft.cdm.electronics_market.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,4 +19,9 @@ import javax.persistence.Table;
 
 public class FooterPage extends BaseEntity {
     private String name;
+    private String icon;
+    private String content;
+    private String link;
+    @JsonIgnore
+    private Integer type;
 }
