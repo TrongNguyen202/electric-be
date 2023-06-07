@@ -35,14 +35,59 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     }
 
     @Override
+    public Page<ProductsDTO> findByBrandAndPriceAndMadeIn(List<Integer> categoryIds, ProductsDTO dto, Pageable pageable) {
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug  FROM cdm_products p \n" +
+                "WHERE p.status =1 ");
+
+        Map<String, Object> params = new HashMap<>();
+
+        sql.append(" and p.category_id IN :categoryIds ");
+        params.put("categoryIds", categoryIds);
+
+        if (!DataUtil.isNullObject(dto.getBrandId())) {
+            sql.append(" and p.brand_id IN :brand");
+            params.put("brand", dto.getBrandIds());
+        }
+
+        if (!DataUtil.isNullObject(dto.getMadeIn())) {
+            sql.append(" and p.p.made_in IN :madeIn");
+            params.put("madeIn", dto.getMadeIns());
+        }
+        if (!DataUtil.isNullOrEmpty(dto.getPrice())) {
+            boolean check = true;
+            int cnt = 1;
+            for (Price x : dto.getPrice()) {
+                if (check)
+                    sql.append(" AND (");
+                else
+                    sql.append(" OR ");
+                String priceFrom = "from" + cnt;
+                String priceTo = "to" + cnt;
+                if (priceTo != null)
+                    sql.append(" (p.price_sell BETWEEN :").append(priceFrom).append(" AND :").append(priceTo).append(")");
+                else
+                    sql.append(" (p.price_sell > 200000000)");
+                params.put(priceFrom, x.getFrom());
+                params.put(priceTo, x.getTo());
+                check = false;
+                cnt++;
+            }
+            if (!check)
+                sql.append(" )");
+        }
+        return CommonUtil.getPageImpl(em, sql.toString(), params, pageable, "getBrandAndPriceAndMadeIn");
+
+    }
+
+    @Override
     public Page<ProductsDTO> findByBrandAndPriceAndMadeIn(Integer categoryId, ProductsDTO dto, Pageable pageable) {
         StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug  FROM cdm_products p \n" +
                 "WHERE p.status =1 ");
 
         Map<String, Object> params = new HashMap<>();
 
-        sql.append(" and p.category_id = :categoryId ");
-        params.put("categoryId", categoryId);
+        sql.append(" and p.category_id = :categoryIds ");
+        params.put("categoryIds", categoryId);
 
         if (!DataUtil.isNullObject(dto.getBrandId())) {
             sql.append(" and p.brand_id IN :brand");
