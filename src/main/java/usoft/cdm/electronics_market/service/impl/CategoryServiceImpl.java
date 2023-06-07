@@ -136,8 +136,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseEntity<?> displayCategoryChild(Integer categoryId, Pageable pageable) {
         List<Category> categories = this.categoryRepository.findAllByParentIdAndStatus(categoryId, true);
-        Page<BrandDTO> brandDTOS = this.brandRepository.getAllBrandByCategoryId(categoryId, pageable);
-        Page<ProductsDTO> productsDTOS = this.productRepository.getAllMadeByProducts(categoryId, pageable);
+        List<BrandDTO> brandDTOS = this.brandRepository.getAllBrandByCategoryId(categoryId);
+        List<ProductsDTO> productsDTOS = this.productRepository.getAllMadeByProducts(categoryId);
         List<PriceRangeModel> list = PriceRange.list;
         List<PriceRangeModel> res = new ArrayList<>();
         for (PriceRangeModel rangeModel : list) {

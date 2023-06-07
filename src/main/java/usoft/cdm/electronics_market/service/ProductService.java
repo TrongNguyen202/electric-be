@@ -39,4 +39,6 @@ public interface ProductService {
 
     ResponseEntity<?> searchNameForHomepage(String name, Pageable pageable);
 
+    ProductsDTO displayMaxDiscountByCategory(Integer categoryId);
+
 }

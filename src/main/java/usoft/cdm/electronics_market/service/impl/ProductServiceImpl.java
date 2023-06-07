@@ -359,6 +359,12 @@ public class ProductServiceImpl implements ProductService {
         return ResponseUtil.ok(productsDTOS);
     }
 
+    @Override
+    public ProductsDTO displayMaxDiscountByCategory(Integer categoryId) {
+        ProductsDTO dto = this.productRepository.getDiscountByCategory(categoryId);
+        return dto;
+    }
+
     //set(Brand,Img,Discount)
     private void displaySet(ProductsDTO productsDTO, Integer type) {
         List<String> imgProduct = getImgs(productsDTO.getId(), type);

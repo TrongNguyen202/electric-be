@@ -40,6 +40,19 @@ import java.util.Date;
         }
 )
 
+@SqlResultSetMapping(
+        name = "getDiscountByCategory",
+        classes = {
+                @ConstructorResult(
+                        targetClass = ProductsDTO.class,
+                        columns = {
+                                @ColumnResult(name = "id", type = Integer.class),
+                                @ColumnResult(name = "discount", type = Double.class),
+                        }
+                )
+        }
+)
+
 
 @Entity
 @Data

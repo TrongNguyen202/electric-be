@@ -84,6 +84,11 @@ public class ProductsDTO extends BaseModel {
         this.sumProduct = sumProduct;
     }
 
+    public ProductsDTO(Integer id, Double discount) {
+        this.id = id;
+        this.discount = discount;
+    }
+
     public ProductsDTO(Integer id, String name, Double priceSell, Double priceAfterSale, String slug) {
         this.id = id;
         this.name = name;
