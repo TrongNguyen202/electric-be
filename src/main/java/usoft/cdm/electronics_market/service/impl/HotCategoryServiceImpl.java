@@ -40,7 +40,7 @@ public class HotCategoryServiceImpl implements HotCategoryService {
 
     @Override
     public Page<HotCategoryDTO> findAll(Pageable pageable) {
-        Page<HotCategory> categories = this.hotCategoryRepository.findAllByStatus(true, pageable);
+        Page<HotCategory> categories = this.hotCategoryRepository.findAll(pageable);
         Page<HotCategoryDTO> categoryDTOS = MapperUtil.mapEntityPageIntoDtoPage(categories, HotCategoryDTO.class);
         for (HotCategoryDTO dto : categoryDTOS) {
             Category category = this.categoryRepository.findById(dto.getCategoryId()).orElseThrow();
@@ -53,7 +53,7 @@ public class HotCategoryServiceImpl implements HotCategoryService {
     @Override
     public ResponseEntity<?> save(HotCategoryDTO dto) {
         Users userLogin = this.userService.getCurrentUser();
-        Optional<HotCategory> hotCategoryOptional = this.hotCategoryRepository.findByStatusAndAndCategoryId(true, dto.getCategoryId());
+        Optional<HotCategory> hotCategoryOptional = this.hotCategoryRepository.findByCategoryId(dto.getCategoryId());
         if (hotCategoryOptional.isPresent()) {
             throw new BadRequestException("Đã có danh mục nổi bật cho danh mục này");
         }
@@ -62,7 +62,6 @@ public class HotCategoryServiceImpl implements HotCategoryService {
                 .builder()
                 .categoryId(dto.getCategoryId())
                 .discount(productsDTO.getDiscount())
-                .status(true)
                 .build();
         hotCategory.setCreatedBy(userLogin.getUsername());
         this.hotCategoryRepository.save(hotCategory);
@@ -74,7 +73,7 @@ public class HotCategoryServiceImpl implements HotCategoryService {
         Users userLogin = this.userService.getCurrentUser();
         Optional<HotCategory> hotCategoryCheck = this.hotCategoryRepository.findById(dto.getId());
         if (!Objects.equals(hotCategoryCheck.get().getCategoryId(), dto.getCategoryId())) {
-            Optional<HotCategory> hotCategoryNew = this.hotCategoryRepository.findByStatusAndAndCategoryId(true, dto.getCategoryId());
+            Optional<HotCategory> hotCategoryNew = this.hotCategoryRepository.findByCategoryId(dto.getCategoryId());
             if (hotCategoryNew.isPresent()) {
                 throw new BadRequestException("Đã có danh mục nổi bật cho danh mục này");
             }
@@ -88,7 +87,6 @@ public class HotCategoryServiceImpl implements HotCategoryService {
         category.setDiscount(productsDTO.getDiscount());
         category.setUpdatedBy(userLogin.getUsername());
         this.hotCategoryRepository.save(category);
-        category.setStatus(true);
         return ResponseUtil.ok(category);
     }
 
@@ -115,10 +113,9 @@ public class HotCategoryServiceImpl implements HotCategoryService {
             }
             HotCategory hotCategory = optionalHotCategory.get();
             hotCategory.setUpdatedBy(userLogin.getUsername());
-            hotCategory.setStatus(false);
             hotCategoryList.add(hotCategory);
         });
-        this.hotCategoryRepository.saveAll(hotCategoryList);
+        this.hotCategoryRepository.deleteAll(hotCategoryList);
         return ResponseUtil.message(Message.REMOVE);
     }
 }

@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface HotCategoryRepository extends JpaRepository<HotCategory, Integer> {
 
-    Optional<HotCategory> findByStatusAndAndCategoryId(Boolean status, Integer categoryId);
+    Optional<HotCategory> findByCategoryId(Integer categoryId);
 
-    Page<HotCategory> findAllByStatus(Boolean status, Pageable pageable);
+    Page<HotCategory> findAll(Pageable pageable);
 }

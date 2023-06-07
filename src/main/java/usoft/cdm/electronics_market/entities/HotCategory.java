@@ -17,5 +17,5 @@ import javax.persistence.Table;
 public class HotCategory extends BaseEntity {
     private Integer categoryId;
     private Double discount;
-    private Boolean status;
+
 }
