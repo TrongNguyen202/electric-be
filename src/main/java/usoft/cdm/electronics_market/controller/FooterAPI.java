@@ -24,22 +24,22 @@ public class FooterAPI {
         return footerService.saveHotline(hotline);
     }
 
-    @GetMapping
+    @GetMapping("getCustomerCare")
     private ResponseEntity<?> getCustomerCare(Pageable pageable) {
         return footerService.getCustomerCare(pageable);
     }
 
-    @GetMapping
+    @GetMapping("getAllCustomerCare")
     private ResponseEntity<?> getAllCustomerCare() {
         return footerService.getAllCustomerCare();
     }
 
-    @GetMapping
-    private ResponseEntity<?> getHotline(@RequestParam Integer id) {
+    @GetMapping("getCustomerCareById")
+    private ResponseEntity<?> getCustomerCareById(@RequestParam Integer id) {
         return footerService.getCustomerCareById(id);
     }
 
-    @GetMapping
+    @PostMapping("saveCustomerCare")
     private ResponseEntity<?> getHotline(@RequestBody FooterModel model) {
         return footerService.saveCustomerCare(model);
     }
