@@ -14,4 +14,7 @@ public class HotCategoryDTO extends BaseModel {
     private Integer categoryId;
     private Double discount;
     private String nameCategory;
+    private String slugCategory;
+    private String iconImg;
+    private String avatarImg;
 }
