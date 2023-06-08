@@ -44,7 +44,7 @@ public class SuggestedProductServiceImpl implements SuggestedProductService {
 
     @Override
     public Page<SuggestedProductDTO> getAll(Pageable pageable) {
-        Page<SuggestedProduct> suggestedProducts = this.suggestedProductRepository.findAll(pageable);
+        Page<SuggestedProduct> suggestedProducts = this.suggestedProductRepository.findAllByOrderByCreatedDateDesc(pageable);
         Page<SuggestedProductDTO> suggestedProductDTOS = MapperUtil.mapEntityPageIntoDtoPage(suggestedProducts, SuggestedProductDTO.class);
         for (SuggestedProductDTO dto : suggestedProductDTOS) {
             Products products = this.productRepository.findById(dto.getProductId()).orElseThrow();

@@ -5,12 +5,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class DateUtil {
     public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     public static DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    public static SimpleDateFormat sdtf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+    public static SimpleDateFormat sdtf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     public static SimpleDateFormat dateUpFile = new SimpleDateFormat("ddMMyyyyhhmmss");
 
     public static Date today() {

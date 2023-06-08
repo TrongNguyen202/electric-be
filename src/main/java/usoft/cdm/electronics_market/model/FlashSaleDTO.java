@@ -7,7 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,15 +24,22 @@ public class FlashSaleDTO extends BaseModel {
     private Integer quantitySale;
 
     @NotNull(message = "Ngày bắt đầu sale không được rỗng")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date startSale;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime startSale;
 
     @NotNull(message = "Ngày kết thúc sale không được rỗng")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date endSale;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime endSale;
 
     @NotNull(message = "Gía bán không được rỗng")
     private Double priceFlashSale;
 
     private String description;
+
+    private String brandName;
+    private Double priceSell;
+    private List<String> imgs;
+    private String slug;
+    private Double discount;
+    private String nameProduct;
 }
