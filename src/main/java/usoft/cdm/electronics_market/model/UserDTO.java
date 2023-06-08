@@ -24,6 +24,6 @@ public class UserDTO extends BaseModel {
     private String type;
     private Boolean status;
     private String description;
-
+    private String avatar;
 }
 

@@ -12,6 +12,8 @@ public interface BillService {
 
     ResponseEntity<?> getById(Integer id);
 
+    ResponseEntity<?> getHistory();
+
     ResponseEntity<?> addCartToBill(List<Cart> cart);
 
     ResponseEntity<?> shop(Shop shop);
