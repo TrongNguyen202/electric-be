@@ -22,4 +22,6 @@ public class SuggestedProductDTO extends BaseModel {
     private Double priceSell;
     private List<String> img;
 
+    private Integer quantitySell;
+
 }
