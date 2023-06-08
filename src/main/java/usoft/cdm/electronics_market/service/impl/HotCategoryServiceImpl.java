@@ -45,7 +45,6 @@ public class HotCategoryServiceImpl implements HotCategoryService {
         for (HotCategoryDTO dto : categoryDTOS) {
             Category category = this.categoryRepository.findById(dto.getCategoryId()).orElseThrow();
             dto.setNameCategory(category.getName());
-
         }
         return categoryDTOS;
     }
