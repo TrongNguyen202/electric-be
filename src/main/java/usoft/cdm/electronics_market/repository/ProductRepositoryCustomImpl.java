@@ -52,7 +52,9 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
     @Override
     public Page<ProductsDTO> findByBrandAndPriceAndMadeIn(List<Integer> categoryIds, ProductsDTO dto, Pageable pageable) {
-        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug  FROM cdm_products p \n" +
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug," +
+                "(100-(p.price_after_sale/p.price_sell)*100) as discount  " +
+                "FROM cdm_products p \n" +
                 "WHERE p.status =1 ");
 
         Map<String, Object> params = new HashMap<>();
@@ -64,6 +66,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             sql.append(" and p.brand_id IN :brand");
             params.put("brand", dto.getBrandIds());
         }
+
 
         if (!DataUtil.isNullObject(dto.getMadeIns())) {
             sql.append(" and p.made_in IN :madeIn");
@@ -90,6 +93,17 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             }
             if (!check)
                 sql.append(" )");
+        }
+        if (!DataUtil.isNullObject(dto.getValueSort())) {
+            if (dto.getValueSort() == 2) {
+                sql.append("  ORDER BY p.price_after_sale ASC ");
+            } else if (dto.getValueSort() == 3) {
+                sql.append("  ORDER BY p.price_after_sale DESC ");
+            } else if (dto.getValueSort() == 5) {
+                sql.append(" ORDER BY p.created_date DESC");
+            }else if(dto.getValueSort() ==4){
+                sql.append("  ORDER BY (100-(p.price_after_sale/p.price_sell)*100) DESC ");
+            }
         }
         return CommonUtil.getPageImpl(em, sql.toString(), params, pageable, "getBrandAndPriceAndMadeIn");
 

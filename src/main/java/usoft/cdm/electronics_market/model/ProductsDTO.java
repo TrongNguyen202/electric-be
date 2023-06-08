@@ -78,6 +78,8 @@ public class ProductsDTO extends BaseModel {
     private List<Integer> brandIds;
     private List<String> madeIns;
 
+    private Integer valueSort;//1 bán chạy nhất 2 giá tăng dần 3 giá giảm dần 4 giảm giá 5 mới nhất
+
     public ProductsDTO(Integer id, String madeIn, Integer sumProduct) {
         this.id = id;
         this.madeIn = madeIn;
