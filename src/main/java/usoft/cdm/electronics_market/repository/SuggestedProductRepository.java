@@ -6,9 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import usoft.cdm.electronics_market.entities.SuggestedProduct;
 
+import java.util.Optional;
+
 @Repository
 public interface SuggestedProductRepository extends JpaRepository<SuggestedProduct, Integer> {
 
     Page<SuggestedProduct> findAll(Pageable pageable);
+
+    Optional<SuggestedProduct> findByProductId(Integer productId);
 
 }

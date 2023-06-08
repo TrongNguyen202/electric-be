@@ -74,6 +74,10 @@ public class SuggestedProductServiceImpl implements SuggestedProductService {
         if (products.isEmpty()) {
             throw new BadRequestException("Không tìm thấy sản phẩm này");
         }
+        Optional<SuggestedProduct> suggestedProductCheck = this.suggestedProductRepository.findByProductId(productId);
+        if (suggestedProductCheck.isPresent()) {
+            throw new BadRequestException("Đã thêm sản phầm này vào danh sách gợi ý");
+        }
         SuggestedProduct suggestedProduct = SuggestedProduct
                 .builder()
                 .productId(products.get().getId())
