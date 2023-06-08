@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 @Entity
 @Data
@@ -19,8 +19,9 @@ public class FlashSale extends BaseEntity {
 
     private Integer productId;
     private Integer quantitySale;
-    private Date startSale;
-    private Date endSale;
+    private ZonedDateTime startSale;
+    private ZonedDateTime endSale;
     private Double priceFlashSale;
     private String description;
+    private Boolean status;
 }

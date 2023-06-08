@@ -101,7 +101,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                 sql.append("  ORDER BY p.price_after_sale DESC ");
             } else if (dto.getValueSort() == 5) {
                 sql.append(" ORDER BY p.created_date DESC");
-            }else if(dto.getValueSort() ==4){
+            } else if (dto.getValueSort() == 4) {
                 sql.append("  ORDER BY (100-(p.price_after_sale/p.price_sell)*100) DESC ");
             }
         }
@@ -159,7 +159,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     public Page<ProductsDTO> searchNameForHomepage(String name, Pageable pageable) {
         StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug  " +
                 "FROM cdm_products p \n" +
-                "WHERE p.status =1 ");
+                "WHERE p.status =true ");
 
         Map<String, Object> params = new HashMap<>();
 
@@ -168,9 +168,12 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             String query = Arrays.stream(keywords)
                     .map(data -> "+" + data + "*")
                     .collect(Collectors.joining(" "));
-            sql.append(" and MATCH(p.name) AGAINST(:keyword IN BOOLEAN MODE) ");
+            sql.append(" and (MATCH(p.name) AGAINST(:keyword IN BOOLEAN MODE) ");
             params.put("keyword", query);
-
+        }
+        if (!DataUtil.isNullString(name)) {
+            sql.append(" OR lower(p.name) LIKE :name)");
+            params.put("name", "%" + name.toLowerCase() + "%");
         }
 
         return CommonUtil.getPageImpl(em, sql.toString(), params, pageable, "getBrandAndPriceAndMadeIn");
