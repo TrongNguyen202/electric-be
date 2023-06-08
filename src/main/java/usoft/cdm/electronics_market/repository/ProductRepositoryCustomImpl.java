@@ -22,13 +22,29 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
     @Override
     public List<ProductsDTO> getAllMadeByProducts(Integer categoryId) {
-        StringBuilder sql = new StringBuilder("SELECT p.id,p.made_in as madeIn,COUNT(p.id) as sumProducts FROM  cdm_products p \n" +
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.made_in as madeIn,COUNT(p.made_in) as sumProducts FROM  cdm_products p \n" +
                 "WHERE p.status =1 ");
 
         Map<String, Object> params = new HashMap<>();
 
         sql.append(" and p.category_id = :categoryId ");
         params.put("categoryId", categoryId);
+        sql.append("GROUP BY p.made_in");
+
+        return CommonUtil.getList(em, sql.toString(), params, "getAllMadeInProducts");
+
+    }
+
+    @Override
+    public List<ProductsDTO> getAllMadeByProducts(List<Integer> categoryIds) {
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.made_in as madeIn,COUNT(p.made_in) as sumProducts FROM  cdm_products p \n" +
+                "WHERE p.status =1 ");
+
+        Map<String, Object> params = new HashMap<>();
+
+        sql.append(" and p.category_id In :categoryIds ");
+        params.put("categoryIds", categoryIds);
+        sql.append("GROUP BY p.made_in");
 
         return CommonUtil.getList(em, sql.toString(), params, "getAllMadeInProducts");
 
@@ -44,13 +60,13 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         sql.append(" and p.category_id IN :categoryIds ");
         params.put("categoryIds", categoryIds);
 
-        if (!DataUtil.isNullObject(dto.getBrandId())) {
+        if (!DataUtil.isNullObject(dto.getBrandIds())) {
             sql.append(" and p.brand_id IN :brand");
             params.put("brand", dto.getBrandIds());
         }
 
-        if (!DataUtil.isNullObject(dto.getMadeIn())) {
-            sql.append(" and p.p.made_in IN :madeIn");
+        if (!DataUtil.isNullObject(dto.getMadeIns())) {
+            sql.append(" and p.made_in IN :madeIn");
             params.put("madeIn", dto.getMadeIns());
         }
         if (!DataUtil.isNullOrEmpty(dto.getPrice())) {
@@ -63,7 +79,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                     sql.append(" OR ");
                 String priceFrom = "from" + cnt;
                 String priceTo = "to" + cnt;
-                if (priceTo != null)
+                if (x.getTo() != null)
                     sql.append(" (p.price_sell BETWEEN :").append(priceFrom).append(" AND :").append(priceTo).append(")");
                 else
                     sql.append(" (p.price_sell > 200000000)");
@@ -89,13 +105,14 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         sql.append(" and p.category_id = :categoryIds ");
         params.put("categoryIds", categoryId);
 
-        if (!DataUtil.isNullObject(dto.getBrandId())) {
+        if (!DataUtil.isNullObject(dto.getBrandIds())) {
             sql.append(" and p.brand_id IN :brand");
             params.put("brand", dto.getBrandIds());
         }
 
-        if (!DataUtil.isNullObject(dto.getMadeIn())) {
-            sql.append(" and p.p.made_in IN :madeIn");
+
+        if (!DataUtil.isNullObject(dto.getMadeIns())) {
+            sql.append(" and p.made_in IN :madeIn");
             params.put("madeIn", dto.getMadeIns());
         }
         if (!DataUtil.isNullOrEmpty(dto.getPrice())) {
@@ -108,7 +125,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                     sql.append(" OR ");
                 String priceFrom = "from" + cnt;
                 String priceTo = "to" + cnt;
-                if (priceTo != null)
+                if (x.getTo() != null)
                     sql.append(" (p.price_sell BETWEEN :").append(priceFrom).append(" AND :").append(priceTo).append(")");
                 else
                     sql.append(" (p.price_sell > 200000000)");
