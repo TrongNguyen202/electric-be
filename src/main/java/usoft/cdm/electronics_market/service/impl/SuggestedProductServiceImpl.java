@@ -39,6 +39,8 @@ public class SuggestedProductServiceImpl implements SuggestedProductService {
 
     private final ProductService productService;
 
+    private final BillDetailRepository billDetailRepository;
+
 
     @Override
     public Page<SuggestedProductDTO> getAll(Pageable pageable) {
@@ -49,11 +51,13 @@ public class SuggestedProductServiceImpl implements SuggestedProductService {
             Category category = this.categoryRepository.findById(products.getCategoryId()).orElseThrow();
             Brand brand = this.brandRepository.findById(products.getBrandId()).orElseThrow();
             List<String> imgs = this.productService.getImgs(dto.getProductId(), 2);
+            Integer sumQuantitySell = this.billDetailRepository.sumQuantitySell(dto.getProductId());
             dto.setBrandName(brand.getName());
             dto.setNameCategory(category.getName());
             dto.setNameProduct(products.getName());
             dto.setPriceAfterSale(products.getPriceAfterSale());
             dto.setPriceSell(products.getPriceSell());
+            dto.setQuantitySell(sumQuantitySell);
             dto.setImg(imgs);
             if (null == dto.getPriceAfterSale()) {
                 dto.setDiscount(0.0);
