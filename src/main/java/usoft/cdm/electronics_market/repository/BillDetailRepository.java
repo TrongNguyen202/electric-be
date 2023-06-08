@@ -14,4 +14,8 @@ public interface BillDetailRepository extends JpaRepository<BillDetail, Integer>
 
     @Query("SELECT bd.id FROM BillDetail bd WHERE bd.billId = :billId")
     List<Integer> findAllProductIdByBillId(@Param("billId") Integer billId);
+
+    @Query("SELECT SUM(bd.quantity) FROM BillDetail bd WHERE bd.productId = :productId GROUP BY bd.productId")
+    Integer sumQuantitySell(@Param("productId") Integer productId);
+
 }

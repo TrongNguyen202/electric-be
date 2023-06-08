@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import usoft.cdm.electronics_market.model.ProductsDTO;
 import usoft.cdm.electronics_market.model.VerifyOTPRequest;
-import usoft.cdm.electronics_market.service.CategoryService;
-import usoft.cdm.electronics_market.service.HomePageService;
-import usoft.cdm.electronics_market.service.OtpVerifiService;
-import usoft.cdm.electronics_market.service.ProductService;
+import usoft.cdm.electronics_market.service.*;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
 @RestController
@@ -26,6 +23,8 @@ public class HomePageAPI {
     private final HomePageService homePageService;
 
     private final OtpVerifiService OtpVerificationService;
+
+    private final EmailService emailService;
 
     @GetMapping("/product-category")
     public ResponseEntity<?> getAllProductAndCategoryForHome() {
@@ -75,7 +74,7 @@ public class HomePageAPI {
     }
 
     @PostMapping("/signup-email")
-    public ResponseEntity<?> signUpEmail(@RequestBody VerifyOTPRequest request) {
-        return this.OtpVerificationService.signUpEmail(request);
+    public ResponseEntity<?> signUpEmail(@RequestParam String email) {
+        return this.emailService.sendGmailForSignUp(email);
     }
 }

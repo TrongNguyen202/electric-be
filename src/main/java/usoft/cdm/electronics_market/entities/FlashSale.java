@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Entity
 @Data
@@ -14,10 +15,12 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "cdm_flash_sale")
-public class FlashSale extends BaseEntity{
+public class FlashSale extends BaseEntity {
 
-    private Integer productDetailId;
+    private Integer productId;
     private Integer quantitySale;
-    private Boolean status;
-
+    private Date startSale;
+    private Date endSale;
+    private Double priceFlashSale;
+    private String description;
 }
