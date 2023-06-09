@@ -60,7 +60,7 @@ public class EmailServiceImpl implements EmailService {
         if (usersOptional.isPresent()) {
             throw new BadRequestException("Gmail này đã đăng ký tài khoản rồi,vui lòng đăng nhập");
         }
-        Optional<EmailOTP> emailOTP = this.emailOTPRepository.findByEmail(email, false);
+        Optional<EmailOTP> emailOTP = this.emailOTPRepository.findByEmailAndStatus(email, false);
         if (emailOTP.isPresent()) {
             throw new BadRequestException("Gmail này đã đăng ký mã OTP ,vui lòng kiểm tra gmail");
         }
@@ -105,7 +105,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public ResponseEntity<?> sendAgainOTP(String email) {
-        Optional<EmailOTP> emailOTP = this.emailOTPRepository.findByEmail(email, false);
+        Optional<EmailOTP> emailOTP = this.emailOTPRepository.findByEmailAndStatus(email, false);
         if (emailOTP.isPresent()) {
             EmailOTP otp = emailOTP.get();
             Integer randomNumber = ThreadLocalRandom.current().nextInt(100000, 1000000);
