@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface SuggestedProductRepository extends JpaRepository<SuggestedProduct, Integer> {
 
-    Page<SuggestedProduct> findAll(Pageable pageable);
+    Page<SuggestedProduct> findAllByOrderByCreatedDateDesc(Pageable pageable);
 
     Optional<SuggestedProduct> findByProductId(Integer productId);
 
