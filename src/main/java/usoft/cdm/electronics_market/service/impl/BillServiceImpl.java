@@ -61,11 +61,11 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public ResponseEntity<?> getHistory() {
+    public ResponseEntity<?> getHistory(Integer status) {
         Users users = userService.getCurrentUser();
         if (users == null)
             return ResponseUtil.badRequest("Chưa đăng nhập mà!");
-        return ResponseUtil.ok(billRepository.findByUserId(users.getId()));
+        return ResponseUtil.ok(billRepository.findByUserIdAndStatus(users.getId(), status));
     }
 
     @Override

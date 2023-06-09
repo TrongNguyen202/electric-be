@@ -46,6 +46,11 @@ public class FooterAPI {
         return footerService.saveCustomerCare(model, idWarehouse);
     }
 
+    @DeleteMapping("deleteCustomerCare")
+    private ResponseEntity<?> deleteCustomerCare(@RequestBody Integer id) {
+        return footerService.deleteCustomerCare(id);
+    }
+
     @PostMapping("getSocialNetwork")
     private ResponseEntity<?> getSocialNetwork(@RequestParam Integer idWarehouse) {
         return footerService.getSocialNetwork(idWarehouse);
