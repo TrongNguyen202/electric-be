@@ -67,9 +67,16 @@ public class FooterServiceImpl implements FooterService {
     }
 
 
-        @Override
+    @Override
     public ResponseEntity<?> getSocialNetwork(Integer idWarehouse) {
-        return ResponseUtil.ok(footerPageRepository.findAllModelByTypeAndWarehouse(3, idWarehouse));
+        List<FooterModel> list = footerPageRepository.findAllModelByTypeAndWarehouse(3, idWarehouse);
+        if (list.isEmpty()){
+            list.add(new FooterModel(null, "facebook", null));
+            list.add(new FooterModel(null, "youtube", null));
+            list.add(new FooterModel(null, "tiktok", null));
+            list.add(new FooterModel(null, "instagram", null));
+        }
+        return ResponseUtil.ok(list);
     }
 
     @Override
@@ -78,12 +85,12 @@ public class FooterServiceImpl implements FooterService {
         List<FooterPage> s = new ArrayList<>();
         list.forEach(model -> {
             FooterPage f = new FooterPage();
-            if (model.getId() != null){
+            if (model.getId() != null) {
                 f = footerPageRepository.findById(model.getId()).orElse(new FooterPage());
                 remove.remove(f);
             }
             f.setName(model.getName());
-            f.setContent(model.getContent());
+            f.setLink(model.getLink());
             f.setType(3);
             f.setIdWarehouse(idWarehouse);
             s.add(f);
