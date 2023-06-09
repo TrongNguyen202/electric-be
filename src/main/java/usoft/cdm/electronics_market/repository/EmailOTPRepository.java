@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface EmailOTPRepository extends JpaRepository<EmailOTP, Integer> {
 
-    Optional<EmailOTP> findByEmail(String email);
+    Optional<EmailOTP> findByEmail(String email, Boolean status);
 
     Optional<EmailOTP> findByEmailAndOtp(String email, Integer otp);
 }
