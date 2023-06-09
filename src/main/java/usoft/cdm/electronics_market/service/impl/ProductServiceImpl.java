@@ -307,7 +307,12 @@ public class ProductServiceImpl implements ProductService {
         products.remove(product);
         List<ProductsDTO> productsDTOS = MapperUtil.mapList(products, ProductsDTO.class);
         productsDTOS.forEach(productsDTO -> {
-            displaySet(productsDTO, 2);
+            Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
+            productsDTO.setBrandName(brand.getName());
+            List<String> imgs = getImgs(productsDTO.getId(), 2);
+            productsDTO.setImg(Collections.singletonList(imgs.get(0)));
+            setDiscount(productsDTO);
+            productsDTO.setInformation(null);
         });
         return ResponseUtil.ok(productsDTOS);
     }
