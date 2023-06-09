@@ -4,6 +4,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import usoft.cdm.electronics_market.model.FooterModel;
 
+import java.util.List;
+
 public interface FooterService {
     ResponseEntity<?> getHotline();
 
@@ -16,4 +18,8 @@ public interface FooterService {
     ResponseEntity<?> getAllCustomerCare();
 
     ResponseEntity<?> saveCustomerCare(FooterModel model);
+
+    ResponseEntity<?> getSocialNetwork();
+
+    ResponseEntity<?> saveSocialNetwork(List<FooterModel> list);
 }

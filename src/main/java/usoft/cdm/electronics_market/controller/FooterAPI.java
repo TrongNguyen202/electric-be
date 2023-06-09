@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import usoft.cdm.electronics_market.model.FooterModel;
 import usoft.cdm.electronics_market.service.FooterService;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
@@ -19,8 +21,8 @@ public class FooterAPI {
         return footerService.getHotline();
     }
 
-    @PostMapping
-    private ResponseEntity<?> getHotline(@RequestParam String hotline) {
+    @PostMapping("saveHotline")
+    private ResponseEntity<?> saveHotline(@RequestParam String hotline) {
         return footerService.saveHotline(hotline);
     }
 
@@ -40,7 +42,17 @@ public class FooterAPI {
     }
 
     @PostMapping("saveCustomerCare")
-    private ResponseEntity<?> getHotline(@RequestBody FooterModel model) {
+    private ResponseEntity<?> saveCustomerCare(@RequestBody FooterModel model) {
         return footerService.saveCustomerCare(model);
+    }
+
+    @PostMapping("getSocialNetwork")
+    private ResponseEntity<?> getSocialNetwork() {
+        return footerService.getSocialNetwork();
+    }
+
+    @PostMapping("saveSocialNetwork")
+    private ResponseEntity<?> saveSocialNetwork(@RequestBody List<FooterModel> model) {
+        return footerService.saveSocialNetwork(model);
     }
 }

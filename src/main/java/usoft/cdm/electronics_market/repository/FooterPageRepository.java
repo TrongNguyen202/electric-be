@@ -15,8 +15,9 @@ import java.util.Optional;
 @Repository
 public interface FooterPageRepository extends JpaRepository<FooterPage, Integer> {
     Optional<FooterPage> findByType(Integer type);
-    @Query("SELECT new usoft.cdm.electronics_market.model.FooterModel (f.id, f.name) FROM FooterPage f WHERE f.type = :type")
-    List<FooterModel> findAllByType(@Param("type") Integer type);
-    @Query("SELECT new usoft.cdm.electronics_market.model.FooterModel (f.id, f.name) FROM FooterPage f WHERE f.type = :type")
-    Page<FooterPage> findAllByType(Pageable pageable, Integer type);
+    @Query("SELECT new usoft.cdm.electronics_market.model.FooterModel (f.id, f.name, f.link) FROM FooterPage f WHERE f.type = :type")
+    List<FooterModel> findAllModelByType(@Param("type") Integer type);
+    @Query("SELECT new usoft.cdm.electronics_market.model.FooterModel (f.id, f.name, f.link) FROM FooterPage f WHERE f.type = :type")
+    Page<FooterModel> findAllModelByType(Pageable pageable, Integer type);
+    List<FooterPage> findAllByType(Integer type);
 }

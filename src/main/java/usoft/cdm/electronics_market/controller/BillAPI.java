@@ -28,6 +28,11 @@ public class BillAPI {
         return billService.getById(id);
     }
 
+    @GetMapping("getHistory")
+    private ResponseEntity<?> getHistory() {
+        return billService.getHistory();
+    }
+
     @PostMapping
     private ResponseEntity<?> addCartToBill(@RequestBody List<Cart> list) {
         return billService.addCartToBill(list);
