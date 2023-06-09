@@ -7,19 +7,19 @@ import usoft.cdm.electronics_market.model.FooterModel;
 import java.util.List;
 
 public interface FooterService {
-    ResponseEntity<?> getHotline();
+    ResponseEntity<?> getHotline(Integer idWarehouse);
 
-    ResponseEntity<?> saveHotline(String hotline);
+    ResponseEntity<?> saveHotline(String hotline, Integer idWarehouse);
 
     ResponseEntity<?> getCustomerCareById(Integer id);
 
-    ResponseEntity<?> getCustomerCare(Pageable pageable);
+    ResponseEntity<?> getCustomerCare(Pageable pageable, Integer idWarehouse);
 
-    ResponseEntity<?> getAllCustomerCare();
+    ResponseEntity<?> getAllCustomerCare(Integer idWarehouse);
 
-    ResponseEntity<?> saveCustomerCare(FooterModel model);
+    ResponseEntity<?> saveCustomerCare(FooterModel model, Integer idWarehouse);
 
-    ResponseEntity<?> getSocialNetwork();
+    ResponseEntity<?> getSocialNetwork(Integer idWarehouse);
 
-    ResponseEntity<?> saveSocialNetwork(List<FooterModel> list);
+    ResponseEntity<?> saveSocialNetwork(List<FooterModel> list, Integer idWarehouse);
 }

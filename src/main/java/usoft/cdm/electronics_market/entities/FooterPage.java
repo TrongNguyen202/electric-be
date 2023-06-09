@@ -22,6 +22,7 @@ public class FooterPage extends BaseEntity {
     private String icon;
     private String content;
     private String link;
+    private Integer idWarehouse;
     @JsonIgnore
     private Integer type;
 }

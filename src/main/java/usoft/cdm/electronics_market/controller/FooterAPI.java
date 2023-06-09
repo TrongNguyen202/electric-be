@@ -17,23 +17,23 @@ public class FooterAPI {
     private final FooterService footerService;
 
     @GetMapping
-    private ResponseEntity<?> getHotline() {
-        return footerService.getHotline();
+    private ResponseEntity<?> getHotline(@RequestParam Integer idWarehouse) {
+        return footerService.getHotline(idWarehouse);
     }
 
     @PostMapping("saveHotline")
-    private ResponseEntity<?> saveHotline(@RequestParam String hotline) {
-        return footerService.saveHotline(hotline);
+    private ResponseEntity<?> saveHotline(@RequestParam Integer idWarehouse, @RequestParam String hotline) {
+        return footerService.saveHotline(hotline, idWarehouse);
     }
 
     @GetMapping("getCustomerCare")
-    private ResponseEntity<?> getCustomerCare(Pageable pageable) {
-        return footerService.getCustomerCare(pageable);
+    private ResponseEntity<?> getCustomerCare(Pageable pageable, @RequestParam Integer idWarehouse) {
+        return footerService.getCustomerCare(pageable, idWarehouse);
     }
 
     @GetMapping("getAllCustomerCare")
-    private ResponseEntity<?> getAllCustomerCare() {
-        return footerService.getAllCustomerCare();
+    private ResponseEntity<?> getAllCustomerCare(@RequestParam Integer idWarehouse) {
+        return footerService.getAllCustomerCare(idWarehouse);
     }
 
     @GetMapping("getCustomerCareById")
@@ -42,17 +42,17 @@ public class FooterAPI {
     }
 
     @PostMapping("saveCustomerCare")
-    private ResponseEntity<?> saveCustomerCare(@RequestBody FooterModel model) {
-        return footerService.saveCustomerCare(model);
+    private ResponseEntity<?> saveCustomerCare(@RequestBody FooterModel model, @RequestParam Integer idWarehouse) {
+        return footerService.saveCustomerCare(model, idWarehouse);
     }
 
     @PostMapping("getSocialNetwork")
-    private ResponseEntity<?> getSocialNetwork() {
-        return footerService.getSocialNetwork();
+    private ResponseEntity<?> getSocialNetwork(@RequestParam Integer idWarehouse) {
+        return footerService.getSocialNetwork(idWarehouse);
     }
 
     @PostMapping("saveSocialNetwork")
-    private ResponseEntity<?> saveSocialNetwork(@RequestBody List<FooterModel> model) {
-        return footerService.saveSocialNetwork(model);
+    private ResponseEntity<?> saveSocialNetwork(@RequestBody List<FooterModel> model, @RequestParam Integer idWarehouse) {
+        return footerService.saveSocialNetwork(model, idWarehouse);
     }
 }

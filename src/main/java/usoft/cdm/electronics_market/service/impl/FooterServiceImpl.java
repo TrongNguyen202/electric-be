@@ -19,15 +19,16 @@ public class FooterServiceImpl implements FooterService {
     private final FooterPageRepository footerPageRepository;
 
     @Override
-    public ResponseEntity<?> getHotline() {
-        return ResponseUtil.ok(footerPageRepository.findByType(1).orElse(new FooterPage()));
+    public ResponseEntity<?> getHotline(Integer idWarehouse) {
+        return ResponseUtil.ok(footerPageRepository.findByTypeAndIdWarehouse(1, idWarehouse).orElse(new FooterPage()));
     }
 
     @Override
-    public ResponseEntity<?> saveHotline(String hotline) {
-        FooterPage f = footerPageRepository.findByType(1).orElse(new FooterPage());
+    public ResponseEntity<?> saveHotline(String hotline, Integer idWarehouse) {
+        FooterPage f = footerPageRepository.findByTypeAndIdWarehouse(1, idWarehouse).orElse(new FooterPage());
         f.setType(1);
         f.setContent(hotline);
+        f.setIdWarehouse(idWarehouse);
         f = footerPageRepository.save(f);
         return ResponseUtil.ok(f);
     }
@@ -38,32 +39,33 @@ public class FooterServiceImpl implements FooterService {
     }
 
     @Override
-    public ResponseEntity<?> getCustomerCare(Pageable pageable) {
-        return ResponseUtil.ok(footerPageRepository.findAllModelByType(pageable, 2));
+    public ResponseEntity<?> getCustomerCare(Pageable pageable, Integer idWarehouse) {
+        return ResponseUtil.ok(footerPageRepository.findAllModelByTypeAndWarehouse(pageable, 2, idWarehouse));
     }
 
     @Override
-    public ResponseEntity<?> getAllCustomerCare() {
-        return ResponseUtil.ok(footerPageRepository.findAllModelByType(2));
+    public ResponseEntity<?> getAllCustomerCare(Integer idWarehouse) {
+        return ResponseUtil.ok(footerPageRepository.findAllModelByTypeAndWarehouse(2, idWarehouse));
     }
 
     @Override
-    public ResponseEntity<?> saveCustomerCare(FooterModel model) {
+    public ResponseEntity<?> saveCustomerCare(FooterModel model, Integer idWarehouse) {
         FooterPage f = footerPageRepository.findById(model.getId()).orElse(new FooterPage());
         f.setName(model.getName());
         f.setContent(model.getContent());
         f.setType(2);
+        f.setIdWarehouse(idWarehouse);
         return ResponseUtil.ok(footerPageRepository.save(f));
     }
 
     @Override
-    public ResponseEntity<?> getSocialNetwork() {
-        return ResponseUtil.ok(footerPageRepository.findAllModelByType(3));
+    public ResponseEntity<?> getSocialNetwork(Integer idWarehouse) {
+        return ResponseUtil.ok(footerPageRepository.findAllModelByTypeAndWarehouse(3, idWarehouse));
     }
 
     @Override
-    public ResponseEntity<?> saveSocialNetwork(List<FooterModel> list) {
-        List<FooterPage> remove = footerPageRepository.findAllByType(3);
+    public ResponseEntity<?> saveSocialNetwork(List<FooterModel> list, Integer idWarehouse) {
+        List<FooterPage> remove = footerPageRepository.findAllByTypeAndIdWarehouse(3, idWarehouse);
         List<FooterPage> s = new ArrayList<>();
         list.forEach(model -> {
             FooterPage f = new FooterPage();
@@ -74,10 +76,11 @@ public class FooterServiceImpl implements FooterService {
             f.setName(model.getName());
             f.setContent(model.getContent());
             f.setType(3);
+            f.setIdWarehouse(idWarehouse);
             s.add(f);
         });
         footerPageRepository.saveAll(s);
         footerPageRepository.deleteAll(remove);
-        return ResponseUtil.ok(footerPageRepository.findAllModelByType(3));
+        return ResponseUtil.ok(footerPageRepository.findAllModelByTypeAndWarehouse(3, idWarehouse));
     }
 }
