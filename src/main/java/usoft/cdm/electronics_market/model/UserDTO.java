@@ -21,7 +21,6 @@ public class UserDTO extends BaseModel {
     private String addressDetail;
     private String phone;
     private String email;
-    private String type;
     private Boolean status;
     private String description;
 

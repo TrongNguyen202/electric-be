@@ -10,6 +10,8 @@ import usoft.cdm.electronics_market.model.VerifyOTPRequest;
 import usoft.cdm.electronics_market.service.*;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
+import javax.mail.MessagingException;
+
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
