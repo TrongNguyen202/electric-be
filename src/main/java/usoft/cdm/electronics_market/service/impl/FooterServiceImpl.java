@@ -61,6 +61,13 @@ public class FooterServiceImpl implements FooterService {
     }
 
     @Override
+    public ResponseEntity<?> deleteCustomerCare(Integer id) {
+        footerPageRepository.deleteById(id);
+        return ResponseUtil.ok("Xóa thành công!");
+    }
+
+
+        @Override
     public ResponseEntity<?> getSocialNetwork(Integer idWarehouse) {
         return ResponseUtil.ok(footerPageRepository.findAllModelByTypeAndWarehouse(3, idWarehouse));
     }

@@ -29,8 +29,8 @@ public class BillAPI {
     }
 
     @GetMapping("getHistory")
-    private ResponseEntity<?> getHistory() {
-        return billService.getHistory();
+    private ResponseEntity<?> getHistory(@RequestParam Integer status) {
+        return billService.getHistory(status);
     }
 
     @PostMapping

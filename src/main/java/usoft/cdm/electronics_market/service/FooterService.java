@@ -19,6 +19,8 @@ public interface FooterService {
 
     ResponseEntity<?> saveCustomerCare(FooterModel model, Integer idWarehouse);
 
+    ResponseEntity<?> deleteCustomerCare(Integer id);
+
     ResponseEntity<?> getSocialNetwork(Integer idWarehouse);
 
     ResponseEntity<?> saveSocialNetwork(List<FooterModel> list, Integer idWarehouse);

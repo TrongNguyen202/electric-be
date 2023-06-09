@@ -14,6 +14,8 @@ import java.util.Optional;
 @Repository
 public interface BillRepository extends JpaRepository<Bill, Integer> {
     Optional<Bill> findByUserIdAndStatus(Integer userId, Integer status);
+
+    List<Bill> findAllByUserIdAndStatusOrderByCreatedDateDesc(Integer userId, Integer status);
     List<Bill> findByUserId(Integer userId);
 
     @Query("SELECT b FROM Bill b WHERE b.status <> :status ORDER BY b.createdDate DESC")

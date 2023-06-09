@@ -12,7 +12,7 @@ public interface BillService {
 
     ResponseEntity<?> getById(Integer id);
 
-    ResponseEntity<?> getHistory();
+    ResponseEntity<?> getHistory(Integer status);
 
     ResponseEntity<?> addCartToBill(List<Cart> cart);
 

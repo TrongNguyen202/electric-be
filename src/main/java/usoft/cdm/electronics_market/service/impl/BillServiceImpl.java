@@ -8,6 +8,7 @@ import usoft.cdm.electronics_market.config.security.CustomUserDetails;
 import usoft.cdm.electronics_market.entities.*;
 import usoft.cdm.electronics_market.model.bill.BillResponse;
 import usoft.cdm.electronics_market.model.bill.Cart;
+import usoft.cdm.electronics_market.model.bill.History;
 import usoft.cdm.electronics_market.model.bill.Shop;
 import usoft.cdm.electronics_market.repository.*;
 import usoft.cdm.electronics_market.service.BillService;
@@ -61,11 +62,21 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public ResponseEntity<?> getHistory() {
+    public ResponseEntity<?> getHistory(Integer status) {
         Users users = userService.getCurrentUser();
         if (users == null)
             return ResponseUtil.badRequest("Chưa đăng nhập mà!");
-        return ResponseUtil.ok(billRepository.findByUserId(users.getId()));
+        List<Bill> list = billRepository.findAllByUserIdAndStatusOrderByCreatedDateDesc(users.getId(), status);
+        List<History> res = new ArrayList<>();
+        list.forEach(x -> {
+            History h = new History();
+            h.setId(x.getId());
+            h.setCode(x.getCode());
+            h.setStatus(x.getStatus());
+            List<Integer> ids = billDetailRepository.findAllProductIdByBillId(x.getId());
+            h.setProduct(productRepository.findAllByIdInBill(ids));
+        });
+        return ResponseUtil.ok(res);
     }
 
     @Override
