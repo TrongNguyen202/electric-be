@@ -50,7 +50,9 @@ public class FooterServiceImpl implements FooterService {
 
     @Override
     public ResponseEntity<?> saveCustomerCare(FooterModel model, Integer idWarehouse) {
-        FooterPage f = footerPageRepository.findById(model.getId()).orElse(new FooterPage());
+        FooterPage f = new FooterPage();
+        if (model.getId() != null)
+            f = footerPageRepository.findById(model.getId()).orElse(new FooterPage());
         f.setName(model.getName());
         f.setContent(model.getContent());
         f.setType(2);
