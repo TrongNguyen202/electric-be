@@ -73,7 +73,8 @@ public class EmailServiceImpl implements EmailService {
                 .build());
         Instant instant = otp.getCreatedDate().toInstant();
         LocalDateTime localDateTimeCreateDate = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
-        otp.setExpiryTime(localDateTimeCreateDate.plusSeconds(40));
+        otp.setExpiryTime(localDateTimeCreateDate.plusSeconds(60));
+        this.emailOTPRepository.save(otp);
         String sub = "Chợ điện máy xác định mã OTP ";
         StringBuilder text = new StringBuilder();
         text.append("Tên đăng nhập: " + email);
@@ -107,11 +108,18 @@ public class EmailServiceImpl implements EmailService {
     public ResponseEntity<?> sendAgainOTP(String email) {
         Optional<EmailOTP> emailOTP = this.emailOTPRepository.findByEmailAndStatus(email, false);
         if (emailOTP.isPresent()) {
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            if (currentDateTime.isBefore(emailOTP.get().getExpiryTime())) {
+                throw new BadRequestException("Bạn phải đợi 50s ");
+            }
             EmailOTP otp = emailOTP.get();
             Integer randomNumber = ThreadLocalRandom.current().nextInt(100000, 1000000);
             otp.setOtp(randomNumber);
+            otp.setExpiryTime(otp.getExpiryTime().plusSeconds(60));
             this.emailOTPRepository.save(otp);
+        } else {
+            throw new BadRequestException("Chưa có gmail này ");
         }
-        return ResponseUtil.ok(emailOTP.get());
+        return ResponseUtil.ok("Thành công");
     }
 }

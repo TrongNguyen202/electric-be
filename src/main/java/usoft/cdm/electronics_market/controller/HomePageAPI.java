@@ -86,4 +86,9 @@ public class HomePageAPI {
         return this.emailService.checkOTPForSignUp(dto);
     }
 
+    @PostMapping("/send-again-otp")
+    public ResponseEntity<?> sendAgainOTP(@RequestParam String email) {
+        return this.emailService.sendAgainOTP(email);
+    }
+
 }
