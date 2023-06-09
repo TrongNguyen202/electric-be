@@ -177,7 +177,7 @@ public class FlashSaleServiceImpl implements FlashSaleService {
                 dto.setDiscount(discount);
 
             }
-
+ 
         }
         return flashSaleDTOS;
     }
