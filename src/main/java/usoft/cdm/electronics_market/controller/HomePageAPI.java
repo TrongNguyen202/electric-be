@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import usoft.cdm.electronics_market.model.EmailDTO;
 import usoft.cdm.electronics_market.model.ProductsDTO;
 import usoft.cdm.electronics_market.model.VerifyOTPRequest;
 import usoft.cdm.electronics_market.service.*;
@@ -79,4 +80,10 @@ public class HomePageAPI {
     public ResponseEntity<?> signUpEmail(@RequestParam String email) {
         return this.emailService.sendGmailForSignUp(email);
     }
+
+    @PostMapping("/signup-email-otp")
+    public ResponseEntity<?> signUpEmail(@RequestBody EmailDTO dto) {
+        return this.emailService.checkOTPForSignUp(dto);
+    }
+
 }
