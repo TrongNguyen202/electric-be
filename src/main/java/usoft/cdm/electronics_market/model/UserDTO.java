@@ -23,6 +23,6 @@ public class UserDTO extends BaseModel {
     private String email;
     private Boolean status;
     private String description;
-
+    private String avatar;
 }
 

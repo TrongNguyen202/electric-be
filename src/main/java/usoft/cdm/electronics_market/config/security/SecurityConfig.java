@@ -57,10 +57,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/user/login", "/api/v1/homepage/**", "/api/v1/user/login-google").permitAll() // Cho phép tất cả mọi người truy cập vào địa chỉ này
                 .antMatchers("/api/v1/bill", "/api/v1/bill/getCart", "/api/v1/bill/shop", "/api/v1/suggested-product/all", "/api/v1/flash-sale/all").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/product", "/api/v1/hot-category/all").permitAll()
+                .antMatchers("/api/v1/bill/getHistory", "/api/v1/bill/getById").permitAll()
+                .antMatchers("/api/v1/footer", "/api/v1/footer/getAllCustomerCare", "/api/v1/footer/getCustomerCareById", "/api/v1/footer/getSocialNetwork").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/product","/api/v1/hot-category/all").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/category").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/product/search-category").permitAll()
                 .antMatchers("/images/**").permitAll()
-                .antMatchers("/api/v1/branch/**", "/api/v1/branch", "/api/v1/product", "/api/v1/product/**", "/api/v1/category/**", "/api/v1/category", "/api/v1/manager-homepage/**", "/api/v1/manager-homepage", "/api/v1/image", "/api/v1/image/**", "/api/v1/warehouse", "/api/v1/warehouse/**")
+                .antMatchers("/api/v1/branch/**","/api/v1/branch","/api/v1/product","/api/v1/product/**","/api/v1/category/**","/api/v1/category","/api/v1/manager-homepage/**","/api/v1/manager-homepage","/api/v1/image","/api/v1/image/**","/api/v1/warehouse", "/api/v1/warehouse/**")
                 .hasAnyAuthority("1", "2")
                 .antMatchers(HttpMethod.POST, "/api/v1/user").hasAnyAuthority("1")
                 .anyRequest().authenticated();// Tất cả các request khác đều cần phải xác thực mới được truy cập

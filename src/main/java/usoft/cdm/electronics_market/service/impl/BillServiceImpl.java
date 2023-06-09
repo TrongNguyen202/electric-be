@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import usoft.cdm.electronics_market.config.security.CustomUserDetails;
 import usoft.cdm.electronics_market.entities.*;
 import usoft.cdm.electronics_market.model.bill.BillResponse;
@@ -59,6 +58,14 @@ public class BillServiceImpl implements BillService {
         vouchers.add(new Voucher());
         response.setVoucher(vouchers);
         return ResponseUtil.ok(response);
+    }
+
+    @Override
+    public ResponseEntity<?> getHistory() {
+        Users users = userService.getCurrentUser();
+        if (users == null)
+            return ResponseUtil.badRequest("Chưa đăng nhập mà!");
+        return ResponseUtil.ok(billRepository.findByUserId(users.getId()));
     }
 
     @Override
@@ -147,6 +154,7 @@ public class BillServiceImpl implements BillService {
                 return ResponseUtil.badRequest("Số lượng phải lớn hơn 0!");
             if (c.getQuantity() > p.getQuantity())
                 return ResponseUtil.badRequest("Số lượng trong kho không đủ!");
+            p.setQuantity(p.getQuantity()-c.getQuantity());
             billDetail.setQuantity(c.getQuantity());
             billDetail.setProductId(c.getProductId());
             double price = p.getPriceAfterSale() == null ? p.getPriceSell() : p.getPriceAfterSale();

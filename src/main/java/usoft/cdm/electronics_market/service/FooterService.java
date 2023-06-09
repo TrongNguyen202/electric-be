@@ -4,16 +4,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import usoft.cdm.electronics_market.model.FooterModel;
 
-public interface FooterService {
-    ResponseEntity<?> getHotline();
+import java.util.List;
 
-    ResponseEntity<?> saveHotline(String hotline);
+public interface FooterService {
+    ResponseEntity<?> getHotline(Integer idWarehouse);
+
+    ResponseEntity<?> saveHotline(String hotline, Integer idWarehouse);
 
     ResponseEntity<?> getCustomerCareById(Integer id);
 
-    ResponseEntity<?> getCustomerCare(Pageable pageable);
+    ResponseEntity<?> getCustomerCare(Pageable pageable, Integer idWarehouse);
 
-    ResponseEntity<?> getAllCustomerCare();
+    ResponseEntity<?> getAllCustomerCare(Integer idWarehouse);
 
-    ResponseEntity<?> saveCustomerCare(FooterModel model);
+    ResponseEntity<?> saveCustomerCare(FooterModel model, Integer idWarehouse);
+
+    ResponseEntity<?> getSocialNetwork(Integer idWarehouse);
+
+    ResponseEntity<?> saveSocialNetwork(List<FooterModel> list, Integer idWarehouse);
 }

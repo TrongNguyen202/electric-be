@@ -157,6 +157,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> updateCustomer(UserDTO userDTO) {
         Users usersLogin = getCurrentUser();
+        Optional<Roles> roles = rolesRepository.findById(usersLogin.getRoleId());
+        if (roles.isPresent()){
+            if (!roles.get().getName().equals("CUSTOMER"))
+                return ResponseUtil.badRequest("Bạn không được sửa tài khoản của khách hàng");
+        }
         Optional<Users> optional = userRepository.findById(userDTO.getId());
         if (optional.isEmpty())
             throw new BadRequestException("Id User không chính xác!");
@@ -175,6 +180,7 @@ public class UserServiceImpl implements UserService {
         users.setAddressId(userDTO.getAddressId());
         users.setAddressDetail(userDTO.getAddressDetail());
         users.setUpdatedBy(usersLogin.getUsername());
+        users.setAvatar(userDTO.getAvatar());
         this.userRepository.save(users);
         return ResponseUtil.ok(userDTO);
     }
