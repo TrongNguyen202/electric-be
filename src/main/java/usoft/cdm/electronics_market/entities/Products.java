@@ -41,6 +41,23 @@ import java.util.Date;
 )
 
 @SqlResultSetMapping(
+        name = "getProductForHomePage",
+        classes = {
+                @ConstructorResult(
+                        targetClass = ProductsDTO.class,
+                        columns = {
+                                @ColumnResult(name = "id", type = Integer.class),
+                                @ColumnResult(name = "name", type = String.class),
+                                @ColumnResult(name = "priceSell", type = Double.class),
+                                @ColumnResult(name = "priceAfterSale", type = Double.class),
+                                @ColumnResult(name = "slug", type = String.class),
+                                @ColumnResult(name = "brandId", type = Integer.class),
+                        }
+                )
+        }
+)
+
+@SqlResultSetMapping(
         name = "getDiscountByCategory",
         classes = {
                 @ConstructorResult(
