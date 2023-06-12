@@ -36,6 +36,48 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     }
 
     @Override
+    public List<ProductsDTO> getRelatedProducts(Integer categoryId) {
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug  " +
+                "FROM cdm_products p WHERE p.status =true ");
+
+        Map<String, Object> params = new HashMap<>();
+
+        sql.append(" and p.category_id = :categoryId ");
+        params.put("categoryId", categoryId);
+        sql.append("Limit 20");
+
+        return CommonUtil.getList(em, sql.toString(), params, "getBrandAndPriceAndMadeIn");
+    }
+
+    @Override
+    public List<ProductsDTO> getProductsForHomePage(Integer categoryId) {
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug  " +
+                "FROM cdm_products p WHERE p.status =true ");
+
+        Map<String, Object> params = new HashMap<>();
+
+        sql.append(" and p.category_id = :categoryId ");
+        params.put("categoryId", categoryId);
+        sql.append("Limit 10");
+
+        return CommonUtil.getList(em, sql.toString(), params, "getBrandAndPriceAndMadeIn");
+    }
+
+    @Override
+    public List<ProductsDTO> getProductsInSameBrand(Integer brandId) {
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug  " +
+                "FROM cdm_products p WHERE p.status =true ");
+
+        Map<String, Object> params = new HashMap<>();
+
+        sql.append(" and p.brand_id = :brandId ");
+        params.put("brandId", brandId);
+        sql.append("Limit 20");
+
+        return CommonUtil.getList(em, sql.toString(), params, "getBrandAndPriceAndMadeIn");
+    }
+
+    @Override
     public List<ProductsDTO> getAllMadeByProducts(List<Integer> categoryIds) {
         StringBuilder sql = new StringBuilder("SELECT p.id,p.made_in as madeIn,COUNT(p.made_in) as sumProducts FROM  cdm_products p \n" +
                 "WHERE p.status =1 ");
