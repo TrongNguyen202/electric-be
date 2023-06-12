@@ -37,7 +37,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
     @Override
     public List<ProductsDTO> getRelatedProducts(Integer categoryId) {
-        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug  " +
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug,p.brand_id as brandId  " +
                 "FROM cdm_products p WHERE p.status =true ");
 
         Map<String, Object> params = new HashMap<>();
@@ -46,12 +46,12 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         params.put("categoryId", categoryId);
         sql.append("Limit 20");
 
-        return CommonUtil.getList(em, sql.toString(), params, "getBrandAndPriceAndMadeIn");
+        return CommonUtil.getList(em, sql.toString(), params, "getProductForHomePage");
     }
 
     @Override
     public List<ProductsDTO> getProductsForHomePage(Integer categoryId) {
-        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug  " +
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug,p.brand_id as brandId  " +
                 "FROM cdm_products p WHERE p.status =true ");
 
         Map<String, Object> params = new HashMap<>();
@@ -60,12 +60,12 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         params.put("categoryId", categoryId);
         sql.append("Limit 10");
 
-        return CommonUtil.getList(em, sql.toString(), params, "getBrandAndPriceAndMadeIn");
+        return CommonUtil.getList(em, sql.toString(), params, "getProductForHomePage");
     }
 
     @Override
     public List<ProductsDTO> getProductsInSameBrand(Integer brandId) {
-        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug  " +
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug,p.brand_id as brandId  " +
                 "FROM cdm_products p WHERE p.status =true ");
 
         Map<String, Object> params = new HashMap<>();
@@ -74,7 +74,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         params.put("brandId", brandId);
         sql.append("Limit 20");
 
-        return CommonUtil.getList(em, sql.toString(), params, "getBrandAndPriceAndMadeIn");
+        return CommonUtil.getList(em, sql.toString(), params, "getProductForHomePage");
     }
 
     @Override
