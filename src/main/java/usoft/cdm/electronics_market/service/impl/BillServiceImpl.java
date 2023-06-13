@@ -51,7 +51,11 @@ public class BillServiceImpl implements BillService {
                 bill.getEmail(),
                 bill.getFullname(),
                 bill.getAddressTransfer(),
-                bill.getStatus()
+                bill.getStatus(),
+                bill.getRequestBill(),
+                bill.getTaxCode(),
+                bill.getCompany(),
+                bill.getTaxAddress()
         );
         List<Integer> list = billDetailRepository.findAllProductIdByBillId(bill.getId());
         response.setProduct(productRepository.findAllByIdInBill(list));
