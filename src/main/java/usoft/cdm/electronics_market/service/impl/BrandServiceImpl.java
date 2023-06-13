@@ -49,9 +49,14 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public ResponseEntity<?> save(BrandDTO dto) {
-        Brand brand = new Brand();
-        if (dto.getId() != null)
+        Brand brand;
+        if (dto.getId() != null) {
             brand = brandRepository.findById(dto.getId()).orElse(null);
+        }else {
+            brand = brandRepository.findByName(dto.getName());
+            if (brand != null)
+                return ResponseUtil.badRequest(brand.getId(), "Đã có thương hiệu này!");
+        }
         if (brand == null)
             return ResponseUtil.badRequest("Không tìm thấy id thương hiệu!");
         brand.setImg(dto.getImg());

@@ -14,6 +14,11 @@ public class ResponseUtil {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(serviceResult);
     }
 
+    public static <T> ResponseEntity<?> badRequest(T data, String message) {
+        ServiceResult<T> serviceResult = new ServiceResult<>(HttpStatus.BAD_REQUEST, message, data);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(serviceResult);
+    }
+
     public static <T> ResponseEntity<?> ok(T data, String message) {
         ServiceResult<T> serviceResult = new ServiceResult<>(HttpStatus.OK, message, data);
         return ResponseEntity.status(HttpStatus.OK).body(serviceResult);
