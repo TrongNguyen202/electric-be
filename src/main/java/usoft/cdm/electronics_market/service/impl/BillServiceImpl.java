@@ -75,6 +75,7 @@ public class BillServiceImpl implements BillService {
             h.setStatus(x.getStatus());
             List<Integer> ids = billDetailRepository.findAllProductIdByBillId(x.getId());
             h.setProduct(productRepository.findAllByIdInBill(ids));
+            res.add(h);
         });
         return ResponseUtil.ok(res);
     }
