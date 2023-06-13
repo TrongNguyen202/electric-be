@@ -2,6 +2,7 @@ package usoft.cdm.electronics_market.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import usoft.cdm.electronics_market.model.ProductForHomePage;
 import usoft.cdm.electronics_market.model.ProductsDTO;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public interface ProductRepositoryCustom {
 
     List<ProductsDTO> getRelatedProducts(Integer categoryId);
 
-    List<ProductsDTO> getProductsForHomePage(Integer categoryId);
+    List<ProductForHomePage> getProductsForHomePage(Integer categoryId);
 
     List<ProductsDTO> getProductsInSameBrand(Integer brandId);
 

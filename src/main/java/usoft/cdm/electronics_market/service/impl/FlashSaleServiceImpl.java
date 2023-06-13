@@ -72,15 +72,15 @@ public class FlashSaleServiceImpl implements FlashSaleService {
             throw new BadRequestException("Phải nhập số lượng sale ");
         }
         LocalDateTime currentDateTime = LocalDateTime.now();
-        if (dto.getEndSale().isBefore(currentDateTime)) {
+        if (dto.getEndSaleInput().isBefore(currentDateTime)) {
             throw new BadRequestException("Ngày hết hạn sớm quá ");
         }
-        if (dto.getStartSale().isBefore(currentDateTime)) {
+        if (dto.getStartSaleInput().isBefore(currentDateTime)) {
             throw new BadRequestException("Ngày bắt đầu trôi qua rồi");
         }
         ZoneId zoneId = ZoneId.of("GMT+7");
-        ZonedDateTime DateTimeStartSale = ZonedDateTime.of(dto.getStartSale(), zoneId);
-        ZonedDateTime DateTimeEndSale = ZonedDateTime.of(dto.getEndSale(), zoneId);
+        ZonedDateTime DateTimeStartSale = ZonedDateTime.of(dto.getStartSaleInput(), zoneId);
+        ZonedDateTime DateTimeEndSale = ZonedDateTime.of(dto.getEndSaleInput(), zoneId);
         FlashSale flashSale = FlashSale
                 .builder()
                 .priceFlashSale(dto.getPriceFlashSale())
@@ -125,15 +125,15 @@ public class FlashSaleServiceImpl implements FlashSaleService {
             throw new BadRequestException("Phải nhập số lượng sale ");
         }
         LocalDateTime currentDateTime = LocalDateTime.now();
-        if (dto.getEndSale().isBefore(currentDateTime)) {
+        if (dto.getEndSaleInput().isBefore(currentDateTime)) {
             throw new BadRequestException("Ngày hết hạn sớm quá ");
         }
-        if (dto.getStartSale().isBefore(currentDateTime)) {
+        if (dto.getStartSaleInput().isBefore(currentDateTime)) {
             throw new BadRequestException("Ngày bắt đầu trôi qua rồi");
         }
         ZoneId zoneId = ZoneId.of("GMT+7");
-        ZonedDateTime dateTimeStartSale = ZonedDateTime.of(dto.getStartSale(), zoneId);
-        ZonedDateTime dateTimeEndSale = ZonedDateTime.of(dto.getEndSale(), zoneId);
+        ZonedDateTime dateTimeStartSale = ZonedDateTime.of(dto.getStartSaleInput(), zoneId);
+        ZonedDateTime dateTimeEndSale = ZonedDateTime.of(dto.getEndSaleInput(), zoneId);
         FlashSale flashSale = MapperUtil.map(dto, FlashSale.class);
         flashSale.setStatus(true);
         flashSale.setStartSale(dateTimeStartSale);

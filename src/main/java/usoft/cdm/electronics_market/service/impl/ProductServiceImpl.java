@@ -21,6 +21,10 @@ import usoft.cdm.electronics_market.util.ResponseUtil;
 import usoft.cdm.electronics_market.util.TextUtil;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 
@@ -243,36 +247,81 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ResponseEntity<?> getAllProductAndCategoryForHome() {
-        List<Category> categories = this.categoryRepository.findAllByParentIdIsNullAndStatus(true);
-        List<CategoryDTO> categoryDTOS = MapperUtil.mapList(categories, CategoryDTO.class);
-        categoryDTOS.forEach(categoryDTO -> {
-            List<String> imgs = getImgs(categoryDTO.getId(), 1);
-            Random random = new Random();
-            int randomIndex = random.nextInt(imgs.size());
-            String imgRandom = imgs.get(randomIndex);
-            List<Category> categoryList = this.categoryRepository.findByParentIdAndStatus(categoryDTO.getId(), true);
-            if (categoryList.isEmpty()) {
-                List<ProductsDTO> dtos = this.productRepository.getProductsForHomePage(categoryDTO.getId());
-                for (ProductsDTO dto : dtos) {
-                    displaySet(dto, 2);
-                }
-                categoryDTO.setProductsDTOS(dtos);
+        List<CategoryHomePage> categoryDTOS = this.categoryRepository.getParentIdIsNullAndStatus();
+// Tạo ThreadPoolExecutor với số lượng luồng tùy chỉnh
+        ExecutorService executorService = Executors.newFixedThreadPool(4);
 
+// Tạo Future cho việc lấy danh sách ảnh
+        List<Future<List<String>>> imgFutures = new ArrayList<>();
+//parallelStream() để thực hiện xử lý đa luồng trên danh sách
+        categoryDTOS.parallelStream().forEach(categoryDTO -> {
+            List<CategoryChildHomePage> categoryList = this.categoryRepository.getParentIdAndStatus(categoryDTO.getId());
+            categoryDTO.setCategoryList(categoryList);
+
+            // Lấy danh sách ảnh cho categoryDTO
+            Future<List<String>> imgFuture = executorService.submit(() -> getImgs(categoryDTO.getId(), 1));
+            imgFutures.add(imgFuture);
+
+            if (categoryList.isEmpty()) {
+                List<ProductForHomePage> dtos = this.productRepository.getProductsForHomePage(categoryDTO.getId());
+                processProductList(dtos, executorService);
+                categoryDTO.setProductsDTOS(dtos);
             } else {
-                for (Category category : categoryList) {
-                    List<ProductsDTO> dtos = this.productRepository.getProductsForHomePage(category.getId());
-                    for (ProductsDTO dto : dtos) {
-                        displaySet(dto, 2);
-                    }
+                for (CategoryChildHomePage category : categoryList) {
+                    List<ProductForHomePage> dtos = this.productRepository.getProductsForHomePage(category.getId());
+                    processProductList(dtos, executorService);
                     categoryDTO.setProductsDTOS(dtos);
                 }
             }
-            categoryDTO.setCategoryList(categoryList);
-            categoryDTO.setPicCategory(imgRandom);
-
         });
 
+// Đợi cho tất cả các Future hoàn thành và lấy danh sách ảnh
+        Map<Integer, List<String>> imgMap = new HashMap<>();
+        for (int i = 0; i < categoryDTOS.size(); i++) {
+            CategoryHomePage categoryDTO = categoryDTOS.get(i);
+            List<String> imgs;
+            try {
+                imgs = imgFutures.get(i).get();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+            imgMap.put(categoryDTO.getId(), imgs);
+            Random random = new Random();
+            int randomIndex = random.nextInt(imgs.size());
+            String imgRandom = imgs.get(randomIndex);
+            categoryDTO.setPicCategory(imgRandom);
+        }
+
+        // Tắt ExecutorService sau khi hoàn thành
+        executorService.shutdown();
+
         return ResponseUtil.ok(categoryDTOS);
+    }
+
+
+    private void processProductList(List<ProductForHomePage> productList, ExecutorService executorService) {
+        // Lấy danh sách ảnh cho từng sản phẩm
+        List<Future<List<String>>> imgFutures = new ArrayList<>();
+        for (ProductForHomePage dto : productList) {
+            Future<List<String>> imgFuture = executorService.submit(() -> getImgs(dto.getId(), 2));
+            imgFutures.add(imgFuture);
+        }
+
+        // Gán ảnh cho từng sản phẩm
+        for (int i = 0; i < productList.size(); i++) {
+            ProductForHomePage dto = productList.get(i);
+            List<String> imgStrings;
+            try {
+                imgStrings = imgFutures.get(i).get();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+            dto.setImg(Collections.singletonList(imgStrings.get(0)));
+        }
     }
 
     @Override
