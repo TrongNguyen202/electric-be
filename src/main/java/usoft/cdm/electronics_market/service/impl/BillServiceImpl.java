@@ -70,6 +70,8 @@ public class BillServiceImpl implements BillService {
         List<History> res = new ArrayList<>();
         list.forEach(x -> {
             History h = new History();
+            h.setAddressTransfer(x.getAddressTransfer());
+            h.setPaymentMethod(x.getPaymentMethod());
             h.setId(x.getId());
             h.setCode(x.getCode());
             h.setStatus(x.getStatus());
@@ -175,6 +177,10 @@ public class BillServiceImpl implements BillService {
             billDetail.setBillId(bill.getId());
             details.add(billDetail);
         }
+        bill.setTaxCode(shop.getTaxCode());
+        bill.setTaxAddress(shop.getTaxAddress());
+        bill.setRequestBill(shop.getRequestBill());
+        bill.setCompany(shop.getCompany());
         bill.setCode("CDM-" + bill.getId());
         bill.setPaymentMethod(shop.getPaymentMethod());
         bill.setTotalPrice(totalPrice);

@@ -26,6 +26,10 @@ public class Bill extends BaseEntity {
     private String phone;
     private String email;
     private String fullname;
+    private Boolean requestBill;
+    private String taxCode;
+    private String company;
+    private String taxAddress;
     private Integer status;  //cart 1 waiting 2
     private String addressTransfer;
 }
