@@ -99,14 +99,6 @@ public class ProductsDTO extends BaseModel {
         this.slug = slug;
     }
 
-    public ProductsDTO(Integer id, String name, Double priceSell, Double priceAfterSale, String slug, Integer brandId) {
-        this.id = id;
-        this.name = name;
-        this.priceSell = priceSell;
-        this.priceAfterSale = priceAfterSale;
-        this.slug = slug;
-        this.brandId = brandId;
-    }
 
 
 }

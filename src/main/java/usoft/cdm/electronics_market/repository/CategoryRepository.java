@@ -11,7 +11,7 @@ import usoft.cdm.electronics_market.entities.Category;
 import java.util.List;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, Integer> {
+public interface CategoryRepository extends JpaRepository<Category, Integer>,CategoryRepositoryCustom {
 
     Page<Category> findAllByParentIdIsNullAndStatus(Pageable pageable, Boolean status);
 

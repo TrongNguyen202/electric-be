@@ -3,6 +3,7 @@ package usoft.cdm.electronics_market.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import usoft.cdm.electronics_market.model.Price;
+import usoft.cdm.electronics_market.model.ProductForHomePage;
 import usoft.cdm.electronics_market.model.ProductsDTO;
 import usoft.cdm.electronics_market.util.CommonUtil;
 import usoft.cdm.electronics_market.util.DataUtil;
@@ -50,9 +51,9 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     }
 
     @Override
-    public List<ProductsDTO> getProductsForHomePage(Integer categoryId) {
-        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug,p.brand_id as brandId  " +
-                "FROM cdm_products p WHERE p.status =true ");
+    public List<ProductForHomePage> getProductsForHomePage(Integer categoryId) {
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug,b.name as brandName  " +
+                "FROM cdm_products p, cdm_brand b WHERE p.brand_id = b.id and p.status =true ");
 
         Map<String, Object> params = new HashMap<>();
 
