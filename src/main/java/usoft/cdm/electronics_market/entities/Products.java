@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import usoft.cdm.electronics_market.model.ProductForHomePage;
 import usoft.cdm.electronics_market.model.ProductsDTO;
 
 import javax.persistence.*;
@@ -44,14 +45,14 @@ import java.util.Date;
         name = "getProductForHomePage",
         classes = {
                 @ConstructorResult(
-                        targetClass = ProductsDTO.class,
+                        targetClass = ProductForHomePage.class,
                         columns = {
                                 @ColumnResult(name = "id", type = Integer.class),
                                 @ColumnResult(name = "name", type = String.class),
                                 @ColumnResult(name = "priceSell", type = Double.class),
                                 @ColumnResult(name = "priceAfterSale", type = Double.class),
                                 @ColumnResult(name = "slug", type = String.class),
-                                @ColumnResult(name = "brandId", type = Integer.class),
+                                @ColumnResult(name = "brandName", type = String.class),
                         }
                 )
         }
