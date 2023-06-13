@@ -24,8 +24,6 @@ public interface ProductRepository extends JpaRepository<Products, Integer>, Pro
 
     List<Products> findByStatusAndCategoryId(Boolean status, Integer categoryId);
 
-    List<Products> findByStatusAndBrandId(Boolean status, Integer brandId);
-
     List<Products> findByStatusAndWarehouseId(Boolean status, Integer warehouseId);
 
     @Query("SELECT new usoft.cdm.electronics_market.model.bill.ProductBill" +

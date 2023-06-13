@@ -252,8 +252,7 @@ public class ProductServiceImpl implements ProductService {
             String imgRandom = imgs.get(randomIndex);
             List<Category> categoryList = this.categoryRepository.findByParentIdAndStatus(categoryDTO.getId(), true);
             if (categoryList.isEmpty()) {
-                List<Products> productsList = this.productRepository.findByStatusAndCategoryId(true, categoryDTO.getId());
-                List<ProductsDTO> dtos = MapperUtil.mapList(productsList, ProductsDTO.class);
+                List<ProductsDTO> dtos = this.productRepository.getProductsForHomePage(categoryDTO.getId());
                 for (ProductsDTO dto : dtos) {
                     displaySet(dto, 2);
                 }
@@ -261,8 +260,7 @@ public class ProductServiceImpl implements ProductService {
 
             } else {
                 for (Category category : categoryList) {
-                    List<Products> products = this.productRepository.findByStatusAndCategoryId(true, category.getId());
-                    List<ProductsDTO> dtos = MapperUtil.mapList(products, ProductsDTO.class);
+                    List<ProductsDTO> dtos = this.productRepository.getProductsForHomePage(category.getId());
                     for (ProductsDTO dto : dtos) {
                         displaySet(dto, 2);
                     }
@@ -303,9 +301,9 @@ public class ProductServiceImpl implements ProductService {
         if (optionalProducts.isEmpty())
             throw new BadRequestException("Không tìm thấy id sản phẩm");
         Products product = optionalProducts.get();
-        List<Products> products = this.productRepository.findByStatusAndCategoryId(true, product.getCategoryId());
-        products.remove(product);
-        List<ProductsDTO> productsDTOS = MapperUtil.mapList(products, ProductsDTO.class);
+        ProductsDTO dto = MapperUtil.map(product, ProductsDTO.class);
+        List<ProductsDTO> productsDTOS = this.productRepository.getRelatedProducts(product.getCategoryId());
+        productsDTOS.remove(dto);
         productsDTOS.forEach(productsDTO -> {
             Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
             productsDTO.setBrandName(brand.getName());
@@ -323,11 +321,16 @@ public class ProductServiceImpl implements ProductService {
         if (optionalProducts.isEmpty())
             throw new BadRequestException("Không tìm thấy id sản phẩm");
         Products product = optionalProducts.get();
-        List<Products> products = this.productRepository.findByStatusAndBrandId(true, product.getBrandId());
-        products.remove(product);
-        List<ProductsDTO> productsDTOS = MapperUtil.mapList(products, ProductsDTO.class);
+        ProductsDTO dto = MapperUtil.map(product, ProductsDTO.class);
+        List<ProductsDTO> productsDTOS = this.productRepository.getProductsInSameBrand(product.getBrandId());
+        productsDTOS.remove(dto);
         productsDTOS.forEach(productsDTO -> {
-            displaySet(productsDTO, 2);
+            Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
+            productsDTO.setBrandName(brand.getName());
+            List<String> imgs = getImgs(productsDTO.getId(), 2);
+            productsDTO.setImg(Collections.singletonList(imgs.get(0)));
+            setDiscount(productsDTO);
+            productsDTO.setInformation(null);
         });
         return ResponseUtil.ok(productsDTOS);
     }

@@ -19,7 +19,7 @@ import java.util.List;
 public class CategoryDTO extends BaseModel {
 
     @NotEmpty(message = "Tên không được rỗng")
-    @Size(min = 6, max = 500, message = "Tên phải từ 6 đến 500 ký tự")
+    @Size(min = 2, max = 500, message = "Tên phải từ 2 đến 500 ký tự")
     private String name;
 
     private Integer parentId;
