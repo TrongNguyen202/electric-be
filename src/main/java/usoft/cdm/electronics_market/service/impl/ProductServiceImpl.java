@@ -298,10 +298,6 @@ public class ProductServiceImpl implements ProductService {
         List<ProductsDTO> productsDTOS = this.productRepository.getRelatedProducts(product.getCategoryId());
         productsDTOS.remove(dto);
         productsDTOS.forEach(productsDTO -> {
-            Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
-            productsDTO.setBrandName(brand.getName());
-            List<String> imgs = getImgs(productsDTO.getId(), 2);
-            productsDTO.setImg(Collections.singletonList(imgs.get(0)));
             setDiscount(productsDTO);
             productsDTO.setInformation(null);
         });
@@ -318,10 +314,6 @@ public class ProductServiceImpl implements ProductService {
         List<ProductsDTO> productsDTOS = this.productRepository.getProductsInSameBrand(product.getBrandId());
         productsDTOS.remove(dto);
         productsDTOS.forEach(productsDTO -> {
-            Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
-            productsDTO.setBrandName(brand.getName());
-            List<String> imgs = getImgs(productsDTO.getId(), 2);
-            productsDTO.setImg(Collections.singletonList(imgs.get(0)));
             setDiscount(productsDTO);
             productsDTO.setInformation(null);
         });

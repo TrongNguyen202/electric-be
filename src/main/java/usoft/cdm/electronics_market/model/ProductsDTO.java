@@ -10,6 +10,7 @@ import usoft.cdm.electronics_market.entities.Category;
 import usoft.cdm.electronics_market.entities.Warehouse;
 
 import javax.validation.constraints.*;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -98,7 +99,15 @@ public class ProductsDTO extends BaseModel {
         this.priceAfterSale = priceAfterSale;
         this.slug = slug;
     }
-
+    public ProductsDTO(Integer id, String name, Double priceSell, Double priceAfterSale, String slug, String brandName, String imgProduct) {
+        this.id = id;
+        this.name = name;
+        this.priceSell = priceSell;
+        this.priceAfterSale = priceAfterSale;
+        this.slug = slug;
+        this.brandName = brandName;
+        this.img = Collections.singletonList(imgProduct);
+    }
 
 
 }
