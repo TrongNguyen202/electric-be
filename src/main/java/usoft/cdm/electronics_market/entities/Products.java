@@ -53,6 +53,7 @@ import java.util.Date;
                                 @ColumnResult(name = "priceAfterSale", type = Double.class),
                                 @ColumnResult(name = "slug", type = String.class),
                                 @ColumnResult(name = "brandName", type = String.class),
+                                @ColumnResult(name = "imgProduct", type = String.class),
                         }
                 )
         }

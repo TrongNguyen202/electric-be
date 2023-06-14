@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -20,12 +21,13 @@ public class ProductForHomePage {
     private String brandName;
     private List<String> img;
 
-    public ProductForHomePage(Integer id, String name, Double priceSell, Double priceAfterSale, String slug, String brandName) {
+    public ProductForHomePage(Integer id, String name, Double priceSell, Double priceAfterSale, String slug, String brandName, String imgProduct) {
         this.id = id;
         this.name = name;
         this.priceSell = priceSell;
         this.priceAfterSale = priceAfterSale;
         this.slug = slug;
         this.brandName = brandName;
+        this.img = Collections.singletonList(imgProduct);
     }
 }
