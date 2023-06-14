@@ -52,13 +52,15 @@ public class BrandServiceImpl implements BrandService {
         Brand brand;
         if (dto.getId() != null) {
             brand = brandRepository.findById(dto.getId()).orElse(null);
+            if (brand == null)
+                return ResponseUtil.badRequest("Không tìm thấy id thương hiệu!");
         }else {
             brand = brandRepository.findByName(dto.getName());
             if (brand != null)
                 return ResponseUtil.badRequest(brand.getId(), "Đã có thương hiệu này!");
+            else
+                brand = new Brand();
         }
-        if (brand == null)
-            return ResponseUtil.badRequest("Không tìm thấy id thương hiệu!");
         brand.setImg(dto.getImg());
         brand.setName(dto.getName());
         brand.setType(dto.getType());
