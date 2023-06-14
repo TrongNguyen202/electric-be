@@ -158,8 +158,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<?> updateCustomer(UserDTO userDTO) {
         Users usersLogin = getCurrentUser();
         Optional<Roles> roles = rolesRepository.findById(usersLogin.getRoleId());
-        if (roles.isPresent()){
-            if (!roles.get().getName().equals("CUSTOMER"))
+        if (roles.isPresent() && !roles.get().getName().equals("CUSTOMER")){
                 return ResponseUtil.badRequest("Bạn không được sửa tài khoản của khách hàng");
         }
         Optional<Users> optional = userRepository.findById(userDTO.getId());
@@ -176,6 +175,8 @@ public class UserServiceImpl implements UserService {
         users.setEmail(userDTO.getEmail());
         users.setRoleId(userDTO.getRoleId());
         users.setPhone(userDTO.getPhone());
+        users.setSex(userDTO.getSex());
+        users.setBirthday(userDTO.getBirthday());
         users.setDescription(userDTO.getDescription());
         users.setAddressId(userDTO.getAddressId());
         users.setAddressDetail(userDTO.getAddressDetail());
@@ -193,6 +194,17 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Không tìm thấy id của người dùng");
         }
         return ResponseUtil.ok(user.get());
+    }
+
+    public ResponseEntity<?> delete(Integer idUser) {
+        Optional<Users> user = this.userRepository.findById(idUser);
+        if (user.isEmpty()) {
+            throw new BadRequestException("Không tìm thấy id của người dùng");
+        }
+        Users u = user.get();
+        u.setStatus(false);
+        userRepository.save(u);
+        return ResponseUtil.message("Xóa thành công!");
     }
 
     @Override
@@ -218,15 +230,6 @@ public class UserServiceImpl implements UserService {
                 .username(user.get().getUsername())
                 .token(token)
                 .build();
-    }
-
-    public ResponseEntity<?> register(String username) {
-        String email = "";
-        String phone = "";
-        if (username.matches(email) || username.matches(phone))
-            System.out.println("");
-        else throw new BadRequestException("email hoặc số điện thoại không đúng định dạng");
-        return null;
     }
 
     //TODO
