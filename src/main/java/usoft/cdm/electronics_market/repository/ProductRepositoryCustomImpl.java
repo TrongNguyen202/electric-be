@@ -52,7 +52,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
     @Override
     public List<ProductForHomePage> getProductsForHomePage(Integer categoryId) {
-        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug,b.name as brandName  " +
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug,b.name as brandName,(SELECT i.img from cdm_image i WHERE i.detail_id = p.id AND i.type = 2 LIMIT 0,1) as imgProduct  " +
                 "FROM cdm_products p, cdm_brand b WHERE p.brand_id = b.id and p.status =true ");
 
         Map<String, Object> params = new HashMap<>();
