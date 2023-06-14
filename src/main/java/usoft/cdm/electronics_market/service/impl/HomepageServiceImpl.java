@@ -116,9 +116,9 @@ public class HomepageServiceImpl implements HomePageService {
         if (homePageType3.size() >= 3) {
             for (int i = 0; i < 3; i++) {
                 int randomIndex3 = random.nextInt(homePageType3.size());
-                HomePage homePage3 = homePageType2.get(randomIndex3);
+                HomePage homePage3 = homePageType3.get(randomIndex3);
                 homePagesMain.add(homePage3);
-                homePageType2.remove(randomIndex3);
+                homePageType3.remove(randomIndex3);
             }
         }
         List<HomePageDTO> homePageDTOS = MapperUtil.mapList(homePagesMain, HomePageDTO.class);
