@@ -21,5 +21,6 @@ public class BillDetail {
     private Integer billId;
     private Integer productId;
     private Double priceSell;
+    private Double priceAfterSale;
     private Integer quantity;
 }

@@ -27,7 +27,7 @@ public interface ProductRepository extends JpaRepository<Products, Integer>, Pro
     List<Products> findByStatusAndWarehouseId(Boolean status, Integer warehouseId);
 
     @Query("SELECT new usoft.cdm.electronics_market.model.bill.ProductBill" +
-            " (bd.id, bd.billId, p.code, p.name, bd.quantity, bd.priceSell)" +
+            " (bd.id, bd.billId, p.code, p.name, bd.quantity, bd.priceSell, bd.priceAfterSale)" +
             " FROM Products p, BillDetail bd" +
             " WHERE p.id = bd.productId AND bd.id IN :ids")
     List<ProductBill> findAllByIdInBill(@Param("ids") List<Integer> ids);

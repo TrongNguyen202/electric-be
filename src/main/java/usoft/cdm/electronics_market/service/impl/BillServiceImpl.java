@@ -13,6 +13,7 @@ import usoft.cdm.electronics_market.service.UserService;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,6 +75,10 @@ public class BillServiceImpl implements BillService {
             History h = new History();
             h.setAddressTransfer(x.getAddressTransfer());
             h.setPaymentMethod(x.getPaymentMethod());
+            h.setPhone(x.getPhone());
+            h.setFullname(x.getFullname());
+            h.setPrice(x.getPrice());
+            h.setPurchaseDate(x.getPurchaseDate());
             h.setId(x.getId());
             h.setCode(x.getCode());
             h.setStatus(x.getStatus());
@@ -181,9 +186,11 @@ public class BillServiceImpl implements BillService {
             double price = p.getPriceAfterSale() == null ? p.getPriceSell() : p.getPriceAfterSale();
             totalPrice += price * c.getQuantity();
             billDetail.setPriceSell(price);
+            billDetail.setPriceAfterSale(p.getPriceAfterSale());
             billDetail.setBillId(bill.getId());
             details.add(billDetail);
         }
+        bill.setPurchaseDate(new Date());
         bill.setTaxCode(shop.getTaxCode());
         bill.setTaxAddress(shop.getTaxAddress());
         bill.setRequestBill(shop.getRequestBill());
