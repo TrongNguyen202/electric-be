@@ -188,6 +188,11 @@ public class PromotionServiceImpl implements PromotionService {
         if (optionalPromotion.isEmpty()) {
             throw new BadRequestException("Không có id của khuyến mãi này");
         }
+        Promotion promotion = optionalPromotion.get();
+        PromotionDTO dto = MapperUtil.map(promotion, PromotionDTO.class);
+        List<ProductPromotion> productPromotions = this.productPromotionRepository.findAllByPromotionId(promotionId);
+        List<ProductPromotionDTO> productPromotionDTO = MapperUtil.mapList(productPromotions, ProductPromotionDTO.class);
+        dto.setProductPromotionDTOList(productPromotionDTO);
         return ResponseUtil.ok(optionalPromotion.get());
     }
 
