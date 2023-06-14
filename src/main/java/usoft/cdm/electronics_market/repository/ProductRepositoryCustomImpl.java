@@ -38,8 +38,8 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
     @Override
     public List<ProductsDTO> getRelatedProducts(Integer categoryId) {
-        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug,p.brand_id as brandId  " +
-                "FROM cdm_products p WHERE p.status =true ");
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug,b.name as brandName,(SELECT i.img from cdm_image i WHERE i.detail_id = p.id AND i.type = 2 LIMIT 0,1) as imgProduct  " +
+                "FROM cdm_products p, cdm_brand b WHERE p.brand_id = b.id and p.status =true ");
 
         Map<String, Object> params = new HashMap<>();
 
@@ -47,7 +47,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         params.put("categoryId", categoryId);
         sql.append("Limit 20");
 
-        return CommonUtil.getList(em, sql.toString(), params, "getProductForHomePage");
+        return CommonUtil.getList(em, sql.toString(), params, "getProductForBrand");
     }
 
     @Override
@@ -66,8 +66,8 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
     @Override
     public List<ProductsDTO> getProductsInSameBrand(Integer brandId) {
-        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug,p.brand_id as brandId  " +
-                "FROM cdm_products p WHERE p.status =true ");
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug,b.name as brandName,(SELECT i.img from cdm_image i WHERE i.detail_id = p.id AND i.type = 2 LIMIT 0,1) as imgProduct  " +
+                "FROM cdm_products p, cdm_brand b WHERE p.brand_id = b.id and p.status =true ");
 
         Map<String, Object> params = new HashMap<>();
 
@@ -75,7 +75,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         params.put("brandId", brandId);
         sql.append("Limit 20");
 
-        return CommonUtil.getList(em, sql.toString(), params, "getProductForHomePage");
+        return CommonUtil.getList(em, sql.toString(), params, "getProductForBrand");
     }
 
     @Override
