@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Entity
 @Data
@@ -32,4 +33,5 @@ public class Bill extends BaseEntity {
     private String taxAddress;
     private Integer status;  //cart 1 waiting 2
     private String addressTransfer;
+    private Date purchaseDate;
 }

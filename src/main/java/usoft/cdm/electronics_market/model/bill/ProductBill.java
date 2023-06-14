@@ -14,14 +14,16 @@ public class ProductBill {
     private String name;
     private Integer quantity;
     private Double priceSell;
+    private Double priceAfterSell;
     private String img;
 
-    public ProductBill(Integer id, Integer billId, String code, String name, Integer quantity, Double priceSell) {
+    public ProductBill(Integer id, Integer billId, String code, String name, Integer quantity, Double priceSell, Double priceAfterSell) {
         this.id = id;
         this.billId = billId;
         this.code = code;
         this.name = name;
         this.quantity = quantity;
         this.priceSell = priceSell;
+        this.priceAfterSell = priceAfterSell;
     }
 }
