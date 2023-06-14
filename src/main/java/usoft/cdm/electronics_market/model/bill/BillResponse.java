@@ -22,11 +22,17 @@ public class BillResponse {
     private String email;
     private String fullname;
     private String addressTransfer;
+    private Boolean requestBill;
+    private String taxCode;
+    private String company;
+    private String taxAddress;
     private Integer status;
     private List<ProductBill> product;
     private List<Voucher> voucher;
 
-    public BillResponse(String code, Double transportFee, String paymentMethod, Double price, Double totalPrice, String note, String phone, String email, String fullname, String addressTransfer, Integer status) {
+    public BillResponse(String code, Double transportFee, String paymentMethod, Double price, Double totalPrice,
+                        String note, String phone, String email, String fullname, String addressTransfer, Integer status,
+                        Boolean requestBill, String taxCode, String company, String taxAddress) {
         this.code = code;
         this.transportFee = transportFee;
         this.paymentMethod = paymentMethod;
@@ -38,5 +44,9 @@ public class BillResponse {
         this.fullname = fullname;
         this.addressTransfer = addressTransfer;
         this.status = status;
+        this.taxAddress = taxAddress;
+        this.taxCode = taxCode;
+        this.company = company;
+        this.requestBill = requestBill;
     }
 }

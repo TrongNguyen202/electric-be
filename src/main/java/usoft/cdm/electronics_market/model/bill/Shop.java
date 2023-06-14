@@ -18,6 +18,10 @@ public class Shop {
     private String note;
     private String phone;
     private String email;
+    private Boolean requestBill;
+    private String taxCode;
+    private String company;
+    private String taxAddress;
     private String fullname;
     private String addressTransfer;
     private List<Cart> cart;
