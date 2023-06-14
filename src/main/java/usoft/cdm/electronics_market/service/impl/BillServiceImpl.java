@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import usoft.cdm.electronics_market.config.security.CustomUserDetails;
 import usoft.cdm.electronics_market.entities.*;
-import usoft.cdm.electronics_market.model.bill.BillResponse;
-import usoft.cdm.electronics_market.model.bill.Cart;
-import usoft.cdm.electronics_market.model.bill.History;
-import usoft.cdm.electronics_market.model.bill.Shop;
+import usoft.cdm.electronics_market.model.bill.*;
 import usoft.cdm.electronics_market.repository.*;
 import usoft.cdm.electronics_market.service.BillService;
 import usoft.cdm.electronics_market.service.UserService;
@@ -26,6 +23,7 @@ public class BillServiceImpl implements BillService {
     private final BillDetailRepository billDetailRepository;
     private final ProductRepository productRepository;
     private final UserService userService;
+    private final ImageRepository imageRepository;
     private final RolesRepository rolesRepository;
     private final BillVoucherRepository billVoucherRepository;
 
@@ -80,7 +78,12 @@ public class BillServiceImpl implements BillService {
             h.setCode(x.getCode());
             h.setStatus(x.getStatus());
             List<Integer> ids = billDetailRepository.findAllProductIdByBillId(x.getId());
-            h.setProduct(productRepository.findAllByIdInBill(ids));
+            List<ProductBill> pb = productRepository.findAllByIdInBill(ids);
+            for (ProductBill item : pb) {
+                Image image = imageRepository.findFirstByDetailIdAndType(x.getId(), 2);
+                item.setImg(image.getImg());
+            }
+            h.setProduct(pb);
             res.add(h);
         });
         return ResponseUtil.ok(res);

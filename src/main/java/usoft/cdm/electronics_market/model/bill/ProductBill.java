@@ -14,4 +14,14 @@ public class ProductBill {
     private String name;
     private Integer quantity;
     private Double priceSell;
+    private String img;
+
+    public ProductBill(Integer id, Integer billId, String code, String name, Integer quantity, Double priceSell) {
+        this.id = id;
+        this.billId = billId;
+        this.code = code;
+        this.name = name;
+        this.quantity = quantity;
+        this.priceSell = priceSell;
+    }
 }

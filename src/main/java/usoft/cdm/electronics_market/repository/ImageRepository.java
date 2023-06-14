@@ -10,6 +10,5 @@ import java.util.List;
 public interface ImageRepository extends JpaRepository<Image, Integer> {
 
     List<Image> findByDetailIdAndType(Integer detailId, Integer type);
-
-
+    Image findFirstByDetailIdAndType(Integer detailId, Integer type);
 }
