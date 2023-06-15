@@ -96,13 +96,13 @@ public class HomepageServiceImpl implements HomePageService {
     }
 
     @Override
-    public List<HomePageDTO> display6ImgForHomePage() {
+    public List<HomePageDTO> displayBannerForHomePage() {
         List<HomePage> homePagesMain = new ArrayList<>();
         List<HomePage> homePageType1 = this.homePageRepository.findAllByType(1);
+        for (HomePage homePage : homePageType1) {
+            homePagesMain.add(homePage);
+        }
         Random random = new Random();
-        int randomIndex1 = random.nextInt(homePageType1.size());
-        HomePage homePage1 = homePageType1.get(randomIndex1);
-        homePagesMain.add(homePage1);
         List<HomePage> homePageType2 = this.homePageRepository.findAllByType(2);
         if (homePageType2.size() >= 2) {
             for (int i = 0; i < 2; i++) {
