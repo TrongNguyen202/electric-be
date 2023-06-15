@@ -36,6 +36,8 @@ public interface ProductRepository extends JpaRepository<Products, Integer>, Pro
 
     List<Products> findByBrandId(Integer brandId);
 
+    List<Products> findByBrandIdAndStatus(Integer brandId, Boolean status);
+
     @Query("SELECT p FROM Products p where p.status = true AND p.categoryId = :category")
     Page<Products> searchByCategory(Pageable pageable, @Param("category") Integer category);
 

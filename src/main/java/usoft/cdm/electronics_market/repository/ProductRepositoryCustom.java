@@ -17,6 +17,8 @@ public interface ProductRepositoryCustom {
 
     List<ProductsDTO> getProductsInSameBrand(Integer brandId);
 
+    Page<ProductsDTO> getProductsInSameBrand(Integer brandId, Pageable pageable);
+
     List<ProductsDTO> getAllMadeByProducts(List<Integer> categoryIds);
 
     Page<ProductsDTO> findByBrandAndPriceAndMadeIn(List<Integer> categoryIds, ProductsDTO dto, Pageable pageable);

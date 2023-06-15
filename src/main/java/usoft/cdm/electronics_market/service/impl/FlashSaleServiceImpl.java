@@ -71,7 +71,7 @@ public class FlashSaleServiceImpl implements FlashSaleService {
         if (dto.getQuantitySale() == 0) {
             throw new BadRequestException("Phải nhập số lượng sale ");
         }
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime currentDateTime = LocalDateTime.now().minusMinutes(2);
         if (dto.getEndSaleInput().isBefore(currentDateTime)) {
             throw new BadRequestException("Ngày hết hạn sớm quá ");
         }
@@ -79,13 +79,13 @@ public class FlashSaleServiceImpl implements FlashSaleService {
             throw new BadRequestException("Ngày bắt đầu trôi qua rồi");
         }
         ZoneId zoneId = ZoneId.of("GMT+7");
-        ZonedDateTime DateTimeStartSale = ZonedDateTime.of(dto.getStartSaleInput(), zoneId);
-        ZonedDateTime DateTimeEndSale = ZonedDateTime.of(dto.getEndSaleInput(), zoneId);
+        ZonedDateTime dateTimeStartSale = ZonedDateTime.of(dto.getStartSaleInput(), zoneId);
+        ZonedDateTime dateTimeEndSale = ZonedDateTime.of(dto.getEndSaleInput(), zoneId);
         FlashSale flashSale = FlashSale
                 .builder()
                 .priceFlashSale(dto.getPriceFlashSale())
-                .startSale(DateTimeStartSale)
-                .endSale(DateTimeEndSale)
+                .startSale(dateTimeStartSale)
+                .endSale(dateTimeEndSale)
                 .description(dto.getDescription())
                 .productId(dto.getProductId())
                 .quantitySale(dto.getQuantitySale())
@@ -124,11 +124,10 @@ public class FlashSaleServiceImpl implements FlashSaleService {
         if (dto.getQuantitySale() == 0) {
             throw new BadRequestException("Phải nhập số lượng sale ");
         }
-        LocalDateTime currentDateTime = LocalDateTime.now().plusSeconds(5);
+        LocalDateTime currentDateTime = LocalDateTime.now().minusMinutes(2);
         if (dto.getEndSaleInput().isBefore(currentDateTime)) {
             throw new BadRequestException("Ngày hết hạn sớm quá ");
         }
-
         if (dto.getStartSaleInput().isBefore(currentDateTime)) {
             throw new BadRequestException("Ngày bắt đầu trôi qua rồi");
         }
