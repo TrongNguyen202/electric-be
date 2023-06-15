@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface FlashSaleRepository extends JpaRepository<FlashSale, Integer> {
 
-    List<FlashSale> findByProductIdAndStatus(Integer productId, Boolean status);
+    FlashSale findByProductIdAndStatus(Integer productId, Boolean status);
 
     Optional<FlashSale> findByIdAndStatus(Integer id, Boolean status);
 

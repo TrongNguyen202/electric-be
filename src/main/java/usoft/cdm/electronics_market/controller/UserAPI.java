@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import usoft.cdm.electronics_market.config.security.JwtTokenProvider;
 import usoft.cdm.electronics_market.model.UserDTO;
 import usoft.cdm.electronics_market.model.user.ChangePassword;
 import usoft.cdm.electronics_market.service.UserService;
@@ -19,6 +20,8 @@ import java.util.List;
 public class UserAPI {
     private final UserService userService;
 
+    private final JwtTokenProvider jwtTokenProvider;
+
     @GetMapping
     public ResponseEntity<?> getUser(Pageable pageable) {
         return this.userService.getList(pageable, false);
@@ -28,6 +31,13 @@ public class UserAPI {
     public ResponseEntity<?> getCustomer(Pageable pageable) {
         return this.userService.getList(pageable, true);
     }
+
+    @GetMapping("/token")
+    public ResponseEntity<?> getIdUser(String token) {
+
+        return ResponseUtil.ok(this.jwtTokenProvider.getUserIdFromJWT(token));
+    }
+
 
     @GetMapping("getById")
     public ResponseEntity<?> getById(@RequestParam Integer id) {
@@ -48,6 +58,7 @@ public class UserAPI {
     public ResponseEntity<?> update(@RequestBody ChangePassword req) {
         return this.userService.changePassword(req.getPassword(), req.getId());
     }
+
 
     @DeleteMapping
     private ResponseEntity<?> delete(@RequestParam List<Integer> ids) {
@@ -71,6 +82,7 @@ public class UserAPI {
     public ResponseEntity<?> loginGoogle(@RequestParam String code) {
         return userService.loginGoogle(code);
     }
+
 
     @GetMapping("getUserInfo")
     public ResponseEntity<?> getUserInfo() {

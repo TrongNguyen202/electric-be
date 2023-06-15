@@ -50,7 +50,6 @@ public class JwtTokenProvider {
                 .setSigningKey(JWT_SECRET)
                 .parseClaimsJws(token)
                 .getBody();
-
         return Integer.parseInt(claims.getSubject());
     }
 

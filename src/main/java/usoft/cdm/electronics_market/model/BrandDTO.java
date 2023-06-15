@@ -10,10 +10,11 @@ public class BrandDTO {
     private String img;
     private Integer sumProducts;
 
-    public BrandDTO(Integer id, String name, Integer sumProducts) {
+    public BrandDTO(Integer id, String name, Integer sumProducts, String img) {
         this.id = id;
         this.name = name;
         this.sumProducts = sumProducts;
+        this.img = img;
 
     }
 }

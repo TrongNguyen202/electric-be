@@ -18,7 +18,8 @@ import javax.persistence.*;
                         columns = {
                                 @ColumnResult(name = "id", type = Integer.class),
                                 @ColumnResult(name = "name", type = String.class),
-                                @ColumnResult(name = "sumProducts", type = Integer.class)
+                                @ColumnResult(name = "sumProducts", type = Integer.class),
+                                @ColumnResult(name = "img", type = String.class),
                         }
                 )
         }
