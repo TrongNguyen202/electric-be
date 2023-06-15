@@ -59,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/v1/product", "/api/v1/hot-category/all").permitAll()
                 .antMatchers("/api/v1/bill/getHistory", "/api/v1/bill/getById").permitAll()
                 .antMatchers("/api/v1/footer", "/api/v1/footer/getAllCustomerCare", "/api/v1/footer/getCustomerCareById", "/api/v1/footer/getSocialNetwork").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/product","/api/v1/hot-category/all").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/product","/api/v1/hot-category/all","/api/v1/hot-brand/all").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/category","/api/v1/promotion/all").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/product/search-category").permitAll()
                 .antMatchers("/images/**").permitAll()

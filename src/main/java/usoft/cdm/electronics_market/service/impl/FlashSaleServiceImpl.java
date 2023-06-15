@@ -124,10 +124,11 @@ public class FlashSaleServiceImpl implements FlashSaleService {
         if (dto.getQuantitySale() == 0) {
             throw new BadRequestException("Phải nhập số lượng sale ");
         }
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime currentDateTime = LocalDateTime.now().plusSeconds(5);
         if (dto.getEndSaleInput().isBefore(currentDateTime)) {
             throw new BadRequestException("Ngày hết hạn sớm quá ");
         }
+
         if (dto.getStartSaleInput().isBefore(currentDateTime)) {
             throw new BadRequestException("Ngày bắt đầu trôi qua rồi");
         }
@@ -177,7 +178,7 @@ public class FlashSaleServiceImpl implements FlashSaleService {
                 dto.setDiscount(discount);
 
             }
- 
+
         }
         return flashSaleDTOS;
     }
