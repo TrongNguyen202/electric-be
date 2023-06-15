@@ -20,7 +20,7 @@ public interface HomePageService {
 
     HomePageDTO getById(Integer idHomePage);
 
-    List<HomePageDTO> display6ImgForHomePage();
+    List<HomePageDTO> displayBannerForHomePage();
 
 
 }

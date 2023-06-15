@@ -367,14 +367,5 @@ public class ProductServiceImpl implements ProductService {
         return dto;
     }
 
-    //set(Brand,Img,Discount)
-    private void displaySet(ProductsDTO productsDTO, Integer type) {
-        List<String> imgProduct = getImgs(productsDTO.getId(), type);
-        Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
-        productsDTO.setBrandName(brand.getName());
-        productsDTO.setImg(imgProduct);
-        setDiscount(productsDTO);
-    }
-
 
 }

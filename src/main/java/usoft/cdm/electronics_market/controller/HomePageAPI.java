@@ -68,7 +68,7 @@ public class HomePageAPI {
 
     @GetMapping("/banner")
     public ResponseEntity<?> getBanner() {
-        return ResponseUtil.ok(this.homePageService.display6ImgForHomePage());
+        return ResponseUtil.ok(this.homePageService.displayBannerForHomePage());
     }
 
     @PostMapping("/sign-up")
