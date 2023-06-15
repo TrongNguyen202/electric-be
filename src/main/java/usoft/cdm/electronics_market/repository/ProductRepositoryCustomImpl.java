@@ -88,6 +88,27 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     }
 
     @Override
+    public Page<ProductsDTO> getProductsInSameBrand(Integer brandId, Pageable pageable) {
+        StringBuilder sql = new StringBuilder("WITH cte_image AS (\n" +
+                "  SELECT detail_id, img\n" +
+                "  FROM cdm_image\n" +
+                "  WHERE type = 2\n" +
+                "\tGROUP BY detail_id\n" +
+                ")\n" +
+                "SELECT p.id, p.name, p.price_sell AS priceSell, p.price_after_sale AS priceAfterSale, p.slug, b.name AS brandName, cte_image.img AS imgProduct\n" +
+                "FROM cdm_products p\n" +
+                "JOIN cdm_brand b ON p.brand_id = b.id\n" +
+                "JOIN cte_image ON cte_image.detail_id = p.id\n" +
+                "WHERE p.status = true  ");
+
+        Map<String, Object> params = new HashMap<>();
+
+        sql.append(" and p.brand_id = :brandId ");
+        params.put("brandId", brandId);
+        return CommonUtil.getPageImpl(em, sql.toString(), params, pageable, "getProductForBrand");
+    }
+
+    @Override
     public List<ProductsDTO> getAllMadeByProducts(List<Integer> categoryIds) {
         StringBuilder sql = new StringBuilder("SELECT p.id,p.made_in as madeIn,COUNT(p.made_in) as sumProducts FROM  cdm_products p \n" +
                 "WHERE p.status =1 ");

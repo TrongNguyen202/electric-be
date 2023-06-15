@@ -43,6 +43,11 @@ public class ProductAPI {
         return ResponseUtil.ok(this.productService.searchByName(name, pageable));
     }
 
+    @GetMapping("search-hot-brand")
+    public ResponseEntity<?> searchByHotBrand(@RequestParam(required = false) Integer brandId, Pageable pageable) {
+        return ResponseUtil.ok(this.productService.getProductForHotBrand(brandId, pageable));
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationExceptions(

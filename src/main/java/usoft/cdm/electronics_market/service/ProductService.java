@@ -29,6 +29,8 @@ public interface ProductService {
 
     ResponseEntity<?> getProductsInSameBrand(Integer productId);
 
+    Page<ProductsDTO> getProductForHotBrand(Integer brandId, Pageable pageable);
+
     Page<Products> searchByCategory(Integer categoryId, Pageable pageable);
 
     Page<Products> searchByName(String name, Pageable pageable);

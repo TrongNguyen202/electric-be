@@ -321,6 +321,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Page<ProductsDTO> getProductForHotBrand(Integer brandId, Pageable pageable) {
+        Page<ProductsDTO> productsDTOPage = this.productRepository.getProductsInSameBrand(brandId, pageable);
+        for (ProductsDTO dto : productsDTOPage) {
+            setDiscount(dto);
+        }
+        return productsDTOPage;
+    }
+
+    @Override
     public Page<Products> searchByCategory(Integer categoryId, Pageable pageable) {
         return this.productRepository.searchByCategory(pageable, categoryId);
     }
