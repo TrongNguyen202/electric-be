@@ -43,6 +43,11 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
+    public ResponseEntity<?> searchForHotBrand(String name) {
+        return ResponseUtil.ok(brandRepository.findAllByStatusAndNameContaining(true, name));
+    }
+
+    @Override
     public ResponseEntity<?> getPage(Pageable pageable) {
         return ResponseUtil.ok(brandRepository.findAll(pageable));
     }
@@ -54,7 +59,7 @@ public class BrandServiceImpl implements BrandService {
             brand = brandRepository.findById(dto.getId()).orElse(null);
             if (brand == null)
                 return ResponseUtil.badRequest("Không tìm thấy id thương hiệu!");
-        }else {
+        } else {
             brand = brandRepository.findByName(dto.getName());
             if (brand != null)
                 return ResponseUtil.badRequest(brand.getId(), "Đã có thương hiệu này!");

@@ -110,7 +110,7 @@ public class HotCategoryServiceImpl implements HotCategoryService {
         hotCategoryIds.forEach(hotCategoryId -> {
             Optional<HotCategory> optionalHotCategory = this.hotCategoryRepository.findById(hotCategoryId);
             if (optionalHotCategory.isEmpty()) {
-                throw new BadRequestException("Không tìm thấy id của kho");
+                throw new BadRequestException("Không tìm thấy id của danh mục");
             }
             HotCategory hotCategory = optionalHotCategory.get();
             hotCategoryList.add(hotCategory);

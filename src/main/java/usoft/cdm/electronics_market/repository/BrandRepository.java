@@ -11,6 +11,7 @@ import java.util.Optional;
 @Repository
 public interface BrandRepository extends JpaRepository<Brand, Integer>, BrandRepositoryCustom {
     List<Brand> findAllByType(String type);
+
     Brand findByName(String name);
 
     Optional<Brand> findByIdAndStatus(Integer id, Boolean status);
@@ -18,4 +19,6 @@ public interface BrandRepository extends JpaRepository<Brand, Integer>, BrandRep
     List<Brand> findAllByStatus(Boolean status);
 
     List<Brand> findAllByStatusAndNameContaining(Boolean status, String name, Pageable pageable);
+
+    List<Brand> findAllByStatusAndNameContaining(Boolean status, String name);
 }

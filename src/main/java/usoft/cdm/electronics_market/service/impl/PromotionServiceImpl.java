@@ -60,7 +60,7 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     public ResponseEntity<?> save(PromotionDTO dto, List<ProductPromotionDTO> productPromotionDTOS) {
         Users userLogin = this.userService.getCurrentUser();
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime currentDateTime = LocalDateTime.now().plusSeconds(5);
         if (dto.getEndSaleInput().isBefore(currentDateTime)) {
             throw new BadRequestException("Ngày hết hạn sớm quá ");
         }
@@ -118,7 +118,7 @@ public class PromotionServiceImpl implements PromotionService {
         if (optionalPromotion.isEmpty()) {
             throw new BadRequestException("Không có id của khuyến mãi này");
         }
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime currentDateTime = LocalDateTime.now().plusSeconds(5);
         if (dto.getEndSaleInput().isBefore(currentDateTime)) {
             throw new BadRequestException("Ngày hết hạn sớm quá ");
         }

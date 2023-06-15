@@ -15,6 +15,8 @@ public interface BrandService {
 
     ResponseEntity<?> search(String name, Pageable pageable);
 
+    ResponseEntity<?>  searchForHotBrand(String name);
+
     ResponseEntity<?> getPage(Pageable pageable);
 
     ResponseEntity<?> save(BrandDTO dto);
