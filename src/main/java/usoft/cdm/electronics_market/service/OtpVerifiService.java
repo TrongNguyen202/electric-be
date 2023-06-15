@@ -7,5 +7,9 @@ public interface OtpVerifiService {
 
     ResponseEntity<?> signUp(VerifyOTPRequest request);
 
-    ResponseEntity<?> signUpEmail(VerifyOTPRequest request);
+    ResponseEntity<?> checkPhoneForgetPassword(String phone);
+
+    ResponseEntity<?> getForgetPassword(VerifyOTPRequest request);
+
+    ResponseEntity<?> changePassFromPhone(String token);
 }

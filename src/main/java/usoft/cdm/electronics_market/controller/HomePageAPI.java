@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import usoft.cdm.electronics_market.config.security.JwtTokenProvider;
 import usoft.cdm.electronics_market.model.EmailDTO;
 import usoft.cdm.electronics_market.model.ProductsDTO;
 import usoft.cdm.electronics_market.model.VerifyOTPRequest;
@@ -28,6 +29,7 @@ public class HomePageAPI {
     private final OtpVerifiService OtpVerificationService;
 
     private final EmailService emailService;
+
 
     @GetMapping("/product-category")
     public ResponseEntity<?> getAllProductAndCategoryForHome() {
@@ -74,6 +76,16 @@ public class HomePageAPI {
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@RequestBody VerifyOTPRequest request) {
         return this.OtpVerificationService.signUp(request);
+    }
+
+    @PostMapping("/forget-pass")
+    public ResponseEntity<?> getForgetPassword(@RequestBody VerifyOTPRequest request) {
+        return this.OtpVerificationService.getForgetPassword(request);
+    }
+
+    @GetMapping("check-phone")
+    public ResponseEntity<?> checkPhoneForgetPassword(@RequestParam String phone) {
+        return this.OtpVerificationService.checkPhoneForgetPassword(phone);
     }
 
     @PostMapping("/signup-email")

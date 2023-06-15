@@ -54,18 +54,13 @@ public class FlashSaleServiceImpl implements FlashSaleService {
             throw new BadRequestException("Không có sản phẩm này");
         }
 
-        List<FlashSale> saleList = this.flashSaleRepository.findByProductIdAndStatus(products.get().getId(), true);
-        if (saleList.isEmpty()) {
-            if (dto.getQuantitySale() > products.get().getQuantity()) {
-                throw new BadRequestException("Số lượng sale vượt quá số lượng trong kho");
-            }
+        FlashSale saleList = this.flashSaleRepository.findByProductIdAndStatus(products.get().getId(), true);
+
+        if (saleList != null) {
+            throw new BadRequestException("Sản phẩm này đã có flashsale rồi");
         }
-        Integer sumQuantity = 0;
-        for (FlashSale flashSale : saleList) {
-            sumQuantity += flashSale.getQuantitySale();
-        }
-        if (dto.getQuantitySale() > (products.get().getQuantity() - sumQuantity)) {
-            throw new BadRequestException("Số lượng sale vượt quá số lượng trong kho");
+        if (dto.getQuantitySale() > products.get().getQuantity()) {
+            throw new BadRequestException("Số lượng vượt quá quy định ");
         }
 
         if (dto.getQuantitySale() == 0) {
@@ -107,18 +102,16 @@ public class FlashSaleServiceImpl implements FlashSaleService {
         if (products.isEmpty()) {
             throw new BadRequestException("Không có sản phẩm này");
         }
-        List<FlashSale> saleList = this.flashSaleRepository.findByProductIdAndStatus(products.get().getId(), true);
-        if (saleList.isEmpty()) {
-            if (dto.getQuantitySale() > products.get().getQuantity()) {
-                throw new BadRequestException("Số lượng sale vượt quá số lượng trong kho");
+        FlashSale saleList = this.flashSaleRepository.findByProductIdAndStatus(products.get().getId(), true);
+        if (saleList == null) {
+            FlashSale saleListCheck = this.flashSaleRepository.findByProductIdAndStatus(dto.getProductId(), true);
+            if (saleListCheck != null) {
+                throw new BadRequestException("Sản phẩm này đã có flashsale rồi");
             }
         }
-        Integer sumQuantity = 0;
-        for (FlashSale flashSale : saleList) {
-            sumQuantity += flashSale.getQuantitySale();
-        }
-        if (dto.getQuantitySale() > (products.get().getQuantity() - sumQuantity)) {
-            throw new BadRequestException("Số lượng sale vượt quá số lượng trong kho");
+
+        if (dto.getQuantitySale() > products.get().getQuantity()) {
+            throw new BadRequestException("Số lượng vượt quá quy định ");
         }
 
         if (dto.getQuantitySale() == 0) {
