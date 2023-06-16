@@ -105,6 +105,7 @@ public class HomePageAPI {
 
     @PostMapping("/signup-email-otp")
     public ResponseEntity<?> signUpEmail(@RequestBody EmailDTO dto) {
+
         return this.emailService.checkOTPForSignUp(dto);
     }
 
