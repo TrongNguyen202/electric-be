@@ -289,6 +289,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Page<ProductsDTO> findByBrandAndPriceAndMadeInForSearchProduct(String name, Pageable pageable, ProductsDTO dto) {
+        Page<ProductsDTO> productsDTOS = this.productRepository.findByBrandAndPriceAndMadeInForSearchProduct(name, dto, pageable);
+        productsDTOS.forEach(productsDTO -> {
+            List<String> imgProductSearch = getImgs(productsDTO.getId(), 2);
+            productsDTO.setImg(imgProductSearch);
+            setDiscount(productsDTO);
+        });
+
+        return productsDTOS;
+    }
+
+    @Override
     public ResponseEntity<?> getRelatedProducts(Integer productId) {
         Optional<Products> optionalProducts = this.productRepository.findById(productId);
         if (optionalProducts.isEmpty())

@@ -41,6 +41,11 @@ public class HomePageAPI {
         return ResponseUtil.ok(this.productService.getAllProductFromCategoryId(categoryId, pageable, dto));
     }
 
+    @PostMapping("/product-search")
+    public ResponseEntity<?> getAllProductFromCategoryId(@RequestParam String name, @RequestBody ProductsDTO dto, Pageable pageable) {
+        return ResponseUtil.ok(this.productService.findByBrandAndPriceAndMadeInForSearchProduct(name, pageable, dto));
+    }
+
     @GetMapping("/category")
     public ResponseEntity<?> findByAllForParentIdNull() {
         return this.categoryService.findByAllForParentIdNull();

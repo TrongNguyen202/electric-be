@@ -229,6 +229,59 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     }
 
     @Override
+    public Page<ProductsDTO> findByBrandAndPriceAndMadeInForSearchProduct(String name, ProductsDTO dto, Pageable pageable) {
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug  FROM cdm_products p \n" +
+                "WHERE p.status =1 ");
+
+        Map<String, Object> params = new HashMap<>();
+
+        String[] keywords = name.split("\\s+");
+        String query = Arrays.stream(keywords)
+                .map(data -> "+" + data + "*")
+                .collect(Collectors.joining(" "));
+        sql.append(" and (MATCH(p.name) AGAINST(:keyword IN BOOLEAN MODE) ");
+        params.put("keyword", query);
+
+        sql.append(" OR lower(p.name) LIKE :name)");
+        params.put("name", "%" + name.toLowerCase() + "%");
+
+        if (!DataUtil.isNullObject(dto.getBrandIds())) {
+            sql.append(" and p.brand_id IN :brand");
+            params.put("brand", dto.getBrandIds());
+        }
+
+
+        if (!DataUtil.isNullObject(dto.getMadeIns())) {
+            sql.append(" and p.made_in IN :madeIn");
+            params.put("madeIn", dto.getMadeIns());
+        }
+        if (!DataUtil.isNullOrEmpty(dto.getPrice())) {
+            boolean check = true;
+            int cnt = 1;
+            for (Price x : dto.getPrice()) {
+                if (check)
+                    sql.append(" AND (");
+                else
+                    sql.append(" OR ");
+                String priceFrom = "from" + cnt;
+                String priceTo = "to" + cnt;
+                if (x.getTo() != null)
+                    sql.append(" (p.price_sell BETWEEN :").append(priceFrom).append(" AND :").append(priceTo).append(")");
+                else
+                    sql.append(" (p.price_sell > 200000000)");
+                params.put(priceFrom, x.getFrom());
+                params.put(priceTo, x.getTo());
+                check = false;
+                cnt++;
+            }
+            if (!check)
+                sql.append(" )");
+        }
+        return CommonUtil.getPageImpl(em, sql.toString(), params, pageable, "getBrandAndPriceAndMadeIn");
+
+    }
+
+    @Override
     public Page<ProductsDTO> searchNameForHomepage(String name, Pageable pageable) {
         StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug  " +
                 "FROM cdm_products p \n" +

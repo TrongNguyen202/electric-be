@@ -25,11 +25,13 @@ public interface ProductRepositoryCustom {
 
     Page<ProductsDTO> findByBrandAndPriceAndMadeIn(Integer categoryId, ProductsDTO dto, Pageable pageable);
 
+    Page<ProductsDTO> findByBrandAndPriceAndMadeInForSearchProduct(String name, ProductsDTO dto, Pageable pageable);
+
     Page<ProductsDTO> searchNameForHomepage(String name, Pageable pageable);
 
     ProductsDTO getDiscountByCategory(Integer categoryId);
 
     List<ProductsDTO> getMadeInForNameProduct(String name);
 
-    ProductsDTO getRangePriceForNameProduct(String name,Double priceFrom,Double priceTo);
+    ProductsDTO getRangePriceForNameProduct(String name, Double priceFrom, Double priceTo);
 }
