@@ -9,4 +9,6 @@ public interface BrandRepositoryCustom {
     List<BrandDTO> getAllBrandByCategoryId(Integer categoryId);
 
     List<BrandDTO> getAllBrandByCategoryId(List<Integer> categoryIds);
+
+    List<BrandDTO> getAllBrandByNameProduct(String name);
 }

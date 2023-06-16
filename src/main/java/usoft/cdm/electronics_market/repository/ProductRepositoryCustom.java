@@ -28,4 +28,8 @@ public interface ProductRepositoryCustom {
     Page<ProductsDTO> searchNameForHomepage(String name, Pageable pageable);
 
     ProductsDTO getDiscountByCategory(Integer categoryId);
+
+    List<ProductsDTO> getMadeInForNameProduct(String name);
+
+    ProductsDTO getRangePriceForNameProduct(String name,Double priceFrom,Double priceTo);
 }
