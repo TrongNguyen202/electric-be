@@ -25,6 +25,8 @@ public interface ProductService {
 
     Page<ProductsDTO> getAllProductFromCategoryId(Integer categoryId, Pageable pageable, ProductsDTO dto);
 
+    Page<ProductsDTO> findByBrandAndPriceAndMadeInForSearchProduct(String name, Pageable pageable, ProductsDTO dto);
+
     ResponseEntity<?> getRelatedProducts(Integer productId);
 
     ResponseEntity<?> getProductsInSameBrand(Integer productId);
