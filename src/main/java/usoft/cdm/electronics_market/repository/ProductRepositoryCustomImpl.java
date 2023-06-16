@@ -280,6 +280,17 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             if (!check)
                 sql.append(" )");
         }
+        if (!DataUtil.isNullObject(dto.getValueSort())) {
+            if (dto.getValueSort() == 2) {
+                sql.append("  ORDER BY p.price_after_sale ASC ");
+            } else if (dto.getValueSort() == 3) {
+                sql.append("  ORDER BY p.price_after_sale DESC ");
+            } else if (dto.getValueSort() == 5) {
+                sql.append(" ORDER BY p.created_date DESC");
+            } else if (dto.getValueSort() == 4) {
+                sql.append("  ORDER BY (100-(p.price_after_sale/p.price_sell)*100) DESC ");
+            }
+        }
         return CommonUtil.getPageImpl(em, sql.toString(), params, pageable, "getBrandAndPriceAndMadeIn");
 
     }

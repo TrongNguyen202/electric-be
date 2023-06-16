@@ -35,5 +35,7 @@ public class Brand extends BaseEntity {
     private String name;
     private String img;
     private String type;
+    private String information;
     private Boolean status;
+
 }
