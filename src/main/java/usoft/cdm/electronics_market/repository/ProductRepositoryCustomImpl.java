@@ -249,7 +249,10 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             sql.append(" and p.brand_id IN :brand");
             params.put("brand", dto.getBrandIds());
         }
-
+        if (!DataUtil.isNullObject(dto.getCategoryId())) {
+            sql.append(" and p.category_id = :cate");
+            params.put("cate", dto.getCategoryId());
+        }
 
         if (!DataUtil.isNullObject(dto.getMadeIns())) {
             sql.append(" and p.made_in IN :madeIn");
