@@ -193,7 +193,7 @@ public class PromotionServiceImpl implements PromotionService {
         List<ProductPromotion> productPromotions = this.productPromotionRepository.findAllByPromotionId(promotionId);
         List<ProductPromotionDTO> productPromotionDTO = MapperUtil.mapList(productPromotions, ProductPromotionDTO.class);
         dto.setProductPromotionDTOList(productPromotionDTO);
-        return ResponseUtil.ok(optionalPromotion.get());
+        return ResponseUtil.ok(dto);
     }
 
     @Override
