@@ -24,7 +24,6 @@ public interface CategoryService {
 
     ResponseEntity<?> displayCategoryChild(Integer categoryId, Pageable pageable);
 
-
     ResponseEntity<?> update(CategoryDTO dto, List<String> imgList);
 
     ResponseEntity<?> saveChildCategory(CategoryDTO dto);
@@ -34,6 +33,8 @@ public interface CategoryService {
     ResponseEntity<?> deleteCategoryIds(List<Integer> categoryIds);
 
     Page<CategoryDTO> searchByName(Pageable pageable, String name);
+
+    ResponseEntity<?> getCateAndBrandAndPriceForSearchProduct(String name);
 
 
 }

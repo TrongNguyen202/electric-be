@@ -41,4 +41,14 @@ public class CategoryDTO extends BaseModel {
     private Boolean status;
 
     private List<ProductsDTO> productsDTOS;
+
+    private Integer sumProduct;
+
+    public CategoryDTO(Integer id, String iconImg, String name, String slug, Integer sumProduct) {
+        this.id = id;
+        this.iconImg = iconImg;
+        this.name = name;
+        this.slug = slug;
+        this.sumProduct = sumProduct;
+    }
 }

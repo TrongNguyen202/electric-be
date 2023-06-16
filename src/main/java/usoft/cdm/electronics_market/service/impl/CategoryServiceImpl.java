@@ -289,5 +289,27 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryDTOS;
     }
 
+    @Override
+    public ResponseEntity<?> getCateAndBrandAndPriceForSearchProduct(String name) {
+        List<CategoryDTO> categoryDTOS = this.categoryRepository.getAllCateForSearchProduct(name);
+        List<BrandDTO> brandDTOS = this.brandRepository.getAllBrandByNameProduct(name);
+        List<ProductsDTO> madeIn = this.productRepository.getMadeInForNameProduct(name);
+        List<PriceRangeModel> list = PriceRange.list;
+        List<PriceRangeModel> res = new ArrayList<>();
+        for (PriceRangeModel rangeModel : list) {
+            ProductsDTO productsDTOS = this.productRepository.getRangePriceForNameProduct(name, rangeModel.getPriceFrom(), rangeModel.getPriceTo());
+            rangeModel.setQuantity(productsDTOS.getSumProduct());
+            if (productsDTOS.getSumProduct() > 0) {
+                res.add(rangeModel);
+            }
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("categories", categoryDTOS);
+        map.put("brandDTOS", brandDTOS);
+        map.put("productsDTOS", madeIn);
+        map.put("priceRange", res);
+        return ResponseUtil.ok(map);
+    }
+
 
 }

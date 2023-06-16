@@ -26,6 +26,31 @@ import java.util.Date;
 )
 
 @SqlResultSetMapping(
+        name = "getAllMadeInSearch",
+        classes = {
+                @ConstructorResult(
+                        targetClass = ProductsDTO.class,
+                        columns = {
+                                @ColumnResult(name = "madeIn", type = String.class),
+                                @ColumnResult(name = "sumProducts", type = Integer.class)
+                        }
+                )
+        }
+)
+
+
+@SqlResultSetMapping(
+        name = "getRangePrice",
+        classes = {
+                @ConstructorResult(
+                        targetClass = ProductsDTO.class,
+                        columns = {
+                                @ColumnResult(name = "sumProducts", type = Integer.class)
+                        }
+                )
+        }
+)
+@SqlResultSetMapping(
         name = "getBrandAndPriceAndMadeIn",
         classes = {
                 @ConstructorResult(

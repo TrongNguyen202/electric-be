@@ -268,4 +268,49 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
         return CommonUtil.getObject(em, sql.toString(), params, "getDiscountByCategory");
     }
+
+    @Override
+    public List<ProductsDTO> getMadeInForNameProduct(String name) {
+        StringBuilder sql = new StringBuilder("SELECT p.made_in as madeIn,COUNT(p.made_in) as sumProducts FROM  cdm_products p \n" +
+                "WHERE p.status =1 ");
+
+        Map<String, Object> params = new HashMap<>();
+
+        String[] keywords = name.split("\\s+");
+        String query = Arrays.stream(keywords)
+                .map(data -> "+" + data + "*")
+                .collect(Collectors.joining(" "));
+        sql.append(" and (MATCH(p.name) AGAINST(:keyword IN BOOLEAN MODE) ");
+        params.put("keyword", query);
+
+        sql.append(" OR lower(p.name) LIKE :name)");
+        params.put("name", "%" + name.toLowerCase() + "%");
+        sql.append("GROUP BY p.made_in");
+
+        return CommonUtil.getList(em, sql.toString(), params, "getAllMadeInSearch");
+
+    }
+
+    @Override
+    public ProductsDTO getRangePriceForNameProduct(String name, Double priceFrom, Double priceTo) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(p.id) as sumProducts FROM  cdm_products p \n" +
+                "WHERE p.status =1 ");
+
+        Map<String, Object> params = new HashMap<>();
+
+        String[] keywords = name.split("\\s+");
+        String query = Arrays.stream(keywords)
+                .map(data -> "+" + data + "*")
+                .collect(Collectors.joining(" "));
+        sql.append(" and (MATCH(p.name) AGAINST(:keyword IN BOOLEAN MODE) ");
+        params.put("keyword", query);
+
+        sql.append(" OR lower(p.name) LIKE :name)");
+        params.put("name", "%" + name.toLowerCase() + "%");
+
+        sql.append(" and p.price_sell between :from AND :to ");
+        params.put("from", priceFrom);
+        params.put("to", priceTo);
+        return CommonUtil.getObject(em, sql.toString(), params, "getRangePrice");
+    }
 }

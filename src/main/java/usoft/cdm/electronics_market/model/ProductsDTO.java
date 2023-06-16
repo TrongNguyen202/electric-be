@@ -99,6 +99,7 @@ public class ProductsDTO extends BaseModel {
         this.priceAfterSale = priceAfterSale;
         this.slug = slug;
     }
+
     public ProductsDTO(Integer id, String name, Double priceSell, Double priceAfterSale, String slug, String brandName, String imgProduct) {
         this.id = id;
         this.name = name;
@@ -109,5 +110,13 @@ public class ProductsDTO extends BaseModel {
         this.img = Collections.singletonList(imgProduct);
     }
 
+    public ProductsDTO(String madeIn, Integer sumProduct) {
+        this.madeIn = madeIn;
+        this.sumProduct = sumProduct;
+    }
+
+    public ProductsDTO(Integer sumProduct) {
+        this.sumProduct = sumProduct;
+    }
 
 }

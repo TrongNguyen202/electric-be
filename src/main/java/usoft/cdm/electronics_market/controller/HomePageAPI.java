@@ -67,6 +67,11 @@ public class HomePageAPI {
         return this.productService.searchNameForHomepage(name, pageable);
     }
 
+    @GetMapping("/search-name-request")
+    public ResponseEntity<?> getCateAndBrandAndPriceForSearchProduct(@RequestParam String name) {
+        return this.categoryService.getCateAndBrandAndPriceForSearchProduct(name);
+    }
+
 
     @GetMapping("/banner")
     public ResponseEntity<?> getBanner() {
@@ -102,5 +107,6 @@ public class HomePageAPI {
     public ResponseEntity<?> sendAgainOTP(@RequestParam String email) {
         return this.emailService.sendAgainOTP(email);
     }
+
 
 }

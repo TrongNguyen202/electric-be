@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import usoft.cdm.electronics_market.model.CategoryChildHomePage;
+import usoft.cdm.electronics_market.model.CategoryDTO;
 import usoft.cdm.electronics_market.model.CategoryHomePage;
 
 import javax.persistence.*;
@@ -36,6 +37,22 @@ import javax.persistence.*;
                                 @ColumnResult(name = "slug", type = String.class),
                                 @ColumnResult(name = "iconImg", type = String.class),
                                 @ColumnResult(name = "avatarImg", type = String.class),
+                        }
+                )
+        }
+)
+
+@SqlResultSetMapping(
+        name = "getCateForSearch",
+        classes = {
+                @ConstructorResult(
+                        targetClass = CategoryDTO.class,
+                        columns = {
+                                @ColumnResult(name = "id", type = Integer.class),
+                                @ColumnResult(name = "iconImg", type = String.class),
+                                @ColumnResult(name = "name", type = String.class),
+                                @ColumnResult(name = "slug", type = String.class),
+                                @ColumnResult(name = "sumProduct", type = Integer.class),
                         }
                 )
         }

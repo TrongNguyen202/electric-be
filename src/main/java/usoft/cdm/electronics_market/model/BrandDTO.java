@@ -15,6 +15,5 @@ public class BrandDTO {
         this.name = name;
         this.sumProducts = sumProducts;
         this.img = img;
-
     }
 }
