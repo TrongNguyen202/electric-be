@@ -178,7 +178,7 @@ public class PromotionServiceImpl implements PromotionService {
             }
         }
         this.productPromotionRepository.saveAll(productPromotionNews);
-        productPromotionRepository.deleteAllById(productPromotionsOLd);
+        this.productPromotionRepository.deleteAllById(productPromotionsOLd);
         return ResponseUtil.ok(productPromotionNews);
     }
 
