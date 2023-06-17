@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface BrandRepository extends JpaRepository<Brand, Integer>, BrandRepositoryCustom {
     List<Brand> findAllByType(String type);
 
-    Brand findByName(String name);
+    Brand findByNameAndStatus(String name, Boolean status);
 
     Optional<Brand> findByIdAndStatus(Integer id, Boolean status);
 

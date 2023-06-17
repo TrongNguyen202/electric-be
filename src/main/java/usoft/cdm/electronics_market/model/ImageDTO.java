@@ -1,4 +1,4 @@
-package usoft.cdm.electronics_market.entities;
+package usoft.cdm.electronics_market.model;
 
 
 import lombok.AllArgsConstructor;
@@ -6,19 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-
-@Entity
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "cdm_image")
+@AllArgsConstructor
+@Builder
+public class ImageDTO {
 
-public class Image {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private Integer detailId;
