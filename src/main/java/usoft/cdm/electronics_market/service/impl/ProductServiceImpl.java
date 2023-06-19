@@ -301,6 +301,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Page<ProductsDTO> findByPriceAndCategory(Integer brandId, Pageable pageable, ProductsDTO dto) {
+        Page<ProductsDTO> productsDTOSSearch;
+        if (dto.getCategoryId() != null) {
+            List<Category> categories = this.categoryRepository.findAllByParentIdAndStatus(dto.getCategoryId(), true);
+            if (categories.size() > 0) {
+                List<Integer> categoryIds = categories.stream().map(Category::getId).collect(Collectors.toList());
+                productsDTOSSearch = this.productRepository.findByPriceAndCategoryList(brandId, categoryIds, dto, pageable);
+            } else {
+                productsDTOSSearch = this.productRepository.findByPriceAndCategory(brandId, dto, pageable);
+            }
+        } else {
+            productsDTOSSearch = this.productRepository.findByPriceAndCategory(brandId, dto, pageable);
+        }
+        return productsDTOSSearch;
+    }
+
+    @Override
     public ResponseEntity<?> getRelatedProducts(Integer productId) {
         Optional<Products> optionalProducts = this.productRepository.findById(productId);
         if (optionalProducts.isEmpty())

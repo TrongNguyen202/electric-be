@@ -126,4 +126,9 @@ public class HomePageAPI {
     public ResponseEntity<?> getAllCategoryAndPrice(@RequestParam Integer brandId) {
         return this.hotBrandService.getAllCategoryAndPrice(brandId);
     }
+
+    @PostMapping("/brand-product")
+    public ResponseEntity<?> getProductByPriceAndBrand(@RequestParam Integer brandId, Pageable pageable,@RequestBody ProductsDTO dto) {
+        return ResponseUtil.ok(this.productService.findByPriceAndCategory(brandId, pageable, dto));
+    }
 }
