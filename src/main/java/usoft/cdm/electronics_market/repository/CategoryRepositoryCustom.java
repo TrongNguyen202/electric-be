@@ -13,4 +13,8 @@ public interface CategoryRepositoryCustom {
     List<CategoryChildHomePage> getParentIdAndStatus(Integer categoryId);
 
     List<CategoryDTO> getAllCateForSearchProduct(String name);
+
+    List<CategoryDTO> getAllParentByBrand(Integer brandId);
+
+    List<CategoryDTO> getAllChildByBrand(Integer brandId);
 }

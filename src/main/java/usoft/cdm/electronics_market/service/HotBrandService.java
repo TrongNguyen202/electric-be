@@ -14,4 +14,8 @@ public interface HotBrandService {
     Page<HotBrandDTO> findAll(Pageable pageable);
 
     ResponseEntity<?> delete(List<Integer> hotBrandIds);
+
+    ResponseEntity<?> getAllProduct(Integer brandId);
+
+    ResponseEntity<?> getAllCategoryAndPrice(Integer brandId);
 }

@@ -9,6 +9,7 @@ import usoft.cdm.electronics_market.config.security.JwtTokenProvider;
 import usoft.cdm.electronics_market.model.EmailDTO;
 import usoft.cdm.electronics_market.model.ProductsDTO;
 import usoft.cdm.electronics_market.model.VerifyOTPRequest;
+import usoft.cdm.electronics_market.model.user.ChangePassword;
 import usoft.cdm.electronics_market.service.*;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
@@ -29,6 +30,8 @@ public class HomePageAPI {
     private final OtpVerifiService OtpVerificationService;
 
     private final EmailService emailService;
+
+    private final HotBrandService hotBrandService;
 
 
     @GetMapping("/product-category")
@@ -93,7 +96,12 @@ public class HomePageAPI {
         return this.OtpVerificationService.getForgetPassword(request);
     }
 
-    @GetMapping("check-phone")
+    @PostMapping("/change-pass")
+    public ResponseEntity<?> changePass(@RequestParam String token, @RequestBody ChangePassword dto) {
+        return this.OtpVerificationService.changePassFromPhone(token, dto);
+    }
+
+    @GetMapping("/check-phone")
     public ResponseEntity<?> checkPhoneForgetPassword(@RequestParam String phone) {
         return this.OtpVerificationService.checkPhoneForgetPassword(phone);
     }
@@ -114,5 +122,8 @@ public class HomePageAPI {
         return this.emailService.sendAgainOTP(email);
     }
 
-
+    @GetMapping("/brand-category")
+    public ResponseEntity<?> getAllCategoryAndPrice(@RequestParam Integer brandId) {
+        return this.hotBrandService.getAllCategoryAndPrice(brandId);
+    }
 }

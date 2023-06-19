@@ -14,4 +14,6 @@ public class HotBrandDTO extends BaseModel {
     private Integer brandId;
     private String imgBrand;
     private String name;
+    private String information;
+
 }

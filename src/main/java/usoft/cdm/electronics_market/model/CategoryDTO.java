@@ -42,6 +42,8 @@ public class CategoryDTO extends BaseModel {
 
     private List<ProductsDTO> productsDTOS;
 
+    private List<CategoryDTO> dtos;
+
     private Integer sumProduct;
 
     public CategoryDTO(Integer id, String iconImg, String name, String slug, Integer sumProduct) {
@@ -51,4 +53,13 @@ public class CategoryDTO extends BaseModel {
         this.slug = slug;
         this.sumProduct = sumProduct;
     }
+
+    public CategoryDTO(Integer id, String name, String slug, Integer sumProduct, Integer parentId) {
+        this.id = id;
+        this.name = name;
+        this.slug = slug;
+        this.sumProduct = sumProduct;
+        this.parentId = parentId;
+    }
+
 }
