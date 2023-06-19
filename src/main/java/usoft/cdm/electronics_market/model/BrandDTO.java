@@ -1,13 +1,18 @@
 package usoft.cdm.electronics_market.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
-public class BrandDTO {
-    private Integer id;
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class BrandDTO extends BaseModel {
     @NotEmpty(message = "Tên không được rỗng")
     private String name;
 

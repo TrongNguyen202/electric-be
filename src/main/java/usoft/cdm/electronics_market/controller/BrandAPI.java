@@ -24,7 +24,7 @@ public class BrandAPI {
         return brandService.getAll(type);
     }
 
-    @GetMapping("getById")
+    @GetMapping("/getById")
     private ResponseEntity<?> getById(@RequestParam Integer id) {
         return brandService.getById(id);
     }
