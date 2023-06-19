@@ -58,6 +58,22 @@ import javax.persistence.*;
         }
 )
 
+@SqlResultSetMapping(
+        name = "getCateChildForBrand",
+        classes = {
+                @ConstructorResult(
+                        targetClass = CategoryDTO.class,
+                        columns = {
+                                @ColumnResult(name = "id", type = Integer.class),
+                                @ColumnResult(name = "name", type = String.class),
+                                @ColumnResult(name = "slug", type = String.class),
+                                @ColumnResult(name = "sumProduct", type = Integer.class),
+                                @ColumnResult(name = "parentId", type = Integer.class),
+                        }
+                )
+        }
+)
+
 @Entity
 @Data
 @Builder

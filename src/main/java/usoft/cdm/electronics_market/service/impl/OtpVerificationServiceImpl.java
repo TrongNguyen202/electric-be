@@ -13,6 +13,7 @@ import usoft.cdm.electronics_market.config.security.CustomUserDetails;
 import usoft.cdm.electronics_market.config.security.JwtTokenProvider;
 import usoft.cdm.electronics_market.entities.Users;
 import usoft.cdm.electronics_market.model.VerifyOTPRequest;
+import usoft.cdm.electronics_market.model.user.ChangePassword;
 import usoft.cdm.electronics_market.repository.UserRepository;
 import usoft.cdm.electronics_market.service.OtpVerifiService;
 import usoft.cdm.electronics_market.util.ResponseUtil;
@@ -90,11 +91,22 @@ public class OtpVerificationServiceImpl implements OtpVerifiService {
     }
 
     @Override
-    public ResponseEntity<?> changePassFromPhone(String token) {
+    public ResponseEntity<?> changePassFromPhone(String token, ChangePassword dto) {
         Integer idToken = this.jwtTokenProvider.getUserIdFromJWT(token);
         Optional<Users> usersOptional = this.userRepository.findByIdAndStatus(idToken, true);
-
-        return null;
+        if (dto.getPassword().isEmpty() && dto.getPassAgain().isEmpty()) {
+            throw new BadRequestException("Không được để trống");
+        }
+        if (dto.getPassword().length() < 6 && dto.getPassAgain().length() < 6) {
+            throw new BadRequestException("Phải nhập từ 6 ký tự");
+        }
+        if (!dto.getPassword().equalsIgnoreCase(dto.getPassAgain())) {
+            throw new BadRequestException("Phải nhập đúng mật khẩu và nhập lại mật khẩu");
+        }
+        Users users = usersOptional.get();
+        users.setPassword(this.passwordEncoder.encode(dto.getPassword()));
+        this.userRepository.save(users);
+        return ResponseUtil.ok("Thay đổi pass thành công");
     }
 
 }

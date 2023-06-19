@@ -18,5 +18,6 @@ public class HotBrand extends BaseEntity {
     private Integer brandId;
     private String imgBrand;
     private String name;
+    private String information;
 
 }

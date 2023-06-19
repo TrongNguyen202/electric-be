@@ -2,6 +2,7 @@ package usoft.cdm.electronics_market.service;
 
 import org.springframework.http.ResponseEntity;
 import usoft.cdm.electronics_market.model.VerifyOTPRequest;
+import usoft.cdm.electronics_market.model.user.ChangePassword;
 
 public interface OtpVerifiService {
 
@@ -11,5 +12,5 @@ public interface OtpVerifiService {
 
     ResponseEntity<?> getForgetPassword(VerifyOTPRequest request);
 
-    ResponseEntity<?> changePassFromPhone(String token);
+    ResponseEntity<?> changePassFromPhone(String token, ChangePassword dto);
 }

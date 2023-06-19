@@ -53,4 +53,9 @@ public interface ProductRepository extends JpaRepository<Products, Integer>, Pro
             "AND (p.priceSell between :from AND :to)")
     Integer sumProduct(@Param("categories") List<Integer> categories,
                        @Param("from") Double priceFrom, @Param("to") Double priceTo);
+
+    @Query("SELECT count(p.id) FROM Products p where p.status = true AND p.brandId = :brandId " +
+            "AND (p.priceSell between :from AND :to)")
+    Integer sumProductForBrand(@Param("brandId") Integer brandId,
+                               @Param("from") Double priceFrom, @Param("to") Double priceTo);
 }

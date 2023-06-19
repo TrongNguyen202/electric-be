@@ -180,7 +180,7 @@ public class BillServiceImpl implements BillService {
                 return ResponseUtil.badRequest("Số lượng phải lớn hơn 0!");
             if (c.getQuantity() > p.getQuantity())
                 return ResponseUtil.badRequest("Số lượng trong kho không đủ!");
-            p.setQuantity(p.getQuantity()-c.getQuantity());
+            p.setQuantity(p.getQuantity() - c.getQuantity());
             billDetail.setQuantity(c.getQuantity());
             billDetail.setProductId(c.getProductId());
             double price = p.getPriceAfterSale() == null ? p.getPriceSell() : p.getPriceAfterSale();

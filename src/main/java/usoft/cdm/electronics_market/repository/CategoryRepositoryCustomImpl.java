@@ -4,7 +4,6 @@ import usoft.cdm.electronics_market.model.CategoryChildHomePage;
 import usoft.cdm.electronics_market.model.CategoryDTO;
 import usoft.cdm.electronics_market.model.CategoryHomePage;
 import usoft.cdm.electronics_market.util.CommonUtil;
-import usoft.cdm.electronics_market.util.DataUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -61,5 +60,37 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
 
         sql.append("GROUP BY c.id");
         return CommonUtil.getList(em, sql.toString(), params, "getCateForSearch");
+    }
+
+    @Override
+    public List<CategoryDTO> getAllParentByBrand(Integer brandId) {
+        StringBuilder sql = new StringBuilder("WITH cateParen as (\n" +
+                "SELECT  c.parent_id as id, " +
+                "(SELECT c2.icon_img FROM cdm_category c2 WHERE c2.parent_id IS NULL ANd c.parent_id = c2.id  ) as iconImg " +
+                " ,(SELECT c2.name FROM cdm_category c2 WHERE c2.parent_id IS NULL ANd c.parent_id = c2.id  ) as name," +
+                "(SELECT c2.slug FROM cdm_category c2 WHERE c2.parent_id IS NULL ANd c.parent_id = c2.id  ) as slug," +
+                " COUNT(p.id) as sumCount  " +
+                "FROM cdm_products p JOIN cdm_category c ON c.id = p.category_id " +
+                "WHERE p.status = 1 ");
+
+        Map<String, Object> params = new HashMap<>();
+        sql.append(" and p.brand_id = :brandId ");
+        params.put("brandId", brandId);
+        sql.append(" GROUP BY c.name)");
+        sql.append("SELECT id, iconImg,name,slug,SUM(sumCount) as sumProduct FROM cateParen GROUP BY name ");
+        return CommonUtil.getList(em, sql.toString(), params, "getCateForSearch");
+    }
+
+    @Override
+    public List<CategoryDTO> getAllChildByBrand(Integer brandId) {
+        StringBuilder sql = new StringBuilder("SELECT c.id,c.name,c.slug,COUNT(p.id) as sumProduct,c.parent_id as parentId " +
+                "FROM cdm_products p JOIN cdm_category c ON c.id = p.category_id WHERE  p.status = 1  ");
+
+        Map<String, Object> params = new HashMap<>();
+
+        sql.append(" and p.brand_id = :brandId ");
+        params.put("brandId", brandId);
+        sql.append(" GROUP BY c.name");
+        return CommonUtil.getList(em, sql.toString(), params, "getCateChildForBrand");
     }
 }

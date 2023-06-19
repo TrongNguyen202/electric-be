@@ -25,4 +25,5 @@ public interface CategoryRepository extends JpaRepository<Category, Integer>,Cat
 
     @Query("SELECT c FROM Category c WHERE c.status = true AND c.parentId IS NULL AND c.name LIKE %:name%")
     Page<Category> searchByName(Pageable pageable, @Param("name") String name);
+
 }
