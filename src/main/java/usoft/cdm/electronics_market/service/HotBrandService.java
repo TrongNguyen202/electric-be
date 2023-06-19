@@ -18,4 +18,6 @@ public interface HotBrandService {
     ResponseEntity<?> getAllProduct(Integer brandId);
 
     ResponseEntity<?> getAllCategoryAndPrice(Integer brandId);
+
+
 }

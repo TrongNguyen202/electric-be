@@ -183,6 +183,114 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     }
 
     @Override
+    public Page<ProductsDTO> findByPriceAndCategory(Integer brandId, ProductsDTO dto, Pageable pageable) {
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug," +
+                "(100-(p.price_after_sale/p.price_sell)*100) as discount  " +
+                "FROM cdm_products p \n" +
+                "WHERE p.status =1 ");
+        Map<String, Object> params = new HashMap<>();
+
+        sql.append(" and p.brand_id = :brand");
+        params.put("brand", brandId);
+
+
+        if (!DataUtil.isNullObject(dto.getCategoryId())) {
+            sql.append(" and p.category_id = :categoryId ");
+            params.put("categoryId", dto.getCategoryId());
+        }
+
+        if (!DataUtil.isNullOrEmpty(dto.getPrice())) {
+            boolean check = true;
+            int cnt = 1;
+            for (Price x : dto.getPrice()) {
+                if (check)
+                    sql.append(" AND (");
+                else
+                    sql.append(" OR ");
+                String priceFrom = "from" + cnt;
+                String priceTo = "to" + cnt;
+                if (x.getTo() != null)
+                    sql.append(" (p.price_sell BETWEEN :").append(priceFrom).append(" AND :").append(priceTo).append(")");
+                else
+                    sql.append(" (p.price_sell > 200000000)");
+                params.put(priceFrom, x.getFrom());
+                params.put(priceTo, x.getTo());
+                check = false;
+                cnt++;
+            }
+            if (!check)
+                sql.append(" )");
+        }
+        if (!DataUtil.isNullObject(dto.getValueSort())) {
+            if (dto.getValueSort() == 2) {
+                sql.append("  ORDER BY p.price_after_sale ASC ");
+            } else if (dto.getValueSort() == 3) {
+                sql.append("  ORDER BY p.price_after_sale DESC ");
+            } else if (dto.getValueSort() == 5) {
+                sql.append(" ORDER BY p.created_date DESC");
+            } else if (dto.getValueSort() == 4) {
+                sql.append("  ORDER BY (100-(p.price_after_sale/p.price_sell)*100) DESC ");
+            }
+        }
+        return CommonUtil.getPageImpl(em, sql.toString(), params, pageable, "getBrandAndPriceAndMadeIn");
+
+    }
+
+    @Override
+    public Page<ProductsDTO> findByPriceAndCategoryList(Integer brandId, List<Integer> categoryIds, ProductsDTO dto, Pageable pageable) {
+        StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug," +
+                "(100-(p.price_after_sale/p.price_sell)*100) as discount  " +
+                "FROM cdm_products p \n" +
+                "WHERE p.status =1 ");
+        Map<String, Object> params = new HashMap<>();
+
+        sql.append(" and p.brand_id = :brand");
+        params.put("brand", brandId);
+
+
+        if (!DataUtil.isNullObject(categoryIds)) {
+            sql.append(" and p.category_id IN :categoryIds ");
+            params.put("categoryIds", categoryIds);
+        }
+
+        if (!DataUtil.isNullOrEmpty(dto.getPrice())) {
+            boolean check = true;
+            int cnt = 1;
+            for (Price x : dto.getPrice()) {
+                if (check)
+                    sql.append(" AND (");
+                else
+                    sql.append(" OR ");
+                String priceFrom = "from" + cnt;
+                String priceTo = "to" + cnt;
+                if (x.getTo() != null)
+                    sql.append(" (p.price_sell BETWEEN :").append(priceFrom).append(" AND :").append(priceTo).append(")");
+                else
+                    sql.append(" (p.price_sell > 200000000)");
+                params.put(priceFrom, x.getFrom());
+                params.put(priceTo, x.getTo());
+                check = false;
+                cnt++;
+            }
+            if (!check)
+                sql.append(" )");
+        }
+        if (!DataUtil.isNullObject(dto.getValueSort())) {
+            if (dto.getValueSort() == 2) {
+                sql.append("  ORDER BY p.price_after_sale ASC ");
+            } else if (dto.getValueSort() == 3) {
+                sql.append("  ORDER BY p.price_after_sale DESC ");
+            } else if (dto.getValueSort() == 5) {
+                sql.append(" ORDER BY p.created_date DESC");
+            } else if (dto.getValueSort() == 4) {
+                sql.append("  ORDER BY (100-(p.price_after_sale/p.price_sell)*100) DESC ");
+            }
+        }
+        return CommonUtil.getPageImpl(em, sql.toString(), params, pageable, "getBrandAndPriceAndMadeIn");
+
+    }
+
+    @Override
     public Page<ProductsDTO> findByBrandAndPriceAndMadeIn(Integer categoryId, ProductsDTO dto, Pageable pageable) {
         StringBuilder sql = new StringBuilder("SELECT p.id,p.name,p.price_sell as priceSell,p.price_after_sale as priceAfterSale,p.slug  FROM cdm_products p \n" +
                 "WHERE p.status =1 ");
