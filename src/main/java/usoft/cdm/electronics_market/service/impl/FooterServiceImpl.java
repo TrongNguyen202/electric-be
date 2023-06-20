@@ -1,22 +1,33 @@
 package usoft.cdm.electronics_market.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import usoft.cdm.electronics_market.config.expection.BadRequestException;
+import usoft.cdm.electronics_market.constant.Message;
 import usoft.cdm.electronics_market.entities.FooterPage;
+import usoft.cdm.electronics_market.entities.Users;
 import usoft.cdm.electronics_market.model.FooterModel;
 import usoft.cdm.electronics_market.repository.FooterPageRepository;
 import usoft.cdm.electronics_market.service.FooterService;
+import usoft.cdm.electronics_market.service.UserService;
+import usoft.cdm.electronics_market.util.MapperUtil;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class FooterServiceImpl implements FooterService {
     private final FooterPageRepository footerPageRepository;
+
+    private final UserService userService;
 
     @Override
     public ResponseEntity<?> getHotline(Integer idWarehouse) {
@@ -70,7 +81,7 @@ public class FooterServiceImpl implements FooterService {
     @Override
     public ResponseEntity<?> getSocialNetwork(Integer idWarehouse) {
         List<FooterModel> list = footerPageRepository.findAllModelByTypeAndWarehouse(3, idWarehouse);
-        if (list.isEmpty()){
+        if (list.isEmpty()) {
             list.add(new FooterModel(null, "facebook", null));
             list.add(new FooterModel(null, "youtube", null));
             list.add(new FooterModel(null, "tiktok", null));
@@ -98,5 +109,73 @@ public class FooterServiceImpl implements FooterService {
         footerPageRepository.saveAll(s);
         footerPageRepository.deleteAll(remove);
         return ResponseUtil.ok(footerPageRepository.findAllModelByTypeAndWarehouse(3, idWarehouse));
+    }
+
+    @Override
+    public ResponseEntity<?> saveSupportMain(FooterModel model) {
+        Users userLogin = this.userService.getCurrentUser();
+        FooterPage footerPage = FooterPage
+                .builder()
+                .type(4)
+                .name(model.getName())
+                .content(model.getContent())
+                .icon(model.getIcon())
+                .build();
+        footerPage.setCreatedBy(userLogin.getUsername());
+
+        this.footerPageRepository.save(footerPage);
+        return ResponseUtil.ok(footerPage);
+    }
+
+    @Override
+    public ResponseEntity<?> updateSupportMain(FooterModel model) {
+        Users userLogin = this.userService.getCurrentUser();
+        Optional<FooterPage> footerPage = this.footerPageRepository.findAllByIdAndType(model.getId(), 4);
+        if (footerPage.isEmpty()) {
+            throw new BadRequestException("Không tìm thấy id ");
+        }
+        FooterPage page = MapperUtil.map(model, FooterPage.class);
+        page.setType(4);
+        page.setUpdatedBy(userLogin.getUsername());
+        this.footerPageRepository.save(page);
+        return ResponseUtil.ok(page);
+    }
+
+    @Override
+    public ResponseEntity<?> getAllSupportMain(Pageable pageable) {
+        Page<FooterPage> footerPages = this.footerPageRepository.findAllByType(4, pageable);
+        return ResponseUtil.ok(footerPages);
+    }
+
+    @Override
+    public ResponseEntity<?> getByIdSupportMain(Integer idMain) {
+        Optional<FooterPage> page = this.footerPageRepository.findAllByIdAndType(idMain, 4);
+        if (page.isEmpty()) {
+            throw new BadRequestException("Không tìm thấy id");
+        }
+        return ResponseUtil.ok(page.get());
+    }
+
+    @Override
+    public ResponseEntity<?> deleteSupportMain(List<Integer> idMains) {
+        List<FooterPage> footerPages = new ArrayList<>();
+        if (idMains.size() < 1) {
+            throw new BadRequestException("Phải thêm cấu hình cần xóa");
+        }
+        idMains.forEach(idMain -> {
+            Optional<FooterPage> page = this.footerPageRepository.findAllByIdAndType(idMain, 4);
+            if (page.isEmpty()) {
+                throw new BadRequestException("Không tìm thấy id");
+            }
+            FooterPage footerPage = page.get();
+            footerPages.add(footerPage);
+        });
+        this.footerPageRepository.deleteAll(footerPages);
+        return ResponseUtil.message(Message.REMOVE);
+    }
+
+    @Override
+    public ResponseEntity<?> getAllSupportMainList() {
+        return ResponseUtil.ok(this.footerPageRepository.findAllByType(4));
     }
 }
