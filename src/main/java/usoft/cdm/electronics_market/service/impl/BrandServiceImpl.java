@@ -99,7 +99,10 @@ public class BrandServiceImpl implements BrandService {
             imageList.add(image);
         }
         this.imageRepository.saveAll(imageList);
-        return ResponseUtil.ok(brandSave);
+        BrandDTO brandDTO = MapperUtil.map(brandSave, BrandDTO.class);
+        List<ImageDTO> dtos = MapperUtil.mapList(imageList, ImageDTO.class);
+        brandDTO.setImageDTOS(dtos);
+        return ResponseUtil.ok(brandDTO);
     }
 
     @Override
