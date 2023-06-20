@@ -123,7 +123,7 @@ public class BrandServiceImpl implements BrandService {
         List<Integer> imageIdAll = this.imageRepository.findIdAllByImageId(brand.getId());
         List<Image> list = new ArrayList<>();
         for (ImageDTO imageDTO : images) {
-            if (imageDTO != null) {
+            if (imageDTO.getId() != null) {
                 imageIdAll.remove(imageDTO.getId());
                 Optional<Image> image = this.imageRepository.findById(imageDTO.getId());
                 Image image1 = image.get();
