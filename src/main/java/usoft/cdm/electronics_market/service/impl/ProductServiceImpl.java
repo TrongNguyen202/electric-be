@@ -314,6 +314,10 @@ public class ProductServiceImpl implements ProductService {
         } else {
             productsDTOSSearch = this.productRepository.findByPriceAndCategory(brandId, dto, pageable);
         }
+        for (ProductsDTO productsDTO : productsDTOSSearch) {
+            List<String> imgProductSearch = getImgs(productsDTO.getId(), 2);
+            productsDTO.setImg(imgProductSearch);
+        }
         return productsDTOSSearch;
     }
 
