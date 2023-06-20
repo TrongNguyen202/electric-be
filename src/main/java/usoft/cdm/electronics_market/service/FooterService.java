@@ -24,4 +24,16 @@ public interface FooterService {
     ResponseEntity<?> getSocialNetwork(Integer idWarehouse);
 
     ResponseEntity<?> saveSocialNetwork(List<FooterModel> list, Integer idWarehouse);
+
+    ResponseEntity<?> saveSupportMain(FooterModel model);
+
+    ResponseEntity<?> updateSupportMain(FooterModel model);
+
+    ResponseEntity<?> getAllSupportMain(Pageable pageable);
+
+    ResponseEntity<?> getByIdSupportMain(Integer idMain);
+
+    ResponseEntity<?> deleteSupportMain(List<Integer> idMain);
+
+    ResponseEntity<?> getAllSupportMainList();
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import usoft.cdm.electronics_market.model.FooterModel;
 import usoft.cdm.electronics_market.service.FooterService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -60,4 +61,36 @@ public class FooterAPI {
     private ResponseEntity<?> saveSocialNetwork(@RequestBody List<FooterModel> model, @RequestParam Integer idWarehouse) {
         return footerService.saveSocialNetwork(model, idWarehouse);
     }
+
+    @GetMapping("/support-all")
+    private ResponseEntity<?> getAllSupportMain(Pageable pageable) {
+        return footerService.getAllSupportMain(pageable);
+    }
+
+    @GetMapping("/support-id")
+    private ResponseEntity<?> getByIdSupportMain(@RequestParam Integer idMain) {
+        return footerService.getByIdSupportMain(idMain);
+    }
+
+    @GetMapping("/support-list-all")
+    private ResponseEntity<?> getAllSupportMainList() {
+        return footerService.getAllSupportMainList();
+    }
+
+    @PostMapping("/support-save")
+    private ResponseEntity<?> saveSupportMain(@Valid @RequestBody FooterModel model) {
+        return footerService.saveSupportMain(model);
+    }
+
+    @PutMapping("/support-update")
+    private ResponseEntity<?> updateSupportMain(@Valid @RequestBody FooterModel model) {
+        return footerService.updateSupportMain(model);
+    }
+
+    @DeleteMapping("/support-delete")
+    private ResponseEntity<?> deleteSupportMain(@RequestParam List<Integer> idMains) {
+        return footerService.deleteSupportMain(idMains);
+    }
+
+
 }
