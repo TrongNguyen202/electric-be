@@ -107,7 +107,7 @@ public class HomePageAPI {
     }
 
     @PostMapping("/signup-email")
-    public ResponseEntity<?> signUpEmail(@RequestParam String email) {
+    public ResponseEntity<?> signUpEmail(@RequestParam String email) throws MessagingException {
         return this.emailService.sendGmailForSignUp(email);
     }
 

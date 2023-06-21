@@ -1,26 +1,22 @@
-package usoft.cdm.electronics_market.entities;
+package usoft.cdm.electronics_market.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import usoft.cdm.electronics_market.entities.Image;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import java.util.List;
 
-@Entity
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "cdm_review")
-public class Review extends BaseEntity {
-
+@AllArgsConstructor
+@Builder
+public class ReviewDTO extends BaseModel {
     private Float vote;
     private String content;
     private Integer parentId;
     private Integer userId;
     private Integer productId;
-    private Boolean status;
-
+    private List<Image> imageList;
 }

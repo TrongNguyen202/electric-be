@@ -8,7 +8,7 @@ import javax.mail.MessagingException;
 public interface EmailService {
     void sendEmail(String to, String title, String body) throws MessagingException;
 
-    ResponseEntity<?> sendGmailForSignUp(String email);
+    ResponseEntity<?> sendGmailForSignUp(String email) throws MessagingException;
 
     ResponseEntity<?> checkOTPForSignUp(EmailDTO dto);
 

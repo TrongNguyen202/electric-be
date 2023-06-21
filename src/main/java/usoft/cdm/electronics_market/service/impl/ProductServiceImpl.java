@@ -122,7 +122,6 @@ public class ProductServiceImpl implements ProductService {
                 .categoryId(dto.getCategoryId())
                 .priceImport(dto.getPriceImport())
                 .priceSell(dto.getPriceSell())
-                .capicityId(dto.getCapicityId())
                 .priceAfterSale(dto.getPriceAfterSale())
                 .information(dto.getInformation())
                 .quantity(dto.getQuantityImport())

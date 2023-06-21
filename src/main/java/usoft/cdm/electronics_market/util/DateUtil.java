@@ -11,8 +11,10 @@ public class DateUtil {
     public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     public static DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    public static SimpleDateFormat sdtf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    public static SimpleDateFormat sdtf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public static SimpleDateFormat dateUpFile = new SimpleDateFormat("ddMMyyyyhhmmss");
+
+    public static SimpleDateFormat inputFormat = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
 
     public static Date today() {
 
