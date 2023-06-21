@@ -17,12 +17,10 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "cdm_voucher")
 public class Voucher extends BaseEntity {
-
-    private String name;
     private String code;
     private Date timeUsing;
-    private String type;
     private Double discount;
+    private Double discountMoney;
     private Integer quantity;
-
+    private String note;
 }
