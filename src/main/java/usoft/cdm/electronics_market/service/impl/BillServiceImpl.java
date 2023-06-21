@@ -30,6 +30,7 @@ public class BillServiceImpl implements BillService {
     private final ProductRepository productRepository;
     private final UserService userService;
     private final ImageRepository imageRepository;
+    private final FlashSaleRepository flashSaleRepository;
     private final RolesRepository rolesRepository;
     private final BillVoucherRepository billVoucherRepository;
 
@@ -149,7 +150,6 @@ public class BillServiceImpl implements BillService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        bill.setPrice(shop.getPrice());
         double totalPrice = 0d;
         bill.setFullname(shop.getFullname());
         if (shop.getEmail() != null && !shop.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"))
@@ -187,13 +187,22 @@ public class BillServiceImpl implements BillService {
                 return ResponseUtil.badRequest("Số lượng phải lớn hơn 0!");
             if (c.getQuantity() > p.getQuantity())
                 return ResponseUtil.badRequest("Số lượng trong kho không đủ!");
+            FlashSale fl = flashSaleRepository.findByProductIdAndStatus(p.getId(), true);
+            double price;
+            if (fl != null && fl.getQuantitySale() > 0) {
+                if (c.getQuantity() > 1)
+                    return ResponseUtil.badRequest("Flash sale chỉ áp dụng cho 1 sản phẩm!");
+                price = fl.getPriceFlashSale();
+                billDetail.setPriceAfterSale(fl.getPriceFlashSale());
+            } else {
+                price = p.getPriceAfterSale() == null ? p.getPriceSell() : p.getPriceAfterSale();
+                billDetail.setPriceAfterSale(p.getPriceAfterSale());
+            }
             p.setQuantity(p.getQuantity() - c.getQuantity());
             billDetail.setQuantity(c.getQuantity());
             billDetail.setProductId(c.getProductId());
-            double price = p.getPriceAfterSale() == null ? p.getPriceSell() : p.getPriceAfterSale();
             totalPrice += price * c.getQuantity();
             billDetail.setPriceSell(price);
-            billDetail.setPriceAfterSale(p.getPriceAfterSale());
             billDetail.setBillId(bill.getId());
             details.add(billDetail);
         }
@@ -204,6 +213,10 @@ public class BillServiceImpl implements BillService {
         bill.setCompany(shop.getCompany());
         bill.setCode("CDM-" + bill.getId());
         bill.setPaymentMethod(shop.getPaymentMethod());
+        bill.setPrice(totalPrice);
+        if (shop.getVoucherCode() != null){
+//            Voucher voucher = billVoucherRepository.findById()
+        }
         bill.setTotalPrice(totalPrice);
         List<BillDetail> billDetail = billDetailRepository.saveAll(details);
         if (!list.isEmpty())

@@ -30,5 +30,5 @@ public class Shop {
     private String fullname;
     private String addressTransfer;
     private List<Cart> cart;
-    private List<Integer> voucherId;
+    private String voucherCode;
 }
