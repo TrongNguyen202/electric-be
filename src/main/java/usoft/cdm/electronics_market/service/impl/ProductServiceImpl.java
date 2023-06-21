@@ -46,6 +46,8 @@ public class ProductServiceImpl implements ProductService {
 
     private final WarehouseRepository warehouseRepository;
 
+    private final FlashSaleRepository flashSaleRepository;
+
 
     @Override
     public ResponseEntity<?> getAllProducts(Pageable pageable) {
@@ -72,6 +74,11 @@ public class ProductServiceImpl implements ProductService {
             List<Image> image = this.imageRepository.findByDetailIdAndType(productId, 2);
             List<String> imgs = image.stream().map(Image::getImg).collect(Collectors.toList());
             ProductsDTO productsDTO = MapperUtil.map(optionalProducts.get(), ProductsDTO.class);
+            FlashSale flashSale = this.flashSaleRepository.findByProductIdAndStatus(productsDTO.getId(), true);
+            if (flashSale != null) {
+                productsDTO.setPriceFlashSale(flashSale.getPriceFlashSale());
+                productsDTO.setEndFlashSale(flashSale.getEndSale());
+            }
             productsDTO.setImg(imgs);
             Category category = this.categoryRepository.findById(productsDTO.getCategoryId()).orElseThrow();
             productsDTO.setCategoryName(category.getName());
