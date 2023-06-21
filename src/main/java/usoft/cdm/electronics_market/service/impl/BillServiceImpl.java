@@ -12,6 +12,7 @@ import usoft.cdm.electronics_market.service.BillService;
 import usoft.cdm.electronics_market.service.EmailService;
 import usoft.cdm.electronics_market.service.UserService;
 import usoft.cdm.electronics_market.util.DateUtil;
+import usoft.cdm.electronics_market.util.MapperUtil;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
 import javax.mail.MessagingException;
@@ -204,16 +205,19 @@ public class BillServiceImpl implements BillService {
         bill.setCode("CDM-" + bill.getId());
         bill.setPaymentMethod(shop.getPaymentMethod());
         bill.setTotalPrice(totalPrice);
-        billDetailRepository.saveAll(details);
+        List<BillDetail> billDetail = billDetailRepository.saveAll(details);
         if (!list.isEmpty())
             billDetailRepository.deleteAll(list);
         Bill billSave = billRepository.save(bill);
-        List<BillDetail> billDetail = this.billDetailRepository.findAllByBillId(billSave.getId());
+        List<ProductBill> productBills = MapperUtil.mapList(billDetail, ProductBill.class);
+        for (ProductBill productBill : productBills) {
+            Optional<Products> products = this.productRepository.findByIdAndStatus(productBill.getProductId(), true);
+            if (products.isPresent()) {
+                productBill.setName(products.get().getName());
+            }
+        }
         String sub = "THÔNG BÁO Đơn hàng " + billSave.getCode();
-//        for (CodeDetailDTO dto : codeDetailDTOList) {
-//            text.append(dto.getCodeProduct().toString() + "-" + dto.getNameProduct().toString() + "-" + dto.getQuantity().toString() + " \n");
-//        }
-        String text1 = generateReportMessage(billSave, billDetail);
+        String text1 = generateReportMessage(billSave, productBills);
         try {
             this.emailService.sendEmail("khachhang.chodienmay.vn@gmail.com", sub, text1);
         } catch (MessagingException e) {
@@ -225,17 +229,15 @@ public class BillServiceImpl implements BillService {
 
     private StringBuilder generateCommonHtmlHead() {
         StringBuilder stringBuilder = new StringBuilder();
-        return stringBuilder.append("<head>")
-                .append("<h1>Status<h1>")
-                .append("</head>")
-                .append("<body>");
-//                .append("<table border=1>")
-//                .append("<tr>")
-//                .append("<th>Author id</th><th>Authour Name</th><th>Content</th><th>Date</th>")
-//                .append("</tr>");
+        return stringBuilder
+                .append("<body>")
+                .append("<div style=\"max-width: 500px;\">")
+                .append("  <h2 style=\"text-align: center;\">Thông tin đơn hàng</h2>")
+                .append(" <div style=\"display: flex; max-width: 500px;\">")
+                .append("   <div style=\"width: 50%;\">");
     }
 
-    public String generateReportMessage(Bill billSave, List<BillDetail> billDetail) {
+    public String generateReportMessage(Bill billSave, List<ProductBill> productBills) {
         StringBuilder text = generateCommonHtmlHead();
         String creatDate = billSave.getCreatedDate().toString();
         String dateMain;
@@ -245,20 +247,79 @@ public class BillServiceImpl implements BillService {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        text.append("Mã hóa đơn " + billSave.getCode()
-                + "      Ngày: " + dateMain + "\n");
-        text.append("Tên khách hàng: " + billSave.getFullname() + "\n");
-        text.append("Điện thoại : " + billSave.getPhone() + "\n");
-        text.append("Email : " + billSave.getEmail() + "\n");
-        text.append("Địa chỉ : " + billSave.getAddressTransfer() + "\n");
-//        for (Mark mark : marks) {
-//            stringBuilder.append("<tr>");
-//            stringBuilder.append("<td>").append(mark.getAccountLogin()).append("</td>");
-//            stringBuilder.append("<td>").append(mark.getText()).append("</td>");
-//            stringBuilder.append("<td>").append(mark.getId()).append("</td>");
-//            stringBuilder.append("<td>").append(message.getReportDate()).append("</td>");
-//            stringBuilder.append("</tr>");
-//        }
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Số đơn hàng:" + billSave.getCode() + "</b>")
+                .append(" </div>");
+
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Ngày:" + dateMain + "</b>")
+                .append(" </div>");
+
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Tên khách hàng:" + billSave.getFullname() + "</b>")
+                .append(" </div>");
+
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Tên khách hàng:" + billSave.getFullname() + "</b>")
+                .append(" </div>");
+
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Số điện thoại:" + billSave.getPhone() + "</b>")
+                .append(" </div>");
+        if (billSave.getEmail() != null) {
+            text.append(" <div style=\"margin-top: 5px;\">")
+                    .append("   <b style=\"margin-right: 10px;\">Email:" + billSave.getEmail() + "</b>")
+                    .append(" </div>");
+        }
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Email:" + billSave.getAddressTransfer() + "</b>")
+                .append(" </div>");
+
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Hình thức thanh toán:" + billSave.getPaymentMethod() + "</b>")
+                .append(" </div>");
+
+
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Yêu cầu xuất hóa đơn:" + billSave.getRequestBill() + "</b>")
+                .append(" </div>");
+
+        if (billSave.getNote() != null) {
+            text.append(" <div style=\"margin-top: 5px;\">")
+                    .append("   <b style=\"margin-right: 10px;\">Lời nhắn(nếu có):" + billSave.getNote() + "</b>")
+                    .append(" </div>");
+        }
+        text.append("</div>");
+        text.append("<div style=\"width: 50%;\">")
+                .append("    <table style=\"background-color: gray; margin-left: auto;\">")
+                .append("   <tr>\n" +
+                        "                        <th style=\"background-color: white;\">Tên sản phẩm</th>\n" +
+                        "                        <th style=\"background-color: white;\">Số lượng</th>\n" +
+                        "                        <th style=\"background-color: white;\">Thành tiền</th>\n" +
+                        "                    </tr>");
+        for (ProductBill mark : productBills) {
+            if (mark.getPriceAfterSale() == null) {
+                mark.setPriceAfterSale(mark.getPriceSell());
+            }
+
+            text.append("<tr>")
+                    .append("<td>").append(mark.getName()).append("</td>")
+                    .append("<td>").append(mark.getQuantity()).append("</td>")
+                    .append("<td>").append((mark.getPriceAfterSale()) * mark.getQuantity()).append("</td>")
+                    .append("</tr>");
+        }
+        if (billSave.getTransportFee() == null) {
+            billSave.setTransportFee(0d);
+        }
+        text.append("    <div style=\"text-align: end; margin-top: 5px;\"> Tổng cộng: " + billSave.getTotalPrice() + "</div>");
+        text.append("    <div style=\"text-align: end; margin-top: 5px;\"> Phí vận chuyển: " + billSave.getTransportFee() + "</div>");
+        Double pricePay = billSave.getTotalPrice() + billSave.getTransportFee();
+        String formattedNumber = String.format("%.10f", pricePay);
+        text.append("    <div style=\"text-align: end; margin-top: 5px;\"> Thanh toán: " + formattedNumber + "</div>");
+        text.append("  </table>");
+        text.append(" </div>");
+        text.append(" </div>");
+        text.append(" </div>");
         text.append("</body>");
 
         return text.toString();
