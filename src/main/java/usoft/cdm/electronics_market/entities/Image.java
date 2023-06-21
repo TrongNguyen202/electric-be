@@ -25,5 +25,5 @@ public class Image {
 
     private String img;
 
-    private Integer type; //1 category 2 product 3 brand
+    private Integer type; //1 category 2 product 3 brand 4 review
 }

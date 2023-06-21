@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import usoft.cdm.electronics_market.model.bill.Cart;
 import usoft.cdm.electronics_market.model.bill.Shop;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 public interface BillService {

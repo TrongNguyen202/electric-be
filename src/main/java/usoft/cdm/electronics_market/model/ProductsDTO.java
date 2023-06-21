@@ -34,8 +34,6 @@ public class ProductsDTO extends BaseModel {
     @NotNull(message = "Thương hiệu không được rỗng")
     private Integer brandId;
 
-    private Integer capicityId;
-
     @NotNull(message = "Kho không được rỗng")
     private Integer warehouseId;
 

@@ -2,12 +2,15 @@ package usoft.cdm.electronics_market.controller;
 
 import lombok.*;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import usoft.cdm.electronics_market.model.BrandDTO;
 import usoft.cdm.electronics_market.model.CategoryDTO;
 import usoft.cdm.electronics_market.model.ImageDTO;
 import usoft.cdm.electronics_market.service.BrandService;
+import usoft.cdm.electronics_market.util.ResponseUtil;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -54,6 +57,17 @@ public class BrandAPI {
     private ResponseEntity<?> save(@Valid @RequestBody BrandRequestBody dto) {
 
         return brandService.save(dto.getBrandDTO(), dto.getImageList());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        StringBuilder errors = new StringBuilder();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            errors.append(error.getDefaultMessage()).append(",");
+        });
+        return ResponseUtil.badRequest(errors.toString());
     }
 
     @PutMapping

@@ -17,6 +17,7 @@ import usoft.cdm.electronics_market.repository.UserRepository;
 import usoft.cdm.electronics_market.service.EmailService;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -43,19 +44,18 @@ public class EmailServiceImpl implements EmailService {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message);
         try {
             message.setFrom("noreply@nextsol.vn");
+            message.setContent(body, "text/html; charset=UTF-8");
             mimeMessageHelper.setSubject(title);
-            mimeMessageHelper.setText(body);
+//            mimeMessageHelper.setText(body);
             mimeMessageHelper.setTo(to);
             this.emailSender.send(message);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
+        } catch (MessagingException messageException) {
+            throw new RuntimeException(messageException);
         }
     }
 
     @Override
-    public ResponseEntity<?> sendGmailForSignUp(String email) {
+    public ResponseEntity<?> sendGmailForSignUp(String email) throws MessagingException {
         Optional<Users> usersOptional = this.userRepository.findByEmailAndStatus(email, true);
         if (usersOptional.isPresent()) {
             throw new BadRequestException("Gmail này đã đăng ký tài khoản rồi,vui lòng đăng nhập");

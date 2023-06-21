@@ -9,9 +9,13 @@ import usoft.cdm.electronics_market.entities.*;
 import usoft.cdm.electronics_market.model.bill.*;
 import usoft.cdm.electronics_market.repository.*;
 import usoft.cdm.electronics_market.service.BillService;
+import usoft.cdm.electronics_market.service.EmailService;
 import usoft.cdm.electronics_market.service.UserService;
+import usoft.cdm.electronics_market.util.DateUtil;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
+import javax.mail.MessagingException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +31,8 @@ public class BillServiceImpl implements BillService {
     private final ImageRepository imageRepository;
     private final RolesRepository rolesRepository;
     private final BillVoucherRepository billVoucherRepository;
+
+    private final EmailService emailService;
 
     @Override
     public ResponseEntity<?> getAll(Integer status, Pageable pageable) {
@@ -145,11 +151,11 @@ public class BillServiceImpl implements BillService {
         bill.setPrice(shop.getPrice());
         double totalPrice = 0d;
         bill.setFullname(shop.getFullname());
-        if (shop.getEmail() != null && shop.getEmail().matches("\\w+@\\w+[.]\\w+([.]\\w+)?"))
+        if (shop.getEmail() != null && !shop.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"))
             return ResponseUtil.badRequest("Email không đúng định dạng!");
         bill.setEmail(shop.getEmail());
         bill.setStatus(2);
-        if (!shop.getPhone().matches("^0[1-9]\\d{8,9}$"))
+        if (!shop.getPhone().matches("^(0|(84)|(\\+84))+\\d{9,10}$"))
             return ResponseUtil.badRequest("Số điện thoại không đúng định dạng!");
         bill.setPhone(shop.getPhone());
         bill.setAddressTransfer(shop.getAddressTransfer());
@@ -201,8 +207,61 @@ public class BillServiceImpl implements BillService {
         billDetailRepository.saveAll(details);
         if (!list.isEmpty())
             billDetailRepository.deleteAll(list);
-        billRepository.save(bill);
+        Bill billSave = billRepository.save(bill);
+        List<BillDetail> billDetail = this.billDetailRepository.findAllByBillId(billSave.getId());
+        String sub = "THÔNG BÁO Đơn hàng " + billSave.getCode();
+//        for (CodeDetailDTO dto : codeDetailDTOList) {
+//            text.append(dto.getCodeProduct().toString() + "-" + dto.getNameProduct().toString() + "-" + dto.getQuantity().toString() + " \n");
+//        }
+        String text1 = generateReportMessage(billSave, billDetail);
+        try {
+            this.emailService.sendEmail("khachhang.chodienmay.vn@gmail.com", sub, text1);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
         return ResponseUtil.message("Mua hàng thành công!");
+    }
+
+    private StringBuilder generateCommonHtmlHead() {
+        StringBuilder stringBuilder = new StringBuilder();
+        return stringBuilder.append("<head>")
+                .append("<h1>Status<h1>")
+                .append("</head>")
+                .append("<body>");
+//                .append("<table border=1>")
+//                .append("<tr>")
+//                .append("<th>Author id</th><th>Authour Name</th><th>Content</th><th>Date</th>")
+//                .append("</tr>");
+    }
+
+    public String generateReportMessage(Bill billSave, List<BillDetail> billDetail) {
+        StringBuilder text = generateCommonHtmlHead();
+        String creatDate = billSave.getCreatedDate().toString();
+        String dateMain;
+        try {
+            Date date = DateUtil.inputFormat.parse(creatDate);
+            dateMain = DateUtil.sdtf.format(date);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        text.append("Mã hóa đơn " + billSave.getCode()
+                + "      Ngày: " + dateMain + "\n");
+        text.append("Tên khách hàng: " + billSave.getFullname() + "\n");
+        text.append("Điện thoại : " + billSave.getPhone() + "\n");
+        text.append("Email : " + billSave.getEmail() + "\n");
+        text.append("Địa chỉ : " + billSave.getAddressTransfer() + "\n");
+//        for (Mark mark : marks) {
+//            stringBuilder.append("<tr>");
+//            stringBuilder.append("<td>").append(mark.getAccountLogin()).append("</td>");
+//            stringBuilder.append("<td>").append(mark.getText()).append("</td>");
+//            stringBuilder.append("<td>").append(mark.getId()).append("</td>");
+//            stringBuilder.append("<td>").append(message.getReportDate()).append("</td>");
+//            stringBuilder.append("</tr>");
+//        }
+        text.append("</body>");
+
+        return text.toString();
     }
 
     @Override
