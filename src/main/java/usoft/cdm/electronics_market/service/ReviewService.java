@@ -9,5 +9,9 @@ public interface ReviewService {
 
     ResponseEntity<?> saveReview(ReviewDTO dto, List<String> imgs);
 
-    ResponseEntity<?> updateReview(ReviewDTO dto, List<String> imgs);
+    ResponseEntity<?> replyReview(ReviewDTO dto, List<String> imgs);
+
+    ResponseEntity<?> findAll();
+
+    ResponseEntity<?> findAllNewest();
 }
