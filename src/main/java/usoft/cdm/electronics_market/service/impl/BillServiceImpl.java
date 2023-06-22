@@ -31,8 +31,7 @@ public class BillServiceImpl implements BillService {
     private final UserService userService;
     private final ImageRepository imageRepository;
     private final FlashSaleRepository flashSaleRepository;
-    private final RolesRepository rolesRepository;
-
+    private final VoucherRepository voucherRepository;
     private final EmailService emailService;
 
     @Override
@@ -165,6 +164,13 @@ public class BillServiceImpl implements BillService {
         List<BillDetail> details = new ArrayList<>();
         if (shop.getCart() == null || shop.getCart().isEmpty())
             return ResponseUtil.badRequest("Trong giỏ không có hàng!");
+        Voucher voucher = null;
+        if (shop.getVoucherId() != null) {
+            voucher = voucherRepository.findById(shop.getVoucherId()).orElse(null);
+            if (voucher == null)
+                return ResponseUtil.message("Voucher không hợp lệ!");
+        }
+        double priceVoucher = 0d;
         bill = billRepository.save(bill);
         for (Cart c : shop.getCart()) {
             BillDetail billDetail = new BillDetail();
@@ -197,6 +203,12 @@ public class BillServiceImpl implements BillService {
                 price = p.getPriceAfterSale() == null ? p.getPriceSell() : p.getPriceAfterSale();
                 billDetail.setPriceAfterSale(p.getPriceAfterSale());
             }
+            if (voucher != null && voucher.getBranch().contains("||" + p.getBrandId() + "||")) {
+                if (voucher.getDiscount() != null)
+                    priceVoucher = voucher.getDiscountMoney();
+                else
+                    priceVoucher += voucher.getDiscount() * price;
+            }
             p.setQuantity(p.getQuantity() - c.getQuantity());
             billDetail.setQuantity(c.getQuantity());
             billDetail.setProductId(c.getProductId());
@@ -213,10 +225,7 @@ public class BillServiceImpl implements BillService {
         bill.setCode("CDM-" + bill.getId());
         bill.setPaymentMethod(shop.getPaymentMethod());
         bill.setPrice(totalPrice);
-        if (shop.getVoucherCode() != null){
-//            Voucher voucher = billVoucherRepository.findById()
-        }
-        bill.setTotalPrice(totalPrice);
+        bill.setTotalPrice(totalPrice - priceVoucher);
         List<BillDetail> billDetail = billDetailRepository.saveAll(details);
         if (!list.isEmpty())
             billDetailRepository.deleteAll(list);

@@ -15,6 +15,7 @@ import java.util.List;
 @Repository
 public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
     Page<Voucher> findAllByStatus(Pageable pageable, boolean status);
+    Voucher findByCode(String code);
     @Query("SELECT new usoft.cdm.electronics_market.model.voucher.VoucherModel" +
             "(v.id, v.code, v.startDate, v.endDate, v.discount, v.discountMoney, v.quantity, v.quantityUsed, v.note, v.branch)" +
             "FROM Voucher v WHERE v.id = :id")
