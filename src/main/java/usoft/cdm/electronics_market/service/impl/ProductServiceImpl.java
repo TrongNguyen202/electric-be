@@ -78,6 +78,7 @@ public class ProductServiceImpl implements ProductService {
             if (flashSale != null) {
                 productsDTO.setPriceFlashSale(flashSale.getPriceFlashSale());
                 productsDTO.setEndFlashSale(flashSale.getEndSale());
+                productsDTO.setQuantitySale(flashSale.getQuantitySale());
             }
             productsDTO.setImg(imgs);
             Category category = this.categoryRepository.findById(productsDTO.getCategoryId()).orElseThrow();
