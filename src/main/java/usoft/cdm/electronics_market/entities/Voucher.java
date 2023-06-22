@@ -18,9 +18,13 @@ import java.util.Date;
 @Table(name = "cdm_voucher")
 public class Voucher extends BaseEntity {
     private String code;
-    private Date timeUsing;
+    private Date startDate;
+    private Date endDate;
     private Double discount;
     private Double discountMoney;
     private Integer quantity;
+    private Integer quantityUsed;
     private String note;
+    private String branch;
+    private Boolean status;
 }
