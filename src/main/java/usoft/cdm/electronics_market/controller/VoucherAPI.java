@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import usoft.cdm.electronics_market.model.voucher.VoucherModel;
 import usoft.cdm.electronics_market.service.VoucherService;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor
@@ -17,6 +19,11 @@ public class VoucherAPI {
     @GetMapping
     private ResponseEntity<?> getAll(Pageable pageable){
         return voucherService.getAll(pageable);
+    }
+
+    @GetMapping("getVoucher")
+    private ResponseEntity<?> getVoucher(List<Integer> ids){
+        return voucherService.getVoucher(ids);
     }
 
     @GetMapping("getById")

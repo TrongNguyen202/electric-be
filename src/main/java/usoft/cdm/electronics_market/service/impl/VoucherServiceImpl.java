@@ -26,6 +26,12 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
+    public ResponseEntity<?> getVoucher(List<Integer> ids) {
+        List<Voucher> list = voucherRepository.getVoucher(ids);
+        return ResponseUtil.ok(list);
+    }
+
+    @Override
     public ResponseEntity<?> getById(Integer id) {
         return ResponseUtil.ok(voucherRepository.getModelById(id));
     }
