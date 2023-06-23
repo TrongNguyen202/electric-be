@@ -67,9 +67,19 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public ResponseEntity<?> save(WarehouseDTO warehouseDTO) {
         Users userLogin = this.userService.getCurrentUser();
+        if (!warehouseDTO.getPhone().matches("^(0|(84)|(\\+84))+\\d{9,10}$"))
+            return ResponseUtil.badRequest("Số điện thoại không đúng định dạng!");
+        Optional<Warehouse> check = this.warehouseRepository.findAllByStatusAndName(true, warehouseDTO.getName());
+        if (check.isPresent())
+            return ResponseUtil.badRequest("Tên đại lý sản phẩm đã tồn tại");
         Warehouse warehouse = Warehouse
                 .builder()
                 .name(warehouseDTO.getName())
+                .district(warehouseDTO.getDistrict())
+                .addressDetail(warehouseDTO.getAddressDetail())
+                .ward(warehouseDTO.getWard())
+                .city(warehouseDTO.getCity())
+                .phone(warehouseDTO.getPhone())
                 .status(true)
                 .build();
         warehouse.setCreatedBy(userLogin.getUsername());
@@ -80,7 +90,14 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public ResponseEntity<?> update(WarehouseDTO warehouseDTO) {
         Users userLogin = this.userService.getCurrentUser();
+        if (!warehouseDTO.getPhone().matches("^(0|(84)|(\\+84))+\\d{9,10}$"))
+            return ResponseUtil.badRequest("Số điện thoại không đúng định dạng!");
         Optional<Warehouse> optionalWarehouse = this.warehouseRepository.findById(warehouseDTO.getId());
+        if (!optionalWarehouse.get().getName().equals(warehouseDTO.getName())) {
+            Optional<Warehouse> check = this.warehouseRepository.findAllByStatusAndName(true, warehouseDTO.getName());
+            if (check.isPresent())
+                return ResponseUtil.badRequest("Tên đại lý sản phẩm đã tồn tại");
+        }
         if (optionalWarehouse.isEmpty()) {
             throw new BadRequestException("Không tìm thấy id của kho");
         }

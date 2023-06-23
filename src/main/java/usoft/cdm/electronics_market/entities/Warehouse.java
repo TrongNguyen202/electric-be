@@ -16,6 +16,14 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Table(name = "cdm_warehouse")
 public class Warehouse extends BaseEntity {
+
     private String name;
+
+    private String addressDetail;
+
+    private String city;
+    private String district;
+    private String ward;
+    private String phone;
     private Boolean status;
 }

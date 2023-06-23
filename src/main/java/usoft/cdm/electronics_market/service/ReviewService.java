@@ -14,4 +14,6 @@ public interface ReviewService {
     ResponseEntity<?> findAll();
 
     ResponseEntity<?> findAllNewest();
+
+    ResponseEntity<?> deleted(Integer idReview);
 }
