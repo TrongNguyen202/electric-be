@@ -34,6 +34,12 @@ public class ReviewAPI {
         return this.reviewService.saveReview(dto.getReviewDTO(), dto.getImageList());
     }
 
+    @DeleteMapping()
+    public ResponseEntity<?> deleted(@RequestParam Integer idReview) {
+
+        return this.reviewService.deleted(idReview);
+    }
+
     @PostMapping("/reply")
     public ResponseEntity<?> replyReview(@RequestBody ReviewRequestBody dto) {
 

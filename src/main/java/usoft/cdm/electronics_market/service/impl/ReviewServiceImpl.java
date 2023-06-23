@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import usoft.cdm.electronics_market.config.expection.BadRequestException;
+import usoft.cdm.electronics_market.constant.Message;
 import usoft.cdm.electronics_market.entities.Image;
 import usoft.cdm.electronics_market.entities.Review;
 import usoft.cdm.electronics_market.entities.Users;
@@ -147,5 +148,32 @@ public class ReviewServiceImpl implements ReviewService {
             dto.setImgs(imgs);
         }
         return ResponseUtil.ok(reviewDTOS);
+    }
+
+    @Override
+    public ResponseEntity<?> deleted(Integer idReview) {
+        Users userLogin = this.userService.getCurrentUser();
+        if (userLogin.getRoleId() == 3) {
+            throw new BadRequestException("Bạn không có quyền xóa bình luận");
+        }
+        Optional<Review> optionalReview = this.reviewRepository.findAllByIdAndStatus(idReview, true);
+        if (optionalReview.isEmpty()) {
+            throw new BadRequestException("Không tìm thấy id của đánh giá này");
+        }
+        Review review = optionalReview.get();
+        List<Review> reviews = this.reviewRepository.findAllByStatusAndParentId(true, idReview);
+        if (reviews.size() > 0) {
+            for (Review re : reviews) {
+                Optional<Review> check = this.reviewRepository.findAllByIdAndStatus(re.getId(), true);
+                if (optionalReview.isEmpty()) {
+                    throw new BadRequestException("Không tìm thấy id của đánh giá này");
+                }
+                check.get().setStatus(false);
+                this.reviewRepository.save(check.get());
+            }
+        }
+        review.setStatus(false);
+        this.reviewRepository.save(review);
+        return ResponseUtil.message(Message.REMOVE);
     }
 }

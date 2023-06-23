@@ -78,6 +78,7 @@ public class BrandServiceImpl implements BrandService {
         if (brandCheck != null) {
             return ResponseUtil.badRequest(brandCheck.getId(), "Đã có thương hiệu này!");
         }
+
         Brand brand = Brand
                 .builder()
                 .img(dto.getImg())
