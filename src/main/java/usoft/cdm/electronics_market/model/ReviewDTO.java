@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import usoft.cdm.electronics_market.entities.Image;
-import usoft.cdm.electronics_market.entities.Review;
 
 import java.util.List;
 
@@ -22,4 +21,5 @@ public class ReviewDTO extends BaseModel {
     private List<Image> imageList;
     private List<String> imgs;
     private List<ReviewDTO> reviewDTOS;
+    private String nameUser;
 }
