@@ -25,6 +25,6 @@ public class Voucher extends BaseEntity {
     private Integer quantity;
     private Integer quantityUsed;
     private String note;
-    private String branch;
+    private String brand;
     private Boolean status;
 }

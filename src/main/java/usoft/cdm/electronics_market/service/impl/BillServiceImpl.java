@@ -206,7 +206,7 @@ public class BillServiceImpl implements BillService {
                 price = p.getPriceAfterSale() == null ? p.getPriceSell() : p.getPriceAfterSale();
                 billDetail.setPriceAfterSale(p.getPriceAfterSale());
             }
-            if (voucher != null && voucher.getBranch().contains("||" + p.getBrandId() + "||")) {
+            if (voucher != null && voucher.getBrand().contains("||" + p.getBrandId() + "||")) {
                 if (voucher.getDiscount() != null)
                     priceVoucher = voucher.getDiscountMoney();
                 else

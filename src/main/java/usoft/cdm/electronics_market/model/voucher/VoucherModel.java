@@ -16,9 +16,9 @@ public class VoucherModel {
     private Integer quantity;
     private Integer quantityUsed;
     private String note;
-    private List<Integer> branchId;
+    private List<Integer> brandId;
 
-    public VoucherModel(Integer id, String code, Date startDate, Date endDate, Double discount, Double discountMoney, Integer quantity, Integer quantityUsed, String note, String branch) {
+    public VoucherModel(Integer id, String code, Date startDate, Date endDate, Double discount, Double discountMoney, Integer quantity, Integer quantityUsed, String note, String brand) {
         this.id = id;
         this.code = code;
         this.startDate = startDate;
@@ -28,9 +28,9 @@ public class VoucherModel {
         this.quantity = quantity;
         this.quantityUsed = quantityUsed;
         this.note = note;
-        String[] branchList = branch.split("\\|\\|");
+        String[] branchList = brand.split("\\|\\|");
         for (String s : branchList) {
-            this.branchId.add(Integer.parseInt(s));
+            this.brandId.add(Integer.parseInt(s));
         }
     }
 }

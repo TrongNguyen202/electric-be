@@ -51,8 +51,8 @@ public class VoucherServiceImpl implements VoucherService {
             voucher.setQuantity(model.getQuantity());
         }
         StringBuilder branch = new StringBuilder("||");
-        model.getBranchId().forEach(x -> branch.append(x).append("||"));
-        voucher.setBranch(branch.toString());
+        model.getBrandId().forEach(x -> branch.append(x).append("||"));
+        voucher.setBrand(branch.toString());
         voucher.setNote(model.getNote());
         voucher.setCode(model.getCode());
         voucher.setStartDate(model.getStartDate());
