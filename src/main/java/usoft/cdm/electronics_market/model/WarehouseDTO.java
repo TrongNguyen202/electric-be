@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
@@ -30,5 +31,11 @@ public class WarehouseDTO extends BaseModel {
     private String ward;
     @NotEmpty(message = "Số điện thoại không được rỗng")
     private String phone;
+
+    @NotNull(message = "Kinh độ không được rỗng")
+    private Double lat;
+
+    @NotNull(message = "Vĩ độ không được rỗng")
+    private Double lng;
 
 }

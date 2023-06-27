@@ -25,5 +25,7 @@ public class Warehouse extends BaseEntity {
     private String district;
     private String ward;
     private String phone;
+    private Double lat;
+    private Double lng;
     private Boolean status;
 }

@@ -17,9 +17,9 @@ public class ReviewAPI {
     private final ReviewService reviewService;
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<?> getAll(@RequestParam Integer idProduct) {
 
-        return this.reviewService.findAll();
+        return this.reviewService.findAll(idProduct);
     }
 
     @GetMapping("/all-newest")
