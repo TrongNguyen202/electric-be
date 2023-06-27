@@ -10,6 +10,7 @@ import usoft.cdm.electronics_market.entities.Category;
 import usoft.cdm.electronics_market.entities.Warehouse;
 
 import javax.validation.constraints.*;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -76,6 +77,11 @@ public class ProductsDTO extends BaseModel {
     private List<Price> price;
     private List<Integer> brandIds;
     private List<String> madeIns;
+
+    private Double priceFlashSale;
+
+    private ZonedDateTime endFlashSale;
+    private Integer quantitySale;
 
     private Integer valueSort;//1 bán chạy nhất 2 giá tăng dần 3 giá giảm dần 4 giảm giá 5 mới nhất
 

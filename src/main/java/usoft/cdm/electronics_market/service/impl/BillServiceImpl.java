@@ -32,6 +32,9 @@ public class BillServiceImpl implements BillService {
     private final ImageRepository imageRepository;
     private final FlashSaleRepository flashSaleRepository;
     private final VoucherRepository voucherRepository;
+    private final RolesRepository rolesRepository;
+
+
     private final EmailService emailService;
 
     @Override

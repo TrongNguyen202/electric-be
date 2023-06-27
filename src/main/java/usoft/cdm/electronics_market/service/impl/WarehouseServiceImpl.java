@@ -67,9 +67,27 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public ResponseEntity<?> save(WarehouseDTO warehouseDTO) {
         Users userLogin = this.userService.getCurrentUser();
+        if (!warehouseDTO.getPhone().matches("^(0|(84)|(\\+84))+\\d{9,10}$"))
+            return ResponseUtil.badRequest("Số điện thoại không đúng định dạng!");
+        Optional<Warehouse> check = this.warehouseRepository.findAllByStatusAndName(true, warehouseDTO.getName());
+        if (check.isPresent())
+            return ResponseUtil.badRequest("Tên đại lý sản phẩm đã tồn tại");
+        if (!isLatitude(warehouseDTO.getLat())) {
+            throw new BadRequestException("Vị trí kinh độ không đúng");
+        }
+        if (!isLongitude(warehouseDTO.getLng())) {
+            throw new BadRequestException("Vị trí vĩ độ không đúng");
+        }
         Warehouse warehouse = Warehouse
                 .builder()
                 .name(warehouseDTO.getName())
+                .district(warehouseDTO.getDistrict())
+                .addressDetail(warehouseDTO.getAddressDetail())
+                .ward(warehouseDTO.getWard())
+                .city(warehouseDTO.getCity())
+                .phone(warehouseDTO.getPhone())
+                .lat(warehouseDTO.getLat())
+                .lng(warehouseDTO.getLng())
                 .status(true)
                 .build();
         warehouse.setCreatedBy(userLogin.getUsername());
@@ -80,7 +98,20 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public ResponseEntity<?> update(WarehouseDTO warehouseDTO) {
         Users userLogin = this.userService.getCurrentUser();
+        if (!warehouseDTO.getPhone().matches("^(0|(84)|(\\+84))+\\d{9,10}$"))
+            return ResponseUtil.badRequest("Số điện thoại không đúng định dạng!");
+        if (!isLatitude(warehouseDTO.getLat())) {
+            throw new BadRequestException("Vị trí kinh độ không đúng");
+        }
+        if (!isLongitude(warehouseDTO.getLng())) {
+            throw new BadRequestException("Vị trí vĩ độ không đúng");
+        }
         Optional<Warehouse> optionalWarehouse = this.warehouseRepository.findById(warehouseDTO.getId());
+        if (!optionalWarehouse.get().getName().equals(warehouseDTO.getName())) {
+            Optional<Warehouse> check = this.warehouseRepository.findAllByStatusAndName(true, warehouseDTO.getName());
+            if (check.isPresent())
+                return ResponseUtil.badRequest("Tên đại lý sản phẩm đã tồn tại");
+        }
         if (optionalWarehouse.isEmpty()) {
             throw new BadRequestException("Không tìm thấy id của kho");
         }
@@ -112,5 +143,13 @@ public class WarehouseServiceImpl implements WarehouseService {
         });
         this.warehouseRepository.saveAll(warehouseList);
         return ResponseUtil.message(Message.REMOVE);
+    }
+
+    private Boolean isLatitude(Double lat) {
+        return Double.isFinite(lat) && Math.abs(lat) <= 90;
+    }
+
+    private Boolean isLongitude(Double lng) {
+        return Double.isFinite(lng) && Math.abs(lng) <= 180;
     }
 }

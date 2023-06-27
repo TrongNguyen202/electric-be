@@ -20,7 +20,7 @@ public class Shop {
     private String note;
     @NotEmpty(message = "Số điện thoại không được rỗng")
     private String phone;
-    @NotEmpty(message = "Email không được rỗng")
+
     private String email;
     private Boolean requestBill;
     private String taxCode;
