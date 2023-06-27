@@ -1,11 +1,15 @@
 package usoft.cdm.electronics_market.model.voucher;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class VoucherModel {
     private Integer id;
     private String code;
