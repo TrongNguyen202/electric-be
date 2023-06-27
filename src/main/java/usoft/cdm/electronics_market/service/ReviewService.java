@@ -11,7 +11,7 @@ public interface ReviewService {
 
     ResponseEntity<?> replyReview(ReviewDTO dto, List<String> imgs);
 
-    ResponseEntity<?> findAll();
+    ResponseEntity<?> findAll(Integer idProduct);
 
     ResponseEntity<?> findAllNewest();
 

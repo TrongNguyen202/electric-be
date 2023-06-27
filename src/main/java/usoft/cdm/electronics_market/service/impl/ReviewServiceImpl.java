@@ -113,9 +113,9 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ResponseEntity<?> findAll() {
+    public ResponseEntity<?> findAll(Integer idProduct) {
         Pageable topTen = PageRequest.of(0, 10);
-        List<Review> reviews = this.reviewRepository.findAllByStatusAndParentIdIsNull(true, topTen);
+        List<Review> reviews = this.reviewRepository.findAllByStatusAndParentIdIsNullAndProductId(true, idProduct, topTen);
         List<ReviewDTO> reviewDTOS = MapperUtil.mapList(reviews, ReviewDTO.class);
         for (ReviewDTO dto : reviewDTOS) {
             List<Review> list = this.reviewRepository.findAllByStatusAndParentId(true, dto.getId());

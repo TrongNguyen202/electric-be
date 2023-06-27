@@ -13,7 +13,7 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
     Optional<Review> findAllByIdAndStatus(Integer id, Boolean status);
 
-    List<Review> findAllByStatusAndParentIdIsNull(Boolean status, Pageable pageable);
+    List<Review> findAllByStatusAndParentIdIsNullAndProductId(Boolean status, Integer idProduct, Pageable pageable);
 
     List<Review> findAllByStatusAndParentIdIsNullOrderByCreatedDateDesc(Boolean status, Pageable pageable);
 
