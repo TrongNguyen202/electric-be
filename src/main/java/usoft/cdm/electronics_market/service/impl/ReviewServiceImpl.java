@@ -14,6 +14,7 @@ import usoft.cdm.electronics_market.entities.Users;
 import usoft.cdm.electronics_market.model.ReviewDTO;
 import usoft.cdm.electronics_market.repository.ImageRepository;
 import usoft.cdm.electronics_market.repository.ReviewRepository;
+import usoft.cdm.electronics_market.repository.UserRepository;
 import usoft.cdm.electronics_market.service.ProductService;
 import usoft.cdm.electronics_market.service.ReviewService;
 import usoft.cdm.electronics_market.service.UserService;
@@ -35,6 +36,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final UserService userService;
 
     private final ProductService productService;
+
+    private final UserRepository userRepository;
 
     @Override
     public ResponseEntity<?> saveReview(ReviewDTO dto, List<String> imgs) {
@@ -120,9 +123,17 @@ public class ReviewServiceImpl implements ReviewService {
         for (ReviewDTO dto : reviewDTOS) {
             List<Review> list = this.reviewRepository.findAllByStatusAndParentId(true, dto.getId());
             List<ReviewDTO> dtos = MapperUtil.mapList(list, ReviewDTO.class);
+            Optional<Users> usersOptional = this.userRepository.findByIdAndStatus(dto.getUserId(), true);
+            if (usersOptional.isPresent()) {
+                dto.setNameUser(usersOptional.get().getUsername());
+            }
             for (ReviewDTO reviewDTO : dtos) {
                 List<String> imgs = this.productService.getImgs(reviewDTO.getId(), 4);
                 reviewDTO.setImgs(imgs);
+                Optional<Users> users = this.userRepository.findByIdAndStatus(reviewDTO.getUserId(), true);
+                if (users.isPresent()) {
+                    reviewDTO.setNameUser(users.get().getUsername());
+                }
             }
             dto.setReviewDTOS(dtos);
             List<String> imgs = this.productService.getImgs(dto.getId(), 4);
