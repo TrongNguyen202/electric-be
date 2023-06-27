@@ -22,8 +22,8 @@ public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
     VoucherModel getModelById(@Param("id") Integer id);
 
     @Query("SELECT v FROM Voucher v, Products p, Branch b " +
-            " WHERE v.branch = b.id AND p.brandId = b.id AND p.id IN ids")
-    List<Voucher> getVoucher(@Param("ids") List<Integer> ids);
+            " WHERE v.branch = b.id AND p.brandId = b.id AND p.id IN ids AND v.startDate >= date")
+    List<Voucher> getVoucher(@Param("ids") List<Integer> ids, @Param("date") Date date);
 
 //    @Query("SELECT v.id FROM Voucher v FROM v.endDate < :date")
     List<Voucher> findAllByEndDateGreaterThan(Date date);
