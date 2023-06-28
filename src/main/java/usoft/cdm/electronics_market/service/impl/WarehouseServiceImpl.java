@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import usoft.cdm.electronics_market.config.expection.BadRequestException;
 import usoft.cdm.electronics_market.constant.Message;
+import usoft.cdm.electronics_market.entities.ProductWarehouse;
 import usoft.cdm.electronics_market.entities.Products;
 import usoft.cdm.electronics_market.entities.Users;
 import usoft.cdm.electronics_market.entities.Warehouse;
 import usoft.cdm.electronics_market.model.WarehouseDTO;
 import usoft.cdm.electronics_market.repository.ProductRepository;
+import usoft.cdm.electronics_market.repository.ProductWarehouseRepository;
 import usoft.cdm.electronics_market.repository.WarehouseRepository;
 import usoft.cdm.electronics_market.service.UserService;
 import usoft.cdm.electronics_market.service.WarehouseService;
@@ -35,6 +37,8 @@ public class WarehouseServiceImpl implements WarehouseService {
     private final UserService userService;
 
     private final ProductRepository productRepository;
+
+    private final ProductWarehouseRepository productWarehouseRepository;
 
     @Override
     public Page<WarehouseDTO> getAllWarehouse(Pageable pageable) {
@@ -132,8 +136,8 @@ public class WarehouseServiceImpl implements WarehouseService {
                 throw new BadRequestException("Không tìm thấy id của kho");
             }
             Warehouse warehouse = optionalWarehouse.get();
-            List<Products> products = this.productRepository.findByStatusAndWarehouseId(true, warehouseId);
-            if (products.size() > 0) {
+            List<ProductWarehouse> productWarehouses = this.productWarehouseRepository.findAllByStatusAndWarehouseId(warehouseId, true);
+            if (productWarehouses.size() > 0) {
                 throw new BadRequestException("Đã có sản phẩm không thể xóa ở kho " + warehouse.getName());
             }
 
