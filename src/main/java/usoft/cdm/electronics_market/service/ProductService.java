@@ -17,7 +17,7 @@ public interface ProductService {
 
     ResponseEntity<?> save(ProductsDTO dto, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs);
 
-    ResponseEntity<?> update(ProductsDTO dto, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs);
+    ResponseEntity<?> update(ProductsDTO dto, Integer idProductWarehouse, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs);
 
     ResponseEntity<?> deleteProductByIds(List<Integer> idProducts);
 

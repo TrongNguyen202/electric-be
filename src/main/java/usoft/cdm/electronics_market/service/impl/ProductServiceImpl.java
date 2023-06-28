@@ -48,6 +48,8 @@ public class ProductServiceImpl implements ProductService {
 
     private final FlashSaleRepository flashSaleRepository;
 
+    private final ProductWarehouseRepository productWarehouseRepository;
+
 
     @Override
     public ResponseEntity<?> getAllProducts(Pageable pageable) {
@@ -112,9 +114,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ResponseEntity<?> save(ProductsDTO dto, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs) {
         Users userLogin = this.userService.getCurrentUser();
-        Optional<Products> productCheck = this.productRepository.findByCodeAndStatus(dto.getCode(), true);
+        Optional<Products> productCheck = this.productRepository.findByCodeAndStatusAndNameAndPriceAfterSale(dto.getCode(), true, dto.getName(), dto.getPriceAfterSale());
         if (productCheck.isPresent()) {
-            throw new BadRequestException("Mã sản phẩm đã tồn tại");
+            throw new BadRequestException("Sản phẩm đã tồn tại");
         }
 
         if (dto.getQuantityImport() <= 0) {
@@ -125,7 +127,6 @@ public class ProductServiceImpl implements ProductService {
                 .code(dto.getCode())
                 .name(dto.getName())
                 .slug(TextUtil.slug(dto.getName()))
-                .warehouseId(dto.getWarehouseId())
                 .brandId(dto.getBrandId())
                 .categoryId(dto.getCategoryId())
                 .priceImport(dto.getPriceImport())
@@ -138,6 +139,15 @@ public class ProductServiceImpl implements ProductService {
                 .build();
         products.setCreatedBy(userLogin.getUsername());
         Products productsSave = this.productRepository.save(products);
+        ProductWarehouse productWarehouse = this.productWarehouseRepository
+                .save(ProductWarehouse
+                        .builder()
+                        .productId(productsSave.getId())
+                        .warehouseId(dto.getWarehouseId())
+                        .status(true)
+                        .build());
+        ProductsDTO productsDTO = MapperUtil.map(products, ProductsDTO.class);
+        productsDTO.setProductWarehouse(productWarehouse);
         List<Image> images = new ArrayList<>();
         for (String img : imgList) {
             Image image = Image
@@ -168,18 +178,20 @@ public class ProductServiceImpl implements ProductService {
             });
         }
 
-        return ResponseUtil.ok(products);
+        return ResponseUtil.ok(productsDTO);
     }
 
     @Override
-    public ResponseEntity<?> update(ProductsDTO dto, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs) {
+    public ResponseEntity<?> update(ProductsDTO dto, Integer idProductWarehouse, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs) {
         Users userLogin = this.userService.getCurrentUser();
         Optional<Products> optionalProducts = this.productRepository.findById(dto.getId());
 
-        if (!optionalProducts.get().getCode().equals(dto.getCode())) {
-            Optional<Products> productCheck = this.productRepository.findByCodeAndStatus(dto.getCode(), true);
+        if (!optionalProducts.get().getCode().equals(dto.getCode())
+                && !optionalProducts.get().getName().equals(dto.getName())
+                && !optionalProducts.get().getPriceImport().equals(dto.getPriceAfterSale())) {
+            Optional<Products> productCheck = this.productRepository.findByCodeAndStatusAndNameAndPriceAfterSale(dto.getCode(), true, dto.getName(), dto.getPriceAfterSale());
             if (productCheck.isPresent()) {
-                throw new BadRequestException("Mã sản phẩm đã tồn tại");
+                throw new BadRequestException("Sản phẩm đã tồn tại");
             }
         }
         if (optionalProducts.isEmpty()) {
@@ -191,6 +203,14 @@ public class ProductServiceImpl implements ProductService {
             products.setSlug(TextUtil.slug(dto.getName()));
             products.setStatus(true);
             this.productRepository.save(products);
+            Optional<ProductWarehouse> productWarehouse = this.productWarehouseRepository.findById(idProductWarehouse);
+            if (optionalProducts.isEmpty()) {
+                throw new BadRequestException("Không tìm thấy đại lý của sản phẩm");
+            }
+            ProductWarehouse warehouse = productWarehouse.get();
+            warehouse.setWarehouseId(dto.getWarehouseId());
+            warehouse.setProductId(products.getId());
+            this.productWarehouseRepository.save(warehouse);
             List<Image> imageList = this.imageRepository.findByDetailIdAndType(dto.getId(), 2);
             this.imageRepository.deleteAll(imageList);
             List<Image> images = new ArrayList<>();
@@ -296,7 +316,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductsDTO> findByBrandAndPriceAndMadeInForSearchProduct(String name, Pageable pageable, ProductsDTO dto) {
+    public Page<ProductsDTO> findByBrandAndPriceAndMadeInForSearchProduct(String name, Pageable
+            pageable, ProductsDTO dto) {
         Page<ProductsDTO> productsDTOS = this.productRepository.findByBrandAndPriceAndMadeInForSearchProduct(name, dto, pageable);
         productsDTOS.forEach(productsDTO -> {
             List<String> imgProductSearch = getImgs(productsDTO.getId(), 2);

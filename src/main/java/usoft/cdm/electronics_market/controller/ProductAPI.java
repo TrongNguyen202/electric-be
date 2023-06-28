@@ -69,7 +69,7 @@ public class ProductAPI {
     @PutMapping()
     public ResponseEntity<?> update(@Valid @RequestBody ProductRequestBody request) {
 
-        return this.productService.update(request.getProductsDTO(), request.getImg(), request.getDto());
+        return this.productService.update(request.getProductsDTO(), request.getId(), request.getImg(), request.getDto());
     }
 
     @DeleteMapping
@@ -91,6 +91,7 @@ public class ProductAPI {
 class ProductRequestBody {
     @Valid
     private ProductsDTO productsDTO;
+    private Integer id;
     private List<String> img;
     private List<TitleAttributeDTO> dto;
 }

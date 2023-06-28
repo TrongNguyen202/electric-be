@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import usoft.cdm.electronics_market.entities.Brand;
 import usoft.cdm.electronics_market.entities.Category;
+import usoft.cdm.electronics_market.entities.ProductWarehouse;
 import usoft.cdm.electronics_market.entities.Warehouse;
 
 import javax.validation.constraints.*;
@@ -26,7 +27,7 @@ public class ProductsDTO extends BaseModel {
     private String name;
 
     @NotEmpty(message = "Code không được rỗng")
-    @Size(min = 2, max = 500, message = "Code phải từ 3 đến 500 ký tự")
+    @Size(min = 2, max = 500, message = "Code phải từ 2 đến 500 ký tự")
     private String code;
 
     @NotNull(message = "Danh mục không được rỗng")
@@ -82,6 +83,8 @@ public class ProductsDTO extends BaseModel {
 
     private ZonedDateTime endFlashSale;
     private Integer quantitySale;
+
+    private ProductWarehouse productWarehouse;
 
     private Integer valueSort;//1 bán chạy nhất 2 giá tăng dần 3 giá giảm dần 4 giảm giá 5 mới nhất
 
