@@ -60,8 +60,14 @@ public class ProductServiceImpl implements ProductService {
             productsDTO.setBrandName(brand.getName());
             Category category = this.categoryRepository.findById(productsDTO.getCategoryId()).orElseThrow();
             productsDTO.setCategoryName(category.getName());
-            Warehouse warehouse = this.warehouseRepository.findById(productsDTO.getWarehouseId()).orElseThrow();
-            productsDTO.setWarehouseName(warehouse.getName());
+            List<ProductWarehouse> productWarehouses = this.productWarehouseRepository.findAllByStatusAndProductId(true, productsDTO.getId());
+            List<String> warehouseNames = new ArrayList<>();
+            for (ProductWarehouse productWarehouse : productWarehouses) {
+                Warehouse warehouse = this.warehouseRepository.findById(productWarehouse.getWarehouseId()).orElseThrow();
+                warehouseNames.add(warehouse.getName());
+            }
+
+            productsDTO.setWarehouseNames(warehouseNames);
         });
 
         return ResponseUtil.ok(productsDTOS);
@@ -87,8 +93,13 @@ public class ProductServiceImpl implements ProductService {
             productsDTO.setCategoryName(category.getName());
             Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
             productsDTO.setBrandName(brand.getName());
-            Warehouse warehouse = this.warehouseRepository.findById(productsDTO.getWarehouseId()).orElseThrow();
-            productsDTO.setWarehouseName(warehouse.getName());
+            List<ProductWarehouse> productWarehouses = this.productWarehouseRepository.findAllByStatusAndProductId(true, productsDTO.getId());
+            List<String> warehouseNames = new ArrayList<>();
+            for (ProductWarehouse productWarehouse : productWarehouses) {
+                Warehouse warehouse = this.warehouseRepository.findById(productWarehouse.getWarehouseId()).orElseThrow();
+                warehouseNames.add(warehouse.getName());
+            }
+            productsDTO.setWarehouseNames(warehouseNames);
             List<TitleAttribute> titleAttributes = this.titleAttibuteRepository.findByProductId(productId);
             List<TitleAttributeDTO> titleAttributeDTOS = MapperUtil.mapList(titleAttributes, TitleAttributeDTO.class);
             for (TitleAttributeDTO titleAttributeDTO : titleAttributeDTOS) {
