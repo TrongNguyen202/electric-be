@@ -10,4 +10,6 @@ import java.util.List;
 public interface ProductWarehouseRepository extends JpaRepository<ProductWarehouse, Integer> {
 
     List<ProductWarehouse> findAllByStatusAndWarehouseId(Integer warehouseId, Boolean status);
+
+    List<ProductWarehouse> findAllByStatusAndProductId(Boolean status, Integer productId);
 }
