@@ -26,7 +26,7 @@ public class ProductsDTO extends BaseModel {
     private String name;
 
     @NotEmpty(message = "Code không được rỗng")
-    @Size(min = 6, max = 500, message = "Code phải từ 6 đến 500 ký tự")
+    @Size(min = 2, max = 500, message = "Code phải từ 3 đến 500 ký tự")
     private String code;
 
     @NotNull(message = "Danh mục không được rỗng")
