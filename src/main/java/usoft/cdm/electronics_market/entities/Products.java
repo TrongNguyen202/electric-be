@@ -127,7 +127,6 @@ public class Products extends BaseEntity {
     private String code;
     private Integer categoryId;
     private Integer brandId;
-    private Integer warehouseId;
     private Double priceSell;
     private Double priceImport;
     private Date dateSaleStart;

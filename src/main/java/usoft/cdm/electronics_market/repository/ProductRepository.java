@@ -20,7 +20,7 @@ public interface ProductRepository extends JpaRepository<Products, Integer>, Pro
 
     Optional<Products> findByIdAndStatus(Integer id, Boolean status);
 
-    Optional<Products> findByCodeAndStatus(String code, Boolean status);
+    Optional<Products> findByCodeAndStatusAndNameAndPriceAfterSale(String code, Boolean status, String name, Double PriceAfterSale);
 
     List<Products> findByStatusAndCategoryId(Boolean status, Integer categoryId);
 
