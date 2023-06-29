@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,8 +34,12 @@ public class VoucherModel {
         this.quantityUsed = quantityUsed;
         this.note = note;
         String[] branchList = brand.split("\\|\\|");
+        this.brandId = new ArrayList<>();
         for (String s : branchList) {
-            this.brandId.add(Integer.parseInt(s));
+            try {
+                this.brandId.add(Integer.parseInt(s));
+            }catch (Exception ignored){
+            }
         }
     }
 }
