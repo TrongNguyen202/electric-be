@@ -81,8 +81,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Users getCurrentUser() {
         CustomUserDetails customUserDetails = (CustomUserDetails) this.getInfoUser();
-        String currentUser = customUserDetails.getUsers().getUsername();
-        return userRepository.findByUsernameAndStatus(currentUser, true).orElseThrow();
+        return customUserDetails.getUsers();
     }
 
     @Override
