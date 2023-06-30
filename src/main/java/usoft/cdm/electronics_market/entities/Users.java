@@ -27,6 +27,7 @@ public class Users extends BaseEntity {
     private String addressDetail;
     private String phone;
     private String email;
+    private String uidFacebook;
     private String birthday;
     private String sex;
     private Boolean status;

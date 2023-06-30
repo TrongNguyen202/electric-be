@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import usoft.cdm.electronics_market.entities.Users;
 import usoft.cdm.electronics_market.model.LoginDTO;
 import usoft.cdm.electronics_market.model.UserDTO;
+import usoft.cdm.electronics_market.model.user.FacebookModel;
 
 import java.util.List;
 
@@ -38,6 +39,8 @@ public interface UserService extends UserDetailsService {
     ResponseEntity<?> setPermission(Integer userId, List<Integer> ids);
 
     ResponseEntity<?> loginGoogle(String code);
+
+    ResponseEntity<?> loginFacebook(FacebookModel model);
 
     void authorizationUser(String name) throws AuthenticationException;
 }

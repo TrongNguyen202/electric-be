@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import usoft.cdm.electronics_market.config.security.JwtTokenProvider;
 import usoft.cdm.electronics_market.model.UserDTO;
 import usoft.cdm.electronics_market.model.user.ChangePassword;
+import usoft.cdm.electronics_market.model.user.FacebookModel;
 import usoft.cdm.electronics_market.service.UserService;
 import usoft.cdm.electronics_market.util.ResponseUtil;
 
@@ -81,6 +82,11 @@ public class UserAPI {
     @GetMapping("login-google")
     public ResponseEntity<?> loginGoogle(@RequestParam String code) {
         return userService.loginGoogle(code);
+    }
+
+    @PostMapping("login-facebook")
+    public ResponseEntity<?> loginGoogle(@RequestBody FacebookModel model) {
+        return userService.loginFacebook(model);
     }
 
 

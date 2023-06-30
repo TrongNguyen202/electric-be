@@ -19,6 +19,7 @@ import usoft.cdm.electronics_market.config.security.JwtTokenProvider;
 import usoft.cdm.electronics_market.entities.*;
 import usoft.cdm.electronics_market.model.LoginDTO;
 import usoft.cdm.electronics_market.model.UserDTO;
+import usoft.cdm.electronics_market.model.user.FacebookModel;
 import usoft.cdm.electronics_market.repository.PermissionRepository;
 import usoft.cdm.electronics_market.repository.RolePermissionRepository;
 import usoft.cdm.electronics_market.repository.RolesRepository;
@@ -277,6 +278,26 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseUtil.badRequest(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> loginFacebook(FacebookModel model) {
+        try {
+            Users users = userRepository.findByUidFacebookAndStatus(model.getUser().getUid(), true).orElse(new Users());
+            if (users.getId() == null) {
+                users.setAvatar(model.getUser().getPhotoURL());
+                Roles role = rolesRepository.findByName("CUSTOMER");
+                users.setRoleId(role.getId());
+                users.setFullname(model.getUser().getDisplayName());
+                users.setUidFacebook(model.getUser().getUid());
+                users.setStatus(true);
+                users = userRepository.save(users);
+            }
+            return ResponseUtil.ok(jwtTokenProvider.generateToken(new CustomUserDetails(users)));
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseUtil.badRequest("Đăng nhập thất bại");
         }
     }
 
