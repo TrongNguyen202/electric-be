@@ -36,9 +36,6 @@ public class ProductsDTO extends BaseModel {
     @NotNull(message = "Thương hiệu không được rỗng")
     private Integer brandId;
 
-    @NotNull(message = "Kho không được rỗng")
-    private Integer warehouseId;
-
     @NotNull(message = "Gía bán không được rỗng")
     @DecimalMin(value = "0", message = "Giá  bán sỉ không được âm")
     private Double priceSell;
