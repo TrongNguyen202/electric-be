@@ -65,7 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/v1/footer/support-list-all", "/api/v1/footer/support-id").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/review/all", "/api/v1/review/all-newest").permitAll()
                 .antMatchers("/images/**").permitAll()
-                .antMatchers("/api/v1/branch/**", "/api/v1/branch", "/api/v1/product", "/api/v1/product/**", "/api/v1/category/**", "/api/v1/category", "/api/v1/manager-homepage/**", "/api/v1/manager-homepage", "/api/v1/image", "/api/v1/image/**", "/api/v1/warehouse", "/api/v1/warehouse/**")
+                .antMatchers("/api/v1/branch/**", "/api/v1/branch", "/api/v1/product", "/api/v1/product/**", "/api/v1/category/**", "/api/v1/category", "/api/v1/manager-homepage/**", "/api/v1/manager-homepage", "/api/v1/warehouse", "/api/v1/warehouse/**")
                 .hasAnyAuthority("1", "2")
                 .antMatchers(HttpMethod.POST, "/api/v1/user").hasAnyAuthority("1")
                 .anyRequest().authenticated();// Tất cả các request khác đều cần phải xác thực mới được truy cập

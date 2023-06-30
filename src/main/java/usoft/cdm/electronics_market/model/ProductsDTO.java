@@ -36,9 +36,6 @@ public class ProductsDTO extends BaseModel {
     @NotNull(message = "Thương hiệu không được rỗng")
     private Integer brandId;
 
-    @NotNull(message = "Kho không được rỗng")
-    private Integer warehouseId;
-
     @NotNull(message = "Gía bán không được rỗng")
     @DecimalMin(value = "0", message = "Giá  bán sỉ không được âm")
     private Double priceSell;
@@ -72,6 +69,10 @@ public class ProductsDTO extends BaseModel {
     private String categoryName;
     private String brandName;
     private String warehouseName;
+
+    private List<ProductWarehouse> productWarehouses;
+
+    private List<ProductWarehouseDTO> productWarehouseDTOS;
 
     private List<String> warehouseNames;
     private Integer sumProduct;
