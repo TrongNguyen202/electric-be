@@ -94,12 +94,13 @@ public class ProductServiceImpl implements ProductService {
             Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
             productsDTO.setBrandName(brand.getName());
             List<ProductWarehouse> productWarehouses = this.productWarehouseRepository.findAllByStatusAndProductId(true, productsDTO.getId());
-            List<String> warehouseNames = new ArrayList<>();
-            for (ProductWarehouse productWarehouse : productWarehouses) {
-                Warehouse warehouse = this.warehouseRepository.findById(productWarehouse.getWarehouseId()).orElseThrow();
-                warehouseNames.add(warehouse.getName());
+            List<ProductWarehouseDTO> productWarehouseDTOS = MapperUtil.mapList(productWarehouses, ProductWarehouseDTO.class);
+
+            for (ProductWarehouseDTO productWarehouseDTO : productWarehouseDTOS) {
+                Warehouse warehouse = this.warehouseRepository.findById(productWarehouseDTO.getWarehouseId()).orElseThrow();
+                productWarehouseDTO.setWarehoueName(warehouse.getName());
             }
-            productsDTO.setWarehouseNames(warehouseNames);
+            productsDTO.setProductWarehouseDTOS(productWarehouseDTOS);
             List<TitleAttribute> titleAttributes = this.titleAttibuteRepository.findByProductId(productId);
             List<TitleAttributeDTO> titleAttributeDTOS = MapperUtil.mapList(titleAttributes, TitleAttributeDTO.class);
             for (TitleAttributeDTO titleAttributeDTO : titleAttributeDTOS) {
@@ -123,7 +124,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseEntity<?> save(ProductsDTO dto, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs) {
+    public ResponseEntity<?> save(ProductsDTO dto, List<Integer> warehouseIds, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs) {
         Users userLogin = this.userService.getCurrentUser();
         Optional<Products> productCheck = this.productRepository.findByCodeAndStatusAndNameAndPriceAfterSale(dto.getCode(), true, dto.getName(), dto.getPriceAfterSale());
         if (productCheck.isPresent()) {
@@ -150,15 +151,20 @@ public class ProductServiceImpl implements ProductService {
                 .build();
         products.setCreatedBy(userLogin.getUsername());
         Products productsSave = this.productRepository.save(products);
-        ProductWarehouse productWarehouse = this.productWarehouseRepository
-                .save(ProductWarehouse
-                        .builder()
-                        .productId(productsSave.getId())
-                        .warehouseId(dto.getWarehouseId())
-                        .status(true)
-                        .build());
+        List<ProductWarehouse> productWarehouses = new ArrayList<>();
+        for (Integer warehouseId : warehouseIds) {
+            ProductWarehouse productWarehouse = this.productWarehouseRepository
+                    .save(ProductWarehouse
+                            .builder()
+                            .productId(productsSave.getId())
+                            .warehouseId(warehouseId)
+                            .status(true)
+                            .build());
+            productWarehouses.add(productWarehouse);
+        }
+
         ProductsDTO productsDTO = MapperUtil.map(products, ProductsDTO.class);
-        productsDTO.setProductWarehouse(productWarehouse);
+        productsDTO.setProductWarehouses(productWarehouses);
         List<Image> images = new ArrayList<>();
         for (String img : imgList) {
             Image image = Image
@@ -193,7 +199,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ResponseEntity<?> update(ProductsDTO dto, Integer idProductWarehouse, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs) {
+    public ResponseEntity<?> update(ProductsDTO dto, List<Integer> warehouseIds, List<String> imgList, List<TitleAttributeDTO> titleAttributeDTOs) {
         Users userLogin = this.userService.getCurrentUser();
         Optional<Products> optionalProducts = this.productRepository.findById(dto.getId());
 
@@ -214,14 +220,20 @@ public class ProductServiceImpl implements ProductService {
             products.setSlug(TextUtil.slug(dto.getName()));
             products.setStatus(true);
             this.productRepository.save(products);
-            Optional<ProductWarehouse> productWarehouse = this.productWarehouseRepository.findById(idProductWarehouse);
-            if (optionalProducts.isEmpty()) {
-                throw new BadRequestException("Không tìm thấy đại lý của sản phẩm");
+
+            List<ProductWarehouse> productWarehouses = this.productWarehouseRepository.findAllByStatusAndProductId(true, products.getId());
+            this.productWarehouseRepository.deleteAll(productWarehouses);
+            for (Integer warehouseId : warehouseIds) {
+                this.productWarehouseRepository
+                        .save(ProductWarehouse
+                                .builder()
+                                .productId(products.getId())
+                                .warehouseId(warehouseId)
+                                .status(true)
+                                .build());
+
             }
-            ProductWarehouse warehouse = productWarehouse.get();
-            warehouse.setWarehouseId(dto.getWarehouseId());
-            warehouse.setProductId(products.getId());
-            this.productWarehouseRepository.save(warehouse);
+
             List<Image> imageList = this.imageRepository.findByDetailIdAndType(dto.getId(), 2);
             this.imageRepository.deleteAll(imageList);
             List<Image> images = new ArrayList<>();
