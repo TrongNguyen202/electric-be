@@ -297,9 +297,12 @@ public class ProductServiceImpl implements ProductService {
         List<CategoryHomePage> categoryDTOS = this.categoryRepository.getParentIdIsNullAndStatus();
         categoryDTOS.forEach(categoryDTO -> {
             List<String> imgs = getImgs(categoryDTO.getId(), 1);
-            Random random = new Random();
-            int randomIndex = random.nextInt(imgs.size());
-            String imgRandom = imgs.get(randomIndex);
+            String imgRandom = null;
+            if (imgs.size() > 0) {
+                Random random = new Random();
+                int randomIndex = random.nextInt(imgs.size());
+                imgRandom = imgs.get(randomIndex);
+            }
             List<CategoryChildHomePage> categoryList = this.categoryRepository.getParentIdAndStatus(categoryDTO.getId());
             categoryDTO.setCategoryList(categoryList);
             categoryDTO.setPicCategory(imgRandom);
