@@ -186,14 +186,14 @@ public class UserServiceImpl implements UserService {
             return ResponseUtil.badRequest("Tên người dùng không được nhập số và ký tự đặc biệt");
         if (userDTO.getFullname().length() < 6)
             return ResponseUtil.badRequest("Tên người dùng không được ít hơn 6 ký tự");
+        if (userDTO.getEmail() != null && !userDTO.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"))
+            return ResponseUtil.badRequest("Email không đúng định dạng!");
         users.setEmail(userDTO.getEmail());
-        users.setRoleId(userDTO.getRoleId());
+        if (!userDTO.getPhone().matches("^(0|(84)|(\\+84))+\\d{9,10}$"))
+            return ResponseUtil.badRequest("Số điện thoại không đúng định dạng!");
         users.setPhone(userDTO.getPhone());
         users.setSex(userDTO.getSex());
         users.setBirthday(userDTO.getBirthday());
-        users.setDescription(userDTO.getDescription());
-        users.setAddressId(userDTO.getAddressId());
-        users.setAddressDetail(userDTO.getAddressDetail());
         users.setUpdatedBy(usersLogin.getUsername());
         users.setAvatar(userDTO.getAvatar());
         this.userRepository.save(users);
