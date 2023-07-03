@@ -73,8 +73,9 @@ public class UserAPI {
         return userService.setPermission(userId, ids);
     }
 
+    @PostMapping("saveCustomer")
     public ResponseEntity<?> saveCustomer(@RequestBody UserDTO userDTO) {
-        return this.userService.save(userDTO);
+        return this.userService.updateCustomer(userDTO);
     }
 
     @PostMapping("/login")
