@@ -21,8 +21,9 @@ public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
             "FROM Voucher v WHERE v.id = :id")
     VoucherModel getModelById(@Param("id") Integer id);
 
-    @Query("SELECT v FROM Voucher v, Products p, Brand b " +
-            " WHERE v.brand = b.id AND p.brandId = b.id AND p.id IN ids AND v.startDate >= date")
+    @Query("SELECT new usoft.cdm.electronics_market.entities.Voucher" +
+            "(v.id, v.code, v.discount, v.discountMoney) FROM Voucher v, Products p, Brand b " +
+            " WHERE v.brand = b.id AND p.brandId = b.id AND p.id IN :ids AND v.startDate >= :date")
     List<Voucher> getVoucher(@Param("ids") List<Integer> ids, @Param("date") Date date);
 
 //    @Query("SELECT v.id FROM Voucher v FROM v.endDate < :date")

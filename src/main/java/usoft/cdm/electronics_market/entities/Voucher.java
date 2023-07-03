@@ -27,4 +27,10 @@ public class Voucher extends BaseEntity {
     private String note;
     private String brand;
     private Boolean status;
+
+    public Voucher(Integer id, String code, Double discount, Double discountMoney){
+        this.id = id;
+        this.code = code;
+        this.discount = discount != null ? discount : discountMoney;
+    }
 }

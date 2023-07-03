@@ -22,7 +22,7 @@ public class VoucherAPI {
     }
 
     @GetMapping("getVoucher")
-    private ResponseEntity<?> getVoucher(List<Integer> ids){
+    private ResponseEntity<?> getVoucher(@RequestParam List<Integer> ids){
         return voucherService.getVoucher(ids);
     }
 

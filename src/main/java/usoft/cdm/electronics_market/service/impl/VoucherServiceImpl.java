@@ -27,8 +27,7 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public ResponseEntity<?> getVoucher(List<Integer> ids) {
-        List<Voucher> list = voucherRepository.getVoucher(ids, new Date());
-        return ResponseUtil.ok(list);
+        return ResponseUtil.ok(voucherRepository.getVoucher(ids, new Date()));
     }
 
     @Override
