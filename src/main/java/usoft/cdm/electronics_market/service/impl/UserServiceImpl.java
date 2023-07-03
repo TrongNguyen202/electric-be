@@ -155,6 +155,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResponseEntity<?> changePasswordCustomer(String password){
+        Users users = getCurrentUser();
+        if (password != null) {
+            if (password.length() < 6)
+                return ResponseUtil.badRequest("Mật khẩu không được ít hơn 6 ký tự");
+            users.setPassword(passwordEncoder.encode(password));
+        } else {
+            return ResponseUtil.badRequest("Mật khẩu không được để rống");
+        }
+        userRepository.save(users);
+        return ResponseUtil.ok("Đổi mật khẩu thành công");
+    }
+
+    @Override
     public ResponseEntity<?> updateCustomer(UserDTO userDTO) {
         Users usersLogin = getCurrentUser();
         Optional<Roles> roles = rolesRepository.findById(usersLogin.getRoleId());

@@ -56,11 +56,14 @@ public class UserAPI {
     }
 
     @PostMapping("changePassword")
-    public ResponseEntity<?> update(@RequestBody ChangePassword req) {
+    public ResponseEntity<?> changePassword(@RequestBody ChangePassword req) {
         return this.userService.changePassword(req.getPassword(), req.getId());
     }
 
-
+    @PostMapping("changePasswordCustomer")
+    public ResponseEntity<?> changePasswordCustomer(@RequestBody ChangePassword req) {
+        return this.userService.changePasswordCustomer(req.getPassword());
+    }
     @DeleteMapping
     private ResponseEntity<?> delete(@RequestParam List<Integer> ids) {
         return userService.delete(ids);
