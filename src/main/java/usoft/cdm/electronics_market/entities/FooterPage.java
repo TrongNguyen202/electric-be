@@ -16,7 +16,6 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "cdm_footer_page")
-
 public class FooterPage extends BaseEntity {
     private String name;
     private String icon;

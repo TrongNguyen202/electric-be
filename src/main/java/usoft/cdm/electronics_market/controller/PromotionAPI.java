@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import usoft.cdm.electronics_market.entities.ProductPromotion;
 import usoft.cdm.electronics_market.model.ProductPromotionDTO;
 import usoft.cdm.electronics_market.model.PromotionDTO;
 import usoft.cdm.electronics_market.service.PromotionService;
