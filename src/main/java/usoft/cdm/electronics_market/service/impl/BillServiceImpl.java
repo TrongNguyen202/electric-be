@@ -11,6 +11,7 @@ import usoft.cdm.electronics_market.repository.*;
 import usoft.cdm.electronics_market.service.BillService;
 import usoft.cdm.electronics_market.service.EmailService;
 import usoft.cdm.electronics_market.service.UserService;
+import usoft.cdm.electronics_market.util.DataUtil;
 import usoft.cdm.electronics_market.util.DateUtil;
 import usoft.cdm.electronics_market.util.MapperUtil;
 import usoft.cdm.electronics_market.util.ResponseUtil;
@@ -142,8 +143,9 @@ public class BillServiceImpl implements BillService {
     @Override
     public ResponseEntity<?> shop(Shop shop) {
         Bill bill = new Bill();
+        Users users = null;
         try {
-            Users users = ((CustomUserDetails) userService.getInfoUser()).getUsers();
+            users = ((CustomUserDetails) userService.getInfoUser()).getUsers();
             if (users != null) {
                 bill = billRepository.findByUserIdAndStatus(users.getId(), 1).orElse(new Bill());
                 bill.setUserId(users.getId());
@@ -246,6 +248,21 @@ public class BillServiceImpl implements BillService {
             this.emailService.sendEmail("khachhang.chodienmay.vn@gmail.com", sub, text1);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
+        }
+
+        if (!DataUtil.isNullObject(shop.getEmail())) {
+            try {
+                this.emailService.sendEmail(shop.getEmail(), sub, text1);
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (!DataUtil.isNullObject(users.getEmail())) {
+            try {
+                this.emailService.sendEmail(users.getEmail(), sub, text1);
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return ResponseUtil.message("Mua hàng thành công!");
