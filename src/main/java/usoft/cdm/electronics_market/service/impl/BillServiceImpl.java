@@ -250,21 +250,22 @@ public class BillServiceImpl implements BillService {
             throw new RuntimeException(e);
         }
 
-        if (!DataUtil.isNullObject(shop.getEmail())) {
+        if (!DataUtil.isNullString(shop.getEmail())) {
             try {
                 this.emailService.sendEmail(shop.getEmail(), sub, text1);
             } catch (MessagingException e) {
                 throw new RuntimeException(e);
             }
         }
-        if (!DataUtil.isNullObject(users.getEmail())) {
-            try {
-                this.emailService.sendEmail(users.getEmail(), sub, text1);
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
+        if (!DataUtil.isNullObject(users)) {
+            if (!DataUtil.isNullString(users.getEmail())) {
+                try {
+                    this.emailService.sendEmail(users.getEmail(), sub, text1);
+                } catch (MessagingException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
-
         return ResponseUtil.message("Mua hàng thành công!");
     }
 
@@ -300,9 +301,6 @@ public class BillServiceImpl implements BillService {
                 .append("   <b style=\"margin-right: 10px;\">Tên khách hàng:" + billSave.getFullname() + "</b>")
                 .append(" </div>");
 
-        text.append(" <div style=\"margin-top: 5px;\">")
-                .append("   <b style=\"margin-right: 10px;\">Tên khách hàng:" + billSave.getFullname() + "</b>")
-                .append(" </div>");
 
         text.append(" <div style=\"margin-top: 5px;\">")
                 .append("   <b style=\"margin-right: 10px;\">Số điện thoại:" + billSave.getPhone() + "</b>")
@@ -313,7 +311,7 @@ public class BillServiceImpl implements BillService {
                     .append(" </div>");
         }
         text.append(" <div style=\"margin-top: 5px;\">")
-                .append("   <b style=\"margin-right: 10px;\">Email:" + billSave.getAddressTransfer() + "</b>")
+                .append("   <b style=\"margin-right: 10px;\">Địa chỉ:" + billSave.getAddressTransfer() + "</b>")
                 .append(" </div>");
 
         text.append(" <div style=\"margin-top: 5px;\">")
@@ -355,7 +353,7 @@ public class BillServiceImpl implements BillService {
         text.append("    <div style=\"text-align: end; margin-top: 5px;\"> Tổng cộng: " + billSave.getTotalPrice() + "</div>");
         text.append("    <div style=\"text-align: end; margin-top: 5px;\"> Phí vận chuyển: " + billSave.getTransportFee() + "</div>");
         Double pricePay = billSave.getTotalPrice() + billSave.getTransportFee();
-        String formattedNumber = String.format("%.10f", pricePay);
+        String formattedNumber = String.format("%.1f", pricePay);
         text.append("    <div style=\"text-align: end; margin-top: 5px;\"> Thanh toán: " + formattedNumber + "</div>");
         text.append("  </table>");
         text.append(" </div>");
