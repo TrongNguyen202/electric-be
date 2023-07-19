@@ -43,7 +43,7 @@ public class EmailServiceImpl implements EmailService {
         MimeMessage message = this.emailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message);
         try {
-            message.setFrom("noreply@nextsol.vn");
+//            message.setFrom("noreply@nextsol.vn");
             message.setContent(body, "text/html; charset=UTF-8");
             mimeMessageHelper.setSubject(title);
 //            mimeMessageHelper.setText(body);
