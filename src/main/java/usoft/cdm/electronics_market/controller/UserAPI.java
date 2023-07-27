@@ -98,4 +98,24 @@ public class UserAPI {
     public ResponseEntity<?> getUserInfo() {
         return ResponseUtil.ok(userService.getInfoUser());
     }
+
+    public static class RequestAddressDTO {
+        String address;
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+    }
+
+    //add adress(trong)
+    @PutMapping("addAddress")
+    public  ResponseEntity<?> adAddressHandler(@RequestBody RequestAddressDTO address){
+        return  ResponseUtil.ok(userService.addUserAddress(address.address));
+    }
 }
+
+

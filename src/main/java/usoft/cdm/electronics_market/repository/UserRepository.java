@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import usoft.cdm.electronics_market.entities.Address;
 import usoft.cdm.electronics_market.entities.Users;
 
 import java.util.Optional;
@@ -28,5 +29,6 @@ public interface UserRepository extends JpaRepository<Users, Integer> {
 
     @Query("SELECT u FROM Users u WHERE u.roleId <> :roleId")
     Page<Users> findAllNotByRoleId(@Param("roleId") Integer roleId, Pageable pageable);
+
 
 }

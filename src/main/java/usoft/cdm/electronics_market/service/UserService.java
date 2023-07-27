@@ -11,6 +11,7 @@ import usoft.cdm.electronics_market.model.UserDTO;
 import usoft.cdm.electronics_market.model.user.FacebookModel;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService extends UserDetailsService {
 
@@ -43,4 +44,7 @@ public interface UserService extends UserDetailsService {
     ResponseEntity<?> loginFacebook(FacebookModel model);
 
     void authorizationUser(String name) throws AuthenticationException;
+    //add adress(trong)
+    Object addUserAddress(String address);
+
 }

@@ -319,5 +319,13 @@ public class UserServiceImpl implements UserService {
         if (permission.isEmpty())
             throw new AuthenticationException("Bạn không có quyền thực hiện chức năng này");
     }
+    //Adduser adress(trong)
+    @Override
+    public Object addUserAddress(String address){
+        Users users = getCurrentUser();
+        users.setAddressDetail(address);
+        userRepository.save(users);
+        return users;
+    }
 }
 
