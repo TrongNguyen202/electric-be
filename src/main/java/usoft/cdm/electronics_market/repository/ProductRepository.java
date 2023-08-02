@@ -56,4 +56,10 @@ public interface ProductRepository extends JpaRepository<Products, Integer>, Pro
             "AND (p.priceSell between :from AND :to)")
     Integer sumProductForBrand(@Param("brandId") Integer brandId,
                                @Param("from") Double priceFrom, @Param("to") Double priceTo);
+    @Query("SELECT p\n" +
+            "FROM Products p\n" +
+            "JOIN TitleAttribute ta ON p.id = ta.productId\n" +
+            "JOIN  Attribute a ON ta.id = a.titleAttributeId\n" +
+            "WHERE a.value = :inch")
+    Page<Products> findProductsByAttribute(@Param("inch") String attribute, Pageable pageable);
 }

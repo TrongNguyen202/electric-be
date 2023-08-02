@@ -82,6 +82,12 @@ public class ProductAPI {
     public ResponseEntity<?> displayMaxDiscountByCategory(@RequestParam(required = false) Integer categoryId) {
         return ResponseUtil.ok(this.productService.displayMaxDiscountByCategory(categoryId));
     }
+    //filter cho tivi
+    @GetMapping("/filter-tv")
+    public ResponseEntity<?> getProductsByAttribute(@RequestParam("inch") String value,Pageable pageable) {
+        return ResponseUtil.ok(this.productService.findProductsByAttribute(value,pageable));
+    }
+
 }
 
 @Data

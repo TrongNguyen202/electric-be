@@ -462,6 +462,29 @@ public class ProductServiceImpl implements ProductService {
         ProductsDTO dto = this.productRepository.getDiscountByCategory(categoryId);
         return dto;
     }
+    @Override
+    public  Page<ProductsDTO> findProductsByAttribute(String value, Pageable pageable){
+        Page<Products> productsPage= productRepository.findProductsByAttribute(value,pageable);
+        Page<ProductsDTO> productsDTOS = MapperUtil.mapEntityPageIntoDtoPage(productsPage, ProductsDTO.class);
+        productsDTOS.forEach(productsDTO -> {
+            List<String> imgs = getImgs(productsDTO.getId(), 2);
+            productsDTO.setImg(imgs);
+            Brand brand = this.brandRepository.findById(productsDTO.getBrandId()).orElseThrow();
+            productsDTO.setBrandName(brand.getName());
+            Category category = this.categoryRepository.findById(productsDTO.getCategoryId()).orElseThrow();
+            productsDTO.setCategoryName(category.getName());
+            List<ProductWarehouse> productWarehouses = this.productWarehouseRepository.findAllByStatusAndProductId(true, productsDTO.getId());
+            List<String> warehouseNames = new ArrayList<>();
+            for (ProductWarehouse productWarehouse : productWarehouses) {
+                Warehouse warehouse = this.warehouseRepository.findById(productWarehouse.getWarehouseId()).orElseThrow();
+                warehouseNames.add(warehouse.getName());
+            }
+
+            productsDTO.setWarehouseNames(warehouseNames);
+        });
+        return productsDTOS;
+    }
+
 
 
 }
